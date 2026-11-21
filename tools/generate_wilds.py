@@ -6,7 +6,7 @@ is copied into this campaign. Existing stages 1–60 are preserved.
 """
 from pathlib import Path
 import json,math,random
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 layouts={
 'delta':[(90,100,'R'),(90,300,'R'),(90,500,'R'),(870,140,'B'),(870,340,'B'),(870,540,'B'),(260,150,'c'),(260,490,'c'),(700,150,'c'),(700,490,'c'),(440,100,'h'),(520,540,'h'),(340,300,'h'),(620,340,'h'),(480,210,'t'),(480,430,'t'),(480,320,'H')],
 'crescent':[(120,100,'R'),(110,240,'R'),(140,400,'R'),(840,540,'B'),(850,400,'B'),(820,240,'B'),(320,100,'c'),(640,540,'c'),(160,540,'c'),(800,100,'c'),(360,400,'t'),(600,240,'t'),(360,220,'h'),(600,420,'h'),(480,90,'h'),(480,550,'h'),(480,320,'H')],
@@ -67,7 +67,7 @@ def regions(kind,rng):
  if kind==7:return [(51,crescent(480,320,235,180,60,180)),(50,o(365,170,85,65)),(50,o(595,470,85,65))]
  if kind==8:return [(50,channel([(350,85),(490,200),(400,320),(540,440),(450,555)],32)),(51,o(250,480,95,65)),(51,o(710,160,95,65))]
  return [(51,crescent(480,320,250,200,62,75)),(50,o(390,330,60,72)),(50,o(620,450,75,60))]
-data=json.loads((ROOT/'assets/world.json').read_text());assert len(data['worlds'])>=60
+data=json.loads((ROOT/'assets/map/worlds.json').read_text());assert len(data['worlds'])>=60
 base=data['worlds'][:60];data['worlds']=list(base)
 rows=[];terrain=[];altars=[];titles=[];tips=[];catalog=[]
 keys=list(layouts)
@@ -99,14 +99,14 @@ for i,name in enumerate(names):
   if min(math.hypot(x-a,y-b) for a,b,_ in nodes)<65:continue
   objects.append(['g_'+str(rng.randint(1,5)),x,y,32,42])
  brief=briefs[i%10];stage=61+i
- data['worlds'].append(dict(width=960,height=640,overlay=[f'wilds/terrain{stage}',480,320,960,640],objects=objects,custom=True,name=name,brief=brief,new_terrain=True))
+ data['worlds'].append(dict(width=960,height=640,overlay=[f'terrain/wild/terrain{stage}.png',480,320,960,640],objects=objects,custom=True,name=name,brief=brief,new_terrain=True))
  rows.append(';'.join(records));terrain.append(';'.join(zone_rows));altars.append(';'.join(pickups));titles.append(name);tips.append(brief)
  catalog.append(dict(stage=stage,name=name,brief=brief,layout=family,regions=zones,altars=pickups,buildings=nodes,art_sources=['terrain5.png material','terrain7.png material'],original_shape_source=None))
 data['wildsMarkers']=[list(p) for p in data['markers']]
-(ROOT/'assets/world.json').write_text(json.dumps(data,separators=(',',':')))
+(ROOT/'assets/map/worlds.json').write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')
 lines=['package castle;','final class Wilds {']
 for key,values in [('NAMES',titles),('BRIEFS',tips),('BUILDINGS',rows),('MARSHES',terrain),('ALTARS',altars)]:
  lines+=[' static final String[] '+key+' = {']+['  '+json.dumps(v)+',' for v in values]+[' };']
 lines+=['}'];(ROOT/'src/castle/Wilds.java').write_text('\n'.join(lines)+'\n')
-(ROOT/'assets/wilds-design.json').write_text(json.dumps(catalog,indent=2))
+(ROOT/'tools/data/wilds-design.json').write_text(json.dumps(catalog,indent=2,ensure_ascii=False)+'\n')
 print('Authored stages 61–90 with',sum(len(x['regions']) for x in catalog),'new region shapes; preserved first 60 worlds.')

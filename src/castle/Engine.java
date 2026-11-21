@@ -5,7 +5,7 @@ final class Engine {
  static final float MARCH_SPEED=50f, ARCHERY_MARCH_SPEED=60f;
  static final float ANGEL_DURATION=15f, SHIELD_DURATION=30f;
  static final float REINFORCEMENT_RADIUS=100f;
- static final int RECRUIT_AMOUNT=50, TROOP_SCALE=100, TOTAL_STAGES=90;
+ static final int RECRUIT_AMOUNT=50, TROOP_SCALE=100, TOTAL_STAGES=Campaign.TOTAL_STAGES;
  static final int GENERATOR=0, CRYSTAL=1, ARCHERY=2;
  static final String[] BUILDINGS={"Castle","Crystal","Archer tower"};
  static final String[] ITEMS={"Meteor","Tornado","Mutiny","Reinforce"};
@@ -255,61 +255,35 @@ final class Engine {
  final int[] attackLevels=new int[4],defenseLevels=new int[4];
  final float[] cooldown=new float[4],aiClocks=new float[4];
  final int stage,rank;
+ final Campaign campaign;
  final Random aiRandom,spellRandom;
  float time,think=2.5f,energy=200; int result;
  Engine(int stage,int rank){
   this(stage,rank,0xCA571E00L+stage);
  }
  Engine(int stage,int rank,long seed){
-  if(stage<1||stage>TOTAL_STAGES)throw new IllegalArgumentException("Stage out of campaign range");
+  StageDefinition definition=StageDefinition.get(stage);
+  campaign=definition.campaign;
   this.stage=stage;this.rank=rank;
   aiRandom=new Random(seed^0x4D41524348L);
   spellRandom=new Random(seed^0x5350454c4cL);
   aiClocks[2]=aiDelay();aiClocks[3]=aiDelay();think=Math.min(aiClocks[2],aiClocks[3]);
-  int local=(stage-1)%30;
-  String[] records=(stage<=30?Missions.BUILDINGS[local]:stage<=60?Frontier.BUILDINGS[local]:Wilds.BUILDINGS[local]).split(";");
-  String swampData=stage<=30?Missions.MARSHES[local]:stage<=60?Frontier.MARSHES[local]:Wilds.MARSHES[local];
-  String altarData=stage<=30?Altars.DATA[local]:stage<=60?Frontier.ALTARS[local]:Wilds.ALTARS[local];
-  if(stage>30)for(int side=2;side<=3;side++){
+  if(campaign.strategicAI)for(int side=2;side<=3;side++){
    attackLevels[side]=Math.min(5,1+(stage-31)/12);defenseLevels[side]=Math.min(5,(stage-31)/12);
   }
-  if(!altarData.isEmpty())for(String record:altarData.split(";")){
-   String[] fields=record.split(",");
-   altars.add(new Altar(Float.parseFloat(fields[0]),Float.parseFloat(fields[1]),
-    fields[2].equals("100")?1:2));
-  }
-  for(String record:records){
-   String[] fields=record.split(",");
-   String name=fields[0];
-   int side="grby".indexOf(name.charAt(0));
-   int kind=name.contains("mine")?CRYSTAL:name.contains("tower")?ARCHERY:GENERATOR;
-   float x=Float.parseFloat(fields[1]);
-   float y=Float.parseFloat(fields[2]);
-   Fort f=new Fort(x,y,500,side,kind);
-   f.visualX=Float.parseFloat(fields[3]);f.visualY=Float.parseFloat(fields[4]);
-   f.size=name.charAt(name.length()-1);
-   forts.add(f);
-  }
-  if(!swampData.isEmpty())for(String record:swampData.split(";")){
-   String[] fields=record.split(",");
-   float[] points=new float[fields.length-1];
-   for(int i=1;i<fields.length;i+=2){
-    points[i-1]=Float.parseFloat(fields[i]);
-    points[i]=Float.parseFloat(fields[i+1]);
-   }
-   marshes.add(new Marsh(points,fields[0].equals("51")));
-  }
+  definition.populate(this);
  }
+
  boolean send(Fort a,Fort b){
   if(result!=0||a==null||b==null||b.waypoint||a==b||a.side==0||a.n<2||a.fight!=null)return false;
   int n=(int)a.n/2;a.n-=n;marches.add(new March(a,b,n));return true;
  }
- float spellCost(int side,int spell){return side==1?COST[spell]:COST[spell]*(stage<=60?1.75f:1.4f);}
- int aiSpellLevel(){return stage>60?2:0;}
+ float spellCost(int side,int spell){return side==1?COST[spell]:COST[spell]*campaign.enemySpellCostMultiplier;}
+ int aiSpellLevel(){return campaign.enemySpellLevel;}
  float crystals(int side){return side==1?energy:nationEnergy[side];}
  boolean canUseSpell(int spell){return canUseSpell(1,spell);}
  boolean canUseSpell(int side,int spell){
-  if(side>1&&stage<=30)return false;
+  if(side>1&&!campaign.strategicAI)return false;
   return side>=1&&side<=3&&spell>=0&&spell<COST.length&&result==0&&
    (side==1?cooldown[spell]:nationCooldown[side][spell])<=0&&crystals(side)>=spellCost(side,spell);
  }
@@ -356,7 +330,7 @@ final class Engine {
  }
  // Recovered Nation::AI / GetNpcAI / AIToArchi / AIToTroop deployment rules.
  float aiDelay(){
-  if(stage>30)return Math.max(2.2f,4.8f-(stage-31)*.065f)+aiRandom.nextFloat()*1.6f;
+  if(campaign.strategicAI)return Math.max(2.2f,4.8f-(stage-31)*.065f)+aiRandom.nextFloat()*1.6f;
   float progress=stage/30f;
   return 10-5*progress+aiRandom.nextFloat()*5;
  }
@@ -370,7 +344,7 @@ final class Engine {
   return target;
  }
  void takeTurn(int side){
-  if(stage>30){takeFrontierTurn(side);tryAISpell(side);return;}
+  if(campaign.strategicAI){takeFrontierTurn(side);tryAISpell(side);return;}
   ArrayList<Fort> owned=new ArrayList<>();
   for(Fort fort:forts)if(fort.side==side)owned.add(fort);
   for(Fort anchor:owned){
@@ -440,7 +414,7 @@ final class Engine {
   return score;
  }
  boolean tryAISpell(int side){
-  if(side>1&&stage<=30)return false;
+  if(side>1&&!campaign.strategicAI)return false;
   boolean owns=false;for(Fort fort:forts)if(fort.side==side)owns=true;
   if(!owns)return false;
   Fort relief=null;float danger=100;

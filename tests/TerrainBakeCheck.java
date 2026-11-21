@@ -9,8 +9,8 @@ public final class TerrainBakeCheck extends Instrumentation {
  @Override public void onCreate(Bundle args){super.onCreate(args);frontier=args!=null&&"frontier".equals(args.getString("campaign"));start();}
  @Override public void onStart(){Bundle result=new Bundle();try{
   Bitmap oldSlow,oldPoison;
-  try(InputStream in=getTargetContext().getAssets().open("Image/terrain5.png")){oldSlow=BitmapFactory.decodeStream(in);}
-  try(InputStream in=getTargetContext().getAssets().open("Image/terrain7.png")){oldPoison=BitmapFactory.decodeStream(in);}
+  try(InputStream in=getTargetContext().getAssets().open("terrain/original/terrain5.png")){oldSlow=BitmapFactory.decodeStream(in);}
+  try(InputStream in=getTargetContext().getAssets().open("terrain/original/terrain7.png")){oldPoison=BitmapFactory.decodeStream(in);}
   Bitmap slow=TerrainArt.tile(oldSlow,210,30,64,64,0xff4c3828);
   Bitmap poison=TerrainArt.tile(oldPoison,310,170,48,48,0xff31401e);
   File directory=getTargetContext().getExternalFilesDir(frontier?"frontier-terrain":"wilds-terrain");directory.mkdirs();
@@ -31,7 +31,7 @@ public final class TerrainBakeCheck extends Instrumentation {
    manifest.put("terrain"+stage+".png",hex.toString());
    overlay.recycle();
   }
-  try(FileOutputStream out=new FileOutputStream(new File(directory,"terrain-manifest.json"))){out.write(manifest.toString().getBytes("UTF-8"));}
+  try(FileOutputStream out=new FileOutputStream(new File(directory,"terrain-manifest.json"))){out.write(new org.json.JSONObject().put("schema_version",1).put("overlays",manifest).toString(2).getBytes("UTF-8"));}
   result.putString("stream","Baked and checked 30 textured transparent terrain PNGs using original marsh/poison artwork.\n");finish(-1,result);
  }catch(Throwable failure){result.putString("stream",android.util.Log.getStackTraceString(failure));finish(0,result);}}
 }

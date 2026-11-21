@@ -44,10 +44,10 @@ final class CampaignInfo {
  };
  static void validate(int stage){if(stage<1||stage>Engine.TOTAL_STAGES)throw new IllegalArgumentException("Unknown stage");}
  static String name(int stage){
-  validate(stage);return (stage<=30?ORIGINAL_NAMES:stage<=60?Frontier.NAMES:Wilds.NAMES)[(stage-1)%30];
+  return StageDefinition.get(stage).name;
  }
  static String brief(int stage){
-  validate(stage);return (stage<=30?ORIGINAL_BRIEFS:stage<=60?Frontier.BRIEFS:Wilds.BRIEFS)[(stage-1)%30];
+  return StageDefinition.get(stage).brief;
  }
  static String title(int stage){return String.format(Locale.US,"%02d · %s",stage,name(stage));}
 }

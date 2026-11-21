@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 public final class RaidUiCheck extends Instrumentation {
  void check(boolean b,String text){if(!b)throw new AssertionError(text);}
- int battleSounds(Map<String,Integer> counts){return counts.getOrDefault("sound/attack1.wav",0)+counts.getOrDefault("sound/attack2.wav",0);}
+ int battleSounds(Map<String,Integer> counts){return counts.getOrDefault("effects/attack1.wav",0)+counts.getOrDefault("effects/attack2.wav",0);}
  Object field(Object o,String name)throws Exception{Field f=o.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(o);}
  void capture(String name)throws Exception{
   SystemClock.sleep(250);runOnMainSync(()->{});SystemClock.sleep(100);

@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "image": "ui/atlases/over.png",
+  "frames": {
+    "bg_defeat": {
+      "frame": [
+        0,
+        0,
+        451,
+        241
+      ]
+    },
+    "bg_victory": {
+      "frame": [
+        544,
+        0,
+        480,
+        238
+      ]
+    },
+    "fireworks_g1": {
+      "frame": [
+        451,
+        0,
+        85,
+        99
+      ]
+    },
+    "fireworks_g2": {
+      "frame": [
+        451,
+        99,
+        85,
+        99
+      ]
+    },
+    "fireworks_g3": {
+      "frame": [
+        451,
+        198,
+        85,
+        99
+      ]
+    },
+    "fireworks_g4": {
+      "frame": [
+        536,
+        238,
+        85,
+        99
+      ]
+    },
+    "fireworks_g5": {
+      "frame": [
+        621,
+        238,
+        85,
+        99
+      ]
+    },
+    "fireworks_g6": {
+      "frame": [
+        706,
+        238,
+        85,
+        99
+      ]
+    },
+    "fireworks_g7": {
+      "frame": [
+        791,
+        238,
+        85,
+        99
+      ]
+    },
+    "fireworks_g8": {
+      "frame": [
+        876,
+        238,
+        85,
+        99
+      ]
+    },
+    "fireworks_p1": {
+      "frame": [
+        0,
+        241,
+        85,
+        99
+      ]
+    },
+    "fireworks_p2": {
+      "frame": [
+        85,
+        241,
+        85,
+        99
+      ]
+    },
+    "fireworks_p3": {
+      "frame": [
+        170,
+        241,
+        85,
+        99
+      ]
+    },
+    "fireworks_p4": {
+      "frame": [
+        255,
+        241,
+        85,
+        99
+      ]
+    },
+    "fireworks_p5": {
+      "frame": [
+        340,
+        241,
+        85,
+        99
+      ]
+    },
+    "fireworks_p6": {
+      "frame": [
+        425,
+        297,
+        85,
+        99
+      ]
+    },
+    "fireworks_p7": {
+      "frame": [
+        510,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_p8": {
+      "frame": [
+        595,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_r1": {
+      "frame": [
+        680,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_r2": {
+      "frame": [
+        765,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_r3": {
+      "frame": [
+        850,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_r4": {
+      "frame": [
+        935,
+        337,
+        85,
+        99
+      ]
+    },
+    "fireworks_r5": {
+      "frame": [
+        0,
+        340,
+        85,
+        99
+      ]
+    },
+    "fireworks_r6": {
+      "frame": [
+        85,
+        340,
+        85,
+        99
+      ]
+    },
+    "fireworks_r7": {
+      "frame": [
+        170,
+        340,
+        85,
+        99
+      ]
+    },
+    "fireworks_r8": {
+      "frame": [
+        255,
+        340,
+        85,
+        99
+      ]
+    },
+    "fireworks_w1": {
+      "frame": [
+        340,
+        340,
+        85,
+        99
+      ]
+    },
+    "fireworks_w2": {
+      "frame": [
+        425,
+        396,
+        85,
+        99
+      ]
+    },
+    "fireworks_w3": {
+      "frame": [
+        510,
+        436,
+        85,
+        99
+      ]
+    },
+    "fireworks_w4": {
+      "frame": [
+        595,
+        436,
+        85,
+        99
+      ]
+    },
+    "fireworks_w5": {
+      "frame": [
+        680,
+        436,
+        85,
+        99
+      ]
+    },
+    "fireworks_w6": {
+      "frame": [
+        765,
+        436,
+        85,
+        99
+      ]
+    },
+    "fireworks_w7": {
+      "frame": [
+        850,
+        436,
+        85,
+        99
+      ]
+    },
+    "fireworks_w8": {
+      "frame": [
+        935,
+        436,
+        85,
+        99
+      ]
+    },
+    "icon_crystal": {
+      "frame": [
+        397,
+        499,
+        29,
+        27
+      ]
+    },
+    "pause_continu": {
+      "frame": [
+        44,
+        484,
+        175,
+        55
+      ]
+    },
+    "pause_continu_d": {
+      "frame": [
+        219,
+        484,
+        175,
+        55
+      ]
+    },
+    "pause_level": {
+      "frame": [
+        0,
+        539,
+        175,
+        55
+      ]
+    },
+    "pause_level_d": {
+      "frame": [
+        175,
+        539,
+        175,
+        55
+      ]
+    },
+    "sum_board": {
+      "frame": [
+        0,
+        639,
+        320,
+        298
+      ]
+    },
+    "sum_defeat": {
+      "frame": [
+        670,
+        535,
+        240,
+        98
+      ]
+    },
+    "sum_menu": {
+      "frame": [
+        910,
+        535,
+        110,
+        45
+      ]
+    },
+    "sum_menu_d": {
+      "frame": [
+        910,
+        580,
+        110,
+        45
+      ]
+    },
+    "sum_next": {
+      "frame": [
+        0,
+        594,
+        110,
+        45
+      ]
+    },
+    "sum_next_d": {
+      "frame": [
+        110,
+        594,
+        110,
+        45
+      ]
+    },
+    "sum_replay": {
+      "frame": [
+        220,
+        594,
+        110,
+        45
+      ]
+    },
+    "sum_replay_d": {
+      "frame": [
+        910,
+        625,
+        110,
+        45
+      ]
+    },
+    "sum_victory": {
+      "frame": [
+        670,
+        633,
+        240,
+        98
+      ]
+    },
+    "btn_pause": {
+      "frame": [
+        397,
+        439,
+        28,
+        30
+      ]
+    },
+    "btn_pause_d": {
+      "frame": [
+        397,
+        469,
+        28,
+        30
+      ]
+    },
+    "icon_skill1": {
+      "frame": [
+        961,
+        238,
+        44,
+        45
+      ]
+    },
+    "icon_skill1_d": {
+      "frame": [
+        961,
+        283,
+        44,
+        45
+      ]
+    },
+    "icon_skill1_i": {
+      "frame": [
+        0,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill2": {
+      "frame": [
+        44,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill2_d": {
+      "frame": [
+        88,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill2_i": {
+      "frame": [
+        132,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill3": {
+      "frame": [
+        176,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill3_d": {
+      "frame": [
+        220,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill3_i": {
+      "frame": [
+        264,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill4": {
+      "frame": [
+        308,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill4_d": {
+      "frame": [
+        352,
+        439,
+        44,
+        45
+      ]
+    },
+    "icon_skill4_i": {
+      "frame": [
+        0,
+        484,
+        44,
+        45
+      ]
+    }
+  }
+}

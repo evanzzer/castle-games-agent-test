@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "image": "ui/atlases/options.png",
+  "frames": {
+    "opt_credits": {
+      "frame": [
+        0,
+        0,
+        114,
+        51
+      ]
+    },
+    "opt_credits_d": {
+      "frame": [
+        114,
+        0,
+        114,
+        51
+      ]
+    },
+    "opt_help": {
+      "frame": [
+        228,
+        0,
+        114,
+        51
+      ]
+    },
+    "opt_help_d": {
+      "frame": [
+        342,
+        0,
+        114,
+        51
+      ]
+    },
+    "opt_musicoff": {
+      "frame": [
+        0,
+        51,
+        114,
+        51
+      ]
+    },
+    "opt_musicoff_d": {
+      "frame": [
+        114,
+        51,
+        114,
+        51
+      ]
+    },
+    "opt_musicon": {
+      "frame": [
+        228,
+        51,
+        114,
+        51
+      ]
+    },
+    "opt_musicon_d": {
+      "frame": [
+        342,
+        51,
+        114,
+        51
+      ]
+    },
+    "opt_review": {
+      "frame": [
+        0,
+        102,
+        114,
+        51
+      ]
+    },
+    "opt_review_d": {
+      "frame": [
+        114,
+        102,
+        114,
+        51
+      ]
+    },
+    "opt_share": {
+      "frame": [
+        228,
+        102,
+        114,
+        51
+      ]
+    },
+    "opt_share_d": {
+      "frame": [
+        342,
+        102,
+        114,
+        51
+      ]
+    },
+    "opt_soundoff": {
+      "frame": [
+        0,
+        153,
+        114,
+        51
+      ]
+    },
+    "opt_soundoff_d": {
+      "frame": [
+        114,
+        153,
+        114,
+        51
+      ]
+    },
+    "opt_soundon": {
+      "frame": [
+        228,
+        153,
+        114,
+        51
+      ]
+    },
+    "opt_soundon_d": {
+      "frame": [
+        342,
+        153,
+        114,
+        51
+      ]
+    },
+    "opt_support": {
+      "frame": [
+        0,
+        204,
+        114,
+        51
+      ]
+    },
+    "opt_support_d": {
+      "frame": [
+        114,
+        204,
+        114,
+        51
+      ]
+    }
+  }
+}

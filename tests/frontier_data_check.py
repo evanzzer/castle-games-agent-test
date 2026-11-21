@@ -2,13 +2,13 @@
 from pathlib import Path
 import json,subprocess,sys,hashlib,struct
 root=Path(__file__).resolve().parents[1]
-data=json.loads((root/'assets/world.json').read_text())
+data=json.loads((root/'assets/map/worlds.json').read_text())
 assert len(data['worlds'])==90 and len(data['frontierMarkers'])==30
 assert data['frontierMarkers']==data['markers']
-design=json.loads((root/'assets/frontier-design.json').read_text())
-archive=json.loads((root/'archive/v09-frontier-region-plans.json').read_text())
+design=json.loads((root/'tools/data/frontier-design.json').read_text())
+archive=json.loads((root/'tools/data/frontier-region-plans.json').read_text())
 turns=[0,0,0,1,0,0,2,2,1,2,1,2,3,2,1,2,1,0,0,3,3,3,1,3,1,0,2,0,3,0]
-manifest=json.loads((root/'assets/Image/frontier/terrain-manifest.json').read_text())
+manifest=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())['overlays']
 rows=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/Frontier.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
 count=0
 for i,(entry,world) in enumerate(zip(design,data['worlds'][30:60])):
@@ -29,16 +29,16 @@ for i,(entry,world) in enumerate(zip(design,data['worlds'][30:60])):
    assert abs(min(p[axis] for p in points)-min(p[axis] for p in controls))<=1
    assert abs(max(p[axis] for p in points)-max(p[axis] for p in controls))<=1
   assert max(((points[j][0]-points[j-1][0])**2+(points[j][1]-points[j-1][1])**2)**.5 for j in range(len(points)))<35
- assert world['overlay']==[f'frontier/terrain{i+31}',480,320,960,640]
- path=root/'assets/Image'/str(world['overlay'][0]+'.png');png=path.read_bytes()
+ assert world['overlay']==[f'terrain/frontier/terrain{i+31}.png',480,320,960,640]
+ path=root/'assets'/str(world['overlay'][0]);png=path.read_bytes()
  assert png[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',png[16:24])==(960,640) and png[25]==6
  assert manifest[path.name]==hashlib.sha256(rows[i].encode()).hexdigest()
  count+=len(expected)
 assert count==59
 original=data['worlds'][:30];wilds=data['worlds'][60:]
 source=(root/'src/castle/Frontier.java').read_bytes()
-subprocess.run([sys.executable,'generate_frontier.py'],cwd=root,check=True)
-updated=json.loads((root/'assets/world.json').read_text())
+subprocess.run([sys.executable,'tools/generate_frontier.py'],cwd=root,check=True)
+updated=json.loads((root/'assets/map/worlds.json').read_text())
 assert updated['worlds'][:30]==original and updated['worlds'][60:]==wilds
 assert (root/'src/castle/Frontier.java').read_bytes()==source
 print('Restored Frontier checks passed: curved outlines at original footprints, 59 regions, PNG geometry fingerprints; other campaigns preserved.')

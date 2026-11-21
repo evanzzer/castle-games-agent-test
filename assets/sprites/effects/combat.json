@@ -1,0 +1,606 @@
+{
+  "schema_version": 1,
+  "image": "sprites/effects/combat.png",
+  "frames": {
+    "skill_meteor_explode1": {
+      "frame": [
+        0,
+        95,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode2": {
+      "frame": [
+        128,
+        95,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode3": {
+      "frame": [
+        256,
+        95,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode4": {
+      "frame": [
+        384,
+        95,
+        128,
+        95
+      ]
+    },
+    "skill_range": {
+      "frame": [
+        0,
+        340,
+        89,
+        67
+      ]
+    },
+    "skill_mutiny1": {
+      "frame": [
+        0,
+        190,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny2": {
+      "frame": [
+        75,
+        190,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny3": {
+      "frame": [
+        75,
+        265,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny4": {
+      "frame": [
+        150,
+        190,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny5": {
+      "frame": [
+        225,
+        190,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny6": {
+      "frame": [
+        150,
+        265,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny7": {
+      "frame": [
+        0,
+        265,
+        75,
+        75
+      ]
+    },
+    "skill_mutiny8": {
+      "frame": [
+        225,
+        265,
+        75,
+        75
+      ]
+    },
+    "arrow2": {
+      "frame": [
+        152,
+        340,
+        63,
+        37
+      ]
+    },
+    "skill_storm1": {
+      "frame": [
+        740,
+        0,
+        114,
+        98
+      ]
+    },
+    "skill_storm2": {
+      "frame": [
+        854,
+        98,
+        114,
+        98
+      ]
+    },
+    "skill_storm3": {
+      "frame": [
+        512,
+        98,
+        114,
+        98
+      ]
+    },
+    "skill_storm4": {
+      "frame": [
+        512,
+        0,
+        114,
+        98
+      ]
+    },
+    "skill_storm5": {
+      "frame": [
+        626,
+        0,
+        114,
+        98
+      ]
+    },
+    "skill_storm6": {
+      "frame": [
+        854,
+        0,
+        114,
+        98
+      ]
+    },
+    "skill_storm7": {
+      "frame": [
+        740,
+        98,
+        114,
+        98
+      ]
+    },
+    "skill_storm8": {
+      "frame": [
+        626,
+        98,
+        114,
+        98
+      ]
+    },
+    "archi_select": {
+      "frame": [
+        0,
+        652,
+        127,
+        93
+      ]
+    },
+    "smoke1": {
+      "frame": [
+        0,
+        838,
+        166,
+        93
+      ]
+    },
+    "smoke2": {
+      "frame": [
+        0,
+        931,
+        166,
+        93
+      ]
+    },
+    "smoke3": {
+      "frame": [
+        0,
+        745,
+        166,
+        93
+      ]
+    },
+    "r_dir": {
+      "frame": [
+        418,
+        709,
+        82,
+        42
+      ]
+    },
+    "battle1": {
+      "frame": [
+        662,
+        889,
+        181,
+        135
+      ]
+    },
+    "battle2": {
+      "frame": [
+        843,
+        754,
+        181,
+        135
+      ]
+    },
+    "battle3": {
+      "frame": [
+        843,
+        889,
+        181,
+        135
+      ]
+    },
+    "battle4": {
+      "frame": [
+        662,
+        754,
+        181,
+        135
+      ]
+    },
+    "battle_troop1": {
+      "frame": [
+        533,
+        830,
+        129,
+        97
+      ]
+    },
+    "battle_troop2": {
+      "frame": [
+        404,
+        830,
+        129,
+        97
+      ]
+    },
+    "battle_troop3": {
+      "frame": [
+        533,
+        927,
+        129,
+        97
+      ]
+    },
+    "battle_troop4": {
+      "frame": [
+        404,
+        927,
+        129,
+        97
+      ]
+    },
+    "buffer_def1": {
+      "frame": [
+        976,
+        153,
+        48,
+        51
+      ]
+    },
+    "buffer_def2": {
+      "frame": [
+        976,
+        102,
+        48,
+        51
+      ]
+    },
+    "buffer_def3": {
+      "frame": [
+        976,
+        51,
+        48,
+        51
+      ]
+    },
+    "buffer_def4": {
+      "frame": [
+        976,
+        0,
+        48,
+        51
+      ]
+    },
+    "buffer_immunity1": {
+      "frame": [
+        338,
+        952,
+        65,
+        72
+      ]
+    },
+    "buffer_immunity2": {
+      "frame": [
+        338,
+        736,
+        65,
+        72
+      ]
+    },
+    "buffer_immunity4": {
+      "frame": [
+        338,
+        880,
+        65,
+        72
+      ]
+    },
+    "buffer_immunity5": {
+      "frame": [
+        338,
+        808,
+        65,
+        72
+      ]
+    },
+    "buffer_poison1": {
+      "frame": [
+        61,
+        573,
+        61,
+        79
+      ]
+    },
+    "buffer_poison2": {
+      "frame": [
+        0,
+        573,
+        61,
+        79
+      ]
+    },
+    "buffer_poison3": {
+      "frame": [
+        418,
+        751,
+        61,
+        79
+      ]
+    },
+    "buffer_poison4": {
+      "frame": [
+        601,
+        751,
+        61,
+        79
+      ]
+    },
+    "buffer_poison5": {
+      "frame": [
+        540,
+        751,
+        61,
+        79
+      ]
+    },
+    "buffer_poison6": {
+      "frame": [
+        479,
+        751,
+        61,
+        79
+      ]
+    },
+    "arrow3": {
+      "frame": [
+        215,
+        340,
+        63,
+        37
+      ]
+    },
+    "buffer_spd1": {
+      "frame": [
+        166,
+        910,
+        86,
+        114
+      ]
+    },
+    "buffer_spd3": {
+      "frame": [
+        252,
+        910,
+        86,
+        114
+      ]
+    },
+    "buffer_spd4": {
+      "frame": [
+        166,
+        682,
+        86,
+        114
+      ]
+    },
+    "defup": {
+      "frame": [
+        127,
+        651,
+        28,
+        49
+      ]
+    },
+    "defup_eff1": {
+      "frame": [
+        403,
+        716,
+        15,
+        57
+      ]
+    },
+    "defup_eff2": {
+      "frame": [
+        403,
+        773,
+        15,
+        57
+      ]
+    },
+    "defup_eff3": {
+      "frame": [
+        403,
+        659,
+        15,
+        57
+      ]
+    },
+    "immunity_eff2": {
+      "frame": [
+        127,
+        700,
+        16,
+        45
+      ]
+    },
+    "immunity_eff3": {
+      "frame": [
+        143,
+        700,
+        16,
+        45
+      ]
+    },
+    "buffer_immunity3": {
+      "frame": [
+        338,
+        664,
+        65,
+        72
+      ]
+    },
+    "buffer_spd2": {
+      "frame": [
+        166,
+        796,
+        86,
+        114
+      ]
+    },
+    "buffer_spd5": {
+      "frame": [
+        252,
+        796,
+        86,
+        114
+      ]
+    },
+    "buffer_spd6": {
+      "frame": [
+        252,
+        682,
+        86,
+        114
+      ]
+    },
+    "arrow1": {
+      "frame": [
+        89,
+        340,
+        63,
+        37
+      ]
+    },
+    "immunity": {
+      "frame": [
+        500,
+        707,
+        28,
+        44
+      ]
+    },
+    "immunity_eff1": {
+      "frame": [
+        528,
+        706,
+        16,
+        45
+      ]
+    },
+    "skill_meteor_explode5": {
+      "frame": [
+        0,
+        0,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode6": {
+      "frame": [
+        128,
+        0,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode7": {
+      "frame": [
+        256,
+        0,
+        128,
+        95
+      ]
+    },
+    "skill_meteor_explode8": {
+      "frame": [
+        384,
+        0,
+        128,
+        95
+      ]
+    },
+    "skill_meteor1": {
+      "frame": [
+        300,
+        190,
+        45,
+        62
+      ]
+    },
+    "skill_meteor2": {
+      "frame": [
+        345,
+        190,
+        45,
+        62
+      ]
+    },
+    "skill_meteor3": {
+      "frame": [
+        390,
+        190,
+        45,
+        62
+      ]
+    },
+    "skill_meteor4": {
+      "frame": [
+        345,
+        252,
+        45,
+        62
+      ]
+    },
+    "skill_meteor5": {
+      "frame": [
+        300,
+        252,
+        45,
+        62
+      ]
+    }
+  }
+}

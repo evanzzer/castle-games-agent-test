@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "image": "ui/atlases/back.png",
+  "frames": {
+    "back": {
+      "frame": [
+        0,
+        0,
+        61,
+        55
+      ]
+    },
+    "back_d": {
+      "frame": [
+        61,
+        0,
+        61,
+        55
+      ]
+    }
+  }
+}

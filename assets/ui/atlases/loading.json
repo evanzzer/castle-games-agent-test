@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "image": "ui/atlases/loading.png",
+  "frames": {
+    "loading1": {
+      "frame": [
+        0,
+        0,
+        189,
+        127
+      ]
+    },
+    "loading2": {
+      "frame": [
+        189,
+        0,
+        189,
+        127
+      ]
+    },
+    "loading3": {
+      "frame": [
+        0,
+        127,
+        189,
+        127
+      ]
+    },
+    "loading4": {
+      "frame": [
+        189,
+        127,
+        189,
+        127
+      ]
+    },
+    "loading5": {
+      "frame": [
+        0,
+        254,
+        189,
+        127
+      ]
+    },
+    "loading6": {
+      "frame": [
+        189,
+        254,
+        189,
+        127
+      ]
+    },
+    "loading7": {
+      "frame": [
+        0,
+        381,
+        189,
+        127
+      ]
+    },
+    "loading8": {
+      "frame": [
+        189,
+        381,
+        189,
+        127
+      ]
+    },
+    "bg_loading": {
+      "frame": [
+        448,
+        0,
+        64,
+        320
+      ]
+    }
+  }
+}

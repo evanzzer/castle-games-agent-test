@@ -43,8 +43,8 @@ public final class FrontierUiCheck extends Instrumentation {
     Engine engine=board.engine;engine.nationEnergy[2]=402.5f;
     Engine.Fort player=engine.forts.stream().filter(f->f.side==1).findFirst().get();
     check(engine.power(2,0,null,player.x,player.y)&&engine.nationEnergy[2]==0,"AI spell costs exactly 402.5 crystals in Android");
-    check(board.world().optJSONArray("overlay").optString(0).equals("frontier/terrain60"),"restored Frontier PNG overlay is loaded");
-    check(board.bitmap("Image/frontier/terrain60.png")!=null,"textured Frontier terrain asset exists");
+    check(board.world().optJSONArray("overlay").optString(0).equals("terrain/frontier/terrain60.png"),"restored Frontier PNG overlay is loaded");
+    check(board.bitmap("terrain/frontier/terrain60.png")!=null,"textured Frontier terrain asset exists");
     check(engine.meteors.size()==5&&engine.meteors.get(0).damage==40,"enemy Meteor stays at base strength in Android");
     board.lastTime=0;board.invalidate();
    });

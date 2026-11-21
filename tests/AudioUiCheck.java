@@ -8,7 +8,7 @@ import java.util.*;
 public final class AudioUiCheck extends Instrumentation {
  void check(boolean b,String s){if(!b)throw new AssertionError(s);}
  Object field(Object o,String name)throws Exception{Field f=o.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(o);}
- int starts(Map<String,Integer> counts,String file){return counts.getOrDefault("sound/"+file+".wav",0);}
+ int starts(Map<String,Integer> counts,String file){return counts.getOrDefault("effects/"+file+".wav",0);}
  @Override public void onCreate(Bundle args){super.onCreate(args);start();}
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -18,7 +18,7 @@ public final class AudioUiCheck extends Instrumentation {
   Map<String,Integer> ids=(Map<String,Integer>)field(main,"soundIds");Set<Integer> ready=(Set<Integer>)field(main,"readySounds");
   Map<String,Integer> counts=(Map<String,Integer>)field(main,"soundStarts");Map<Object,Integer> streams=(Map<Object,Integer>)field(main,"effectStreams");
   runOnMainSync(()->{
-   for(String name:new String[]{"move1","move2","attack1","attack2","arrow","fireball","explosion","twister","hypnoses","support"})check(ids.containsKey("sound/"+name+".wav")&&ready.contains(ids.get("sound/"+name+".wav")),"sample loaded successfully: "+name);
+   for(String name:new String[]{"move1","move2","attack1","attack2","arrow","fireball","explosion","twister","hypnoses","support"})check(ids.containsKey("effects/"+name+".wav")&&ready.contains(ids.get("effects/"+name+".wav")),"sample loaded successfully: "+name);
    board.mission=1;board.startMission();board.zoom=1;board.cameraX=board.cameraY=0;board.soundEnabled=true;board.engine.think=10000;
    Engine e=board.engine;e.forts.clear();e.marshes.clear();e.altars.clear();
    e.forts.add(new Engine.Fort(20,20,1000,1,1));e.forts.add(new Engine.Fort(450,250,1000,2,1));e.energy=10000;

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "atlases": [
+    "ui/atlases/back.json",
+    "sprites/units/army.json",
+    "sprites/effects/combat.json",
+    "sprites/scenery/scenery.json",
+    "ui/atlases/loading.json",
+    "ui/atlases/map.json",
+    "ui/atlases/menu.json",
+    "ui/atlases/options.json",
+    "ui/atlases/over.json",
+    "ui/atlases/upgrade.json",
+    "ui/help/controls.json"
+  ],
+  "number_font": "fonts/numbers.json",
+  "worlds": "map/worlds.json"
+}

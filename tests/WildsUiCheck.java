@@ -27,7 +27,7 @@ public final class WildsUiCheck extends Instrumentation {
    board.engine=null;board.screen="campaign";board.invalidate();
   });capture("wilds-map.png");
   runOnMainSync(()->{board.completed=90;board.mission=65;board.startMission();board.engine.think=10000;
-   check(board.world().optJSONArray("overlay").optString(0).equals("wilds/terrain65"),"new PNG terrain overlay is loaded");board.invalidate();
+   check(board.world().optJSONArray("overlay").optString(0).equals("terrain/wild/terrain65.png"),"new PNG terrain overlay is loaded");board.invalidate();
   });capture("wilds-battle.png");
   runOnMainSync(()->{board.mission=90;board.startMission();board.engine.result=1;board.rewardGiven=false;board.resultStarted=SystemClock.uptimeMillis()-1100;board.resultDialog=false;board.battleClick(200,150);board.battleClick(280,190);
    check(board.mission==90&&board.engine.result==1,"final stage cannot advance to 91");

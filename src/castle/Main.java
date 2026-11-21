@@ -10,7 +10,6 @@ import android.view.*;
 import org.json.*;
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 
 public final class Main extends Activity {
     private Board board;
@@ -40,8 +39,8 @@ public final class Main extends Activity {
             if(status==0){readySounds.add(id);flushSounds();}
             else android.util.Log.w("CastleWars","Sound load failed: "+id+" status "+status);
         });
-        for (String file : new String[]{"click.wav", "sound/move1.wav", "sound/move2.wav", "sound/attack1.wav", "sound/attack2.wav", "sound/arrow.wav", "sound/fireball.wav", "sound/twister.wav", "sound/hypnoses.wav", "sound/support.wav", "sound/explosion.wav"}) {
-            try (AssetFileDescriptor descriptor = getAssets().openFd("Audio/" + file)) {
+        for (String file : new String[]{"effects/click.wav", "effects/move1.wav", "effects/move2.wav", "effects/attack1.wav", "effects/attack2.wav", "effects/arrow.wav", "effects/fireball.wav", "effects/twister.wav", "effects/hypnoses.wav", "effects/support.wav", "effects/explosion.wav"}) {
+            try (AssetFileDescriptor descriptor = getAssets().openFd("audio/" + file)) {
                 soundIds.put(file, sounds.load(descriptor, 1));
             } catch (IOException failure) { android.util.Log.w("CastleWars", "Sound unavailable", failure); }
         }
@@ -105,7 +104,7 @@ public final class Main extends Activity {
     }
     private void handleSound(Engine.AudioCue cue){
         if(cue.stop)stopEffect(cue.owner);
-        else requestSound(new SoundRequest("sound/"+cue.name+".wav",cue.owner,cue.loop));
+        else requestSound(new SoundRequest("effects/"+cue.name+".wav",cue.owner,cue.loop));
     }
     private void syncSoundState(){
         for(Object owner:new ArrayList<>(effectStreams.keySet()))if(!liveEffect(owner)||!board.soundEnabled)stopEffect(owner);
@@ -120,21 +119,21 @@ public final class Main extends Activity {
         musicName = null;
     }
     private void updateMusic() {
-        String requested = board.engine == null ? "menu.wav" :
-            board.engine.result == 1 && board.resultElapsed() >= 1000 ? "sound/won.wav" :
-            board.engine.result == 2 && board.resultElapsed() >= 1000 ? "sound/lost.wav" : board.battleMusic;
+        String requested = board.engine == null ? "music/menu.wav" :
+            board.engine.result == 1 && board.resultElapsed() >= 1000 ? "effects/won.wav" :
+            board.engine.result == 2 && board.resultElapsed() >= 1000 ? "effects/lost.wav" : board.battleMusic;
         if (!board.musicEnabled) requested = null;
         if (!Objects.equals(requested, musicName)) {
             releaseMusic();
             musicName = requested;
             if (requested != null) {
-                try (AssetFileDescriptor file = getAssets().openFd("Audio/" + requested)) {
+                try (AssetFileDescriptor file = getAssets().openFd("audio/" + requested)) {
                     music = new MediaPlayer();
                     music.setAudioAttributes(new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_GAME)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
                     music.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-                    music.setLooping(!requested.startsWith("sound/"));
+                    music.setLooping(!requested.startsWith("effects/"));
                     music.setVolume(1f,1f);
                     music.setOnCompletionListener(player -> {
                         if (music == player) { music.release(); music = null; }
@@ -164,6 +163,7 @@ public final class Main extends Activity {
         final Map<String, Bitmap> images = new HashMap<>();
         final Map<String, Sprite> sprites = new HashMap<>();
         final Map<Character, Rect> digits = new HashMap<>();
+        String numberFontImage;int numberFontHeight;
         final SharedPreferences preferences = getSharedPreferences("original-campaign", 0);
         final Set<Engine.Fort> selected = new LinkedHashSet<>();
         final Set<Engine.March> selectedTroops = new LinkedHashSet<>();
@@ -179,7 +179,7 @@ public final class Main extends Activity {
         int heardRaidSerial;
         final String[] spellNames = {"Meteor", "Storm", "Mutiny", "Reinforce"};
         JSONArray worlds, markers, frontierMarkers, wildsMarkers;
-        final int[] campaignSelection = new int[3];
+        final int[] campaignSelection = new int[Campaign.values().length];
         Engine engine;
         String screen = "menu", battleMusic;
         int campaignPage, mission = 1, completed, points, upgradeSelection, helpPage = -1, spell = -1, spellInfo = -1;
@@ -212,35 +212,26 @@ public final class Main extends Activity {
             points += UpgradeRules.normalizeAndRefund(upgrades);
             save();
             try {
-                for (String name : getAssets().list("Image")) {
-                    if (name.endsWith(".conf")) loadAtlas("Image/" + name);
-                }
-                loadAtlas("Image/help/ui_help_need.conf");
-                JSONObject data = new JSONObject(read("world.json"));
+                JSONObject manifest=AssetMetadata.read(getAssets(),"manifest.json");
+                JSONArray atlases=manifest.getJSONArray("atlases");
+                for(int i=0;i<atlases.length();i++)loadAtlas(atlases.getString(i));
+                JSONObject data=AssetMetadata.read(getAssets(),manifest.getString("worlds"));
                 worlds = data.getJSONArray("worlds");
-                markers = data.getJSONArray("markers");
-                frontierMarkers = data.getJSONArray("frontierMarkers");
-                wildsMarkers = data.getJSONArray("wildsMarkers");
+                markers = data.getJSONArray(Campaign.ORIGINAL.markersKey);
+                frontierMarkers = data.getJSONArray(Campaign.FRONTIER.markersKey);
+                wildsMarkers = data.getJSONArray(Campaign.WILD.markersKey);
                 mission=Math.min(Engine.TOTAL_STAGES,completed+1);
-                campaignPage=(mission-1)/30;campaignSelection[campaignPage]=mission;
+                campaignPage=Campaign.forStage(mission).page;campaignSelection[campaignPage]=mission;
                 centreCampaignSelection();
-                Matcher matcher = Pattern.compile("[(]([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)[)]")
-                    .matcher(read("Font/font_s.font"));
-                while (matcher.find()) {
-                    int x = Integer.parseInt(matcher.group(3)), y = Integer.parseInt(matcher.group(4));
-                    digits.put((char) Integer.parseInt(matcher.group(1)), new Rect(x, y,
-                        x + Integer.parseInt(matcher.group(5)), y + Integer.parseInt(matcher.group(6))));
+                JSONObject font=AssetMetadata.read(getAssets(),manifest.getString("number_font"));
+                numberFontImage=font.getString("image");numberFontHeight=font.getInt("line_height");
+                JSONObject glyphs=font.getJSONObject("glyphs");
+                for(Iterator<String> it=glyphs.keys();it.hasNext();){String code=it.next();
+                    digits.put((char)Integer.parseInt(code),AssetMetadata.frame(glyphs.getJSONObject(code)));
                 }
             } catch (Exception failure) { throw new IllegalStateException("Original assets could not load", failure); }
         }
 
-        String read(String name) throws IOException {
-            try (InputStream stream = getAssets().open(name); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                byte[] bytes = new byte[8192];
-                for (int n; (n = stream.read(bytes)) != -1;) output.write(bytes, 0, n);
-                return output.toString("UTF-8");
-            }
-        }
         Bitmap bitmap(String name) {
             if (images.containsKey(name)) return images.get(name);
             Bitmap result;
@@ -249,17 +240,15 @@ public final class Main extends Activity {
             images.put(name, result);
             return result;
         }
-        void loadAtlas(String file) throws IOException {
-            String text = read(file);
-            Matcher path = Pattern.compile("ImagePath[ =]+([^ \\r\\n]+)").matcher(text);
-            if (!path.find()) return;
-            Bitmap image = bitmap(path.group(1));
-            if (image == null) throw new IOException(file);
-            Matcher frame = Pattern.compile("[(]([a-zA-Z0-9_]+)Frame ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)[)]").matcher(text);
-            while (frame.find()) {
-                int x = Integer.parseInt(frame.group(2)), y = Integer.parseInt(frame.group(3));
-                sprites.put(frame.group(1), new Sprite(image, new Rect(x, y,
-                    x + Integer.parseInt(frame.group(4)), y + Integer.parseInt(frame.group(5)))));
+        void loadAtlas(String file) throws IOException,JSONException {
+            JSONObject atlas=AssetMetadata.read(getAssets(),file);
+            Bitmap image=bitmap(atlas.getString("image"));
+            if(image==null)throw new IOException("Missing atlas image: "+file);
+            JSONObject frames=atlas.getJSONObject("frames");
+            for(Iterator<String> it=frames.keys();it.hasNext();){String name=it.next();
+                Rect bounds=AssetMetadata.frame(frames.getJSONObject(name));
+                if(bounds.right>image.getWidth()||bounds.bottom>image.getHeight())throw new IOException("Atlas frame outside image: "+name);
+                sprites.put(name,new Sprite(image,bounds));
             }
         }
         void image(Canvas canvas, String file, float x, float y, float width, float height) {
@@ -293,15 +282,15 @@ public final class Main extends Activity {
             float width = 0;
             for (char ch : text.toCharArray()) {
                 Rect frame = digits.get(ch);
-                if (frame != null) width += frame.width() * height / 27;
+                if (frame != null) width += frame.width() * height / numberFontHeight;
             }
             float pen = x - width / 2;
             for (char ch : text.toCharArray()) {
                 Rect frame = digits.get(ch);
                 if (frame == null) continue;
-                float w = frame.width() * height / 27;
+                float w = frame.width() * height / numberFontHeight;
                 paint.setAlpha(255);
-                canvas.drawBitmap(bitmap("Font/font_s.png"), frame, new RectF(pen, y, pen + w, y + height), paint);
+                canvas.drawBitmap(bitmap(numberFontImage), frame, new RectF(pen, y, pen + w, y + height), paint);
                 pen += w;
             }
         }
@@ -357,30 +346,32 @@ public final class Main extends Activity {
             if (foreground && (engine != null || screen.equals("campaign"))) postInvalidateOnAnimation();
         }
         void drawMenu(Canvas canvas) {
-            image(canvas, "Image/ui_title.png", 0, 0, 480, 320);
+            image(canvas, "ui/screens/ui_title.png", 0, 0, 480, 320);
             sprite(canvas, "menu_play", 294, 71, 185, 53);
             sprite(canvas, "menu_options", 294, 130, 185, 53);
             sprite(canvas, "map_level", 317, 198, 140, 37);
             label(canvas, "REBUILT  •  LOCAL EDITION", 240, 312, 9, 0xfff3e1ae, true);
         }
         float campaignY(float y) { return 44+y*.66f; }
-        JSONArray campaignMarkers() { return campaignPage==0?markers:campaignPage==1?frontierMarkers:wildsMarkers; }
+        JSONArray campaignMarkers() {
+            switch(Campaign.forPage(campaignPage)){case ORIGINAL:return markers;case FRONTIER:return frontierMarkers;default:return wildsMarkers;}
+        }
         void centreCampaignSelection() {
-            JSONArray point=campaignMarkers().optJSONArray((mission-1)%30);
+            JSONArray point=campaignMarkers().optJSONArray(Campaign.forStage(mission).localIndex(mission));
             mapScroll=Math.max(0,Math.min(356,(float)point.optDouble(0)-240));
         }
         void chooseCampaign(int page) {
-            if((mission-1)/30==campaignPage)campaignSelection[campaignPage]=mission;
+            if(Campaign.forStage(mission).page==campaignPage)campaignSelection[campaignPage]=mission;
             campaignPage=page;
             if(campaignSelection[page]>0)mission=campaignSelection[page];
-            else mission=Math.max(page*30+1,Math.min(page*30+30,completed+1));
+            else mission=Math.max(Campaign.forPage(page).firstStage,Math.min(Campaign.forPage(page).lastStage,completed+1));
             centreCampaignSelection();
         }
         void drawCampaign(Canvas canvas) {
             sprite(canvas,"bg_map",-mapScroll,44,836,211.2f);
             JSONArray pageMarkers=campaignMarkers();
             for(int i=0;i<pageMarkers.length();i++){
-                int stage=campaignPage*30+i+1;
+                int stage=Campaign.forPage(campaignPage).stageAt(i);
                 JSONArray point=pageMarkers.optJSONArray(i);
                 float x=(float)point.optDouble(0),y=campaignY((float)point.optDouble(1));
                 if(!unlocked(stage))paint.setColorFilter(new LightingColorFilter(0xff666666,0));
@@ -388,10 +379,10 @@ public final class Main extends Activity {
                 if(stage==mission&&unlocked(stage))natural(canvas,"map_sel",x-mapScroll,y+3,.85f);
                 number(canvas,stage,x-mapScroll,y-3,11);paint.setColorFilter(null);
             }
-            for(int page=0;page<3;page++){
+            for(int page=0;page<Campaign.values().length;page++){
                 paint.setColor(page==campaignPage?0xee725b32:0xee292924);
                 canvas.drawRoundRect(5+page*160,3,155+page*160,28,5,5,paint);
-                label(canvas,new String[]{"I · ORIGINAL 1–30","II · FRONTIER 31–60","III · WILDS 61–90"}[page],80+page*160,20,10,
+                label(canvas,Campaign.forPage(page).label,80+page*160,20,10,
                     page==campaignPage?0xffffe3a1:0xffbcb9a9,true);
             }
             label(canvas,CampaignInfo.title(mission),240,43,11,0xfff7e6b6,true);
@@ -402,7 +393,7 @@ public final class Main extends Activity {
             sprite(canvas,unlocked(mission)?"map_play":"map_play_d",315,269,158,48);
         }
         void drawOptions(Canvas canvas) {
-            image(canvas, "Image/bg_options.png", 0, 0, 480, 320);
+            image(canvas, "ui/screens/bg_options.png", 0, 0, 480, 320);
             sprite(canvas, soundEnabled ? "opt_soundon" : "opt_soundoff", 126, 41, 114, 51);
             sprite(canvas, musicEnabled ? "opt_musicon" : "opt_musicoff", 252, 41, 114, 51);
             sprite(canvas, "opt_help", 192, 120, 114, 51);
@@ -411,7 +402,7 @@ public final class Main extends Activity {
         void drawHelp(Canvas canvas) {
             paint.setColor(0xcc000000);
             canvas.drawRect(0, 0, 480, 320, paint);
-            image(canvas, "Image/help/" + help[helpPage] + ".png", 38, 35, 404, 241);
+            image(canvas, "ui/help/" + help[helpPage] + ".png", 38, 35, 404, 241);
             label(canvas, "‹", 18, 166, 30, Color.WHITE, true);
             label(canvas, "›", 462, 166, 30, Color.WHITE, true);
             label(canvas, "×", 456, 32, 25, Color.WHITE, true);
@@ -446,8 +437,8 @@ public final class Main extends Activity {
         }
         void startMission() {
             if (!unlocked(mission)) return;
-            images.keySet().removeIf(name -> name.startsWith("Image/frontier/terrain") || name.startsWith("Image/wilds/terrain") || name.matches("Image/terrain[0-9]+\\.png"));
-            int page=(mission-1)/30;
+            images.keySet().removeIf(name -> name.startsWith("terrain/"));
+            int page=Campaign.forStage(mission).page;
             campaignPage=page;campaignSelection[page]=mission;centreCampaignSelection();
             engine = new Engine(mission, 0);
             engine.attackLevels[1] = upgrades[0];
@@ -458,7 +449,7 @@ public final class Main extends Activity {
             engine.energy = 200 * (1 + upgrades[4] * .25f);
             for (int i = 0; i < 4; i++) engine.skillLevels[i] = upgrades[6 + i];
             heardRaidSerial = 0;resultStarted=0;resultDialog=false;
-            battleMusic = "battle" + (1 + audioRandom.nextInt(3)) + ".wav";
+            battleMusic = "music/battle" + (1 + audioRandom.nextInt(3)) + ".wav";
             rewardGiven = false; paused = false; spell = spellInfo = -1; lastTime = 0;
             selected.clear(); selectedTroops.clear();
             zoom = Math.min(480 / width(), 275 / height());
@@ -487,13 +478,13 @@ public final class Main extends Activity {
             canvas.scale(zoom, zoom);
             canvas.translate(-cameraX, -cameraY);
             // Background images are tiled at their original texture size.
-            if(mission>30)image(canvas,"Image/map1.png",0,0,Math.max(width(),480/zoom),Math.max(height(),275/zoom));
+            if(!Campaign.forStage(mission).usesTiledBackground())image(canvas,"map/backgrounds/map1.png",0,0,Math.max(width(),480/zoom),Math.max(height(),275/zoom));
             else for(int y=0;y<Math.max(height(),275/zoom);y+=640)
-                for(int x=0;x<Math.max(width(),480/zoom);x+=960)image(canvas,"Image/map1.png",x,y,960,640);
+                for(int x=0;x<Math.max(width(),480/zoom);x+=960)image(canvas,"map/backgrounds/map1.png",x,y,960,640);
             JSONArray overlay = world().optJSONArray("overlay");
             if (overlay != null) {
                 float w = (float) overlay.optDouble(3), h = (float) overlay.optDouble(4);
-                image(canvas, "Image/" + overlay.optString(0) + ".png",
+                image(canvas, overlay.optString(0),
                     (float) overlay.optDouble(1) - w / 2, (float) overlay.optDouble(2) - h / 2, w, h);
             }
             JSONArray objects = world().optJSONArray("objects");
@@ -551,7 +542,7 @@ public final class Main extends Activity {
             for (Engine.Encounter encounter : engine.encounters) drawEncounter(canvas, encounter);
             while (heardRaidSerial < engine.raidSerial) {
                 heardRaidSerial++;
-                sound("sound/attack"+(1+audioRandom.nextInt(2))+".wav");
+                sound("effects/attack"+(1+audioRandom.nextInt(2))+".wav");
             }
             for (Engine.Arrow arrow : engine.arrows) {
                 float progress = Math.min(1, arrow.elapsed / .2f);
@@ -690,7 +681,7 @@ public final class Main extends Activity {
         }
         void deploySelection(float x,float y) {
             if(engine.command(selected,selectedTroops,fortAt(x,y),worldX(x),worldY(y))>0) {
-                sound("sound/move"+(1+audioRandom.nextInt(2))+".wav");
+                sound("effects/move"+(1+audioRandom.nextInt(2))+".wav");
                 selected.clear();selectedTroops.clear();spellInfo=-1;
             }
         }
@@ -761,7 +752,7 @@ public final class Main extends Activity {
             return x >= a && x <= a + w && y >= b && y <= b + h;
         }
         void click(float x, float y) {
-            sound("click.wav");
+            sound("effects/click.wav");
             if (helpPage >= 0) {
                 if (x > 440 && y < 60) helpPage = -1;
                 else if (x < 38) helpPage = Math.max(0, helpPage - 1);
@@ -780,7 +771,7 @@ public final class Main extends Activity {
                 else if (hit(x, y, 75, 276, 140, 37)) screen = "upgrade";
                 else for(int i=0;i<campaignMarkers().length();i++){
                     JSONArray point=campaignMarkers().optJSONArray(i);
-                    int stage=campaignPage*30+i+1;
+                    int stage=Campaign.forPage(campaignPage).stageAt(i);
                     if(Math.hypot(x+mapScroll-point.optDouble(0),y-campaignY((float)point.optDouble(1)))<24){if(unlocked(stage))mission=stage;break;}
                 }
             } else if (screen.equals("options")) {

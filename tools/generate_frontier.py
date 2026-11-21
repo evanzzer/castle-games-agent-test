@@ -5,7 +5,7 @@ routes, scenery placement and campaign markers. Fixed seeds make builds repeatab
 """
 from pathlib import Path
 import json,math,random
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 # Ground positions on a 960 x 640 battlefield. R/B are starting castle pairs.
 layouts={
 'fork':[(90,220,'R'),(90,420,'R'),(870,220,'B'),(870,420,'B'),(270,140,'h'),(270,500,'h'),(430,180,'c'),(430,460,'c'),(590,140,'h'),(590,500,'h'),(480,320,'t'),(250,320,'h'),(710,320,'h')],
@@ -88,10 +88,11 @@ def curve_region(vertices,seed):
 def java_array(name,values):
  return [' static final String[] '+name+' = {']+['  '+json.dumps(v)+',' for v in values]+[' };']
 # Restored v0.9 authored region plans; rendered as textured PNGs by TerrainArt.
-plans=[[(51, [(445, 175), (515, 175), (515, 465), (445, 465)])], [(50, [(480, 185), (615, 320), (480, 455), (345, 320)])], [(51, [(245, 180), (715, 180), (690, 230), (270, 230)]), (50, [(380, 415), (580, 415), (555, 500), (405, 500)])], [(50, [(300, 165), (375, 185), (375, 455), (300, 475)]), (51, [(585, 165), (660, 185), (660, 475), (585, 455)])], [(50, [(385, 45), (575, 45), (480, 245)]), (50, [(480, 395), (575, 595), (385, 595)])], [(51, [(260, 110), (315, 85), (700, 525), (645, 550)]), (50, [(210, 375), (280, 355), (315, 450), (245, 470)])], [(50, [(395, 190), (460, 190), (460, 450), (395, 450)]), (51, [(500, 190), (565, 190), (565, 450), (500, 450)]), (50, [(435, 275), (525, 275), (525, 365), (435, 365)])]]
-terrain_plans=[0, 1, 2, 0, 4, 1, 3, 2, 4, 0, 5, 3, 4, 3, 5, 1, 2, 6, 3, 5, 6, 4, 2, 6, 5, 6, 4, 6, 5, 3]
+region_plans=json.loads((ROOT/'tools/data/frontier-region-plans.json').read_text())
+plans=region_plans['plans']
+terrain_plans=region_plans['stage_plans']
 terrain_briefs=['Swamp divides the approaches. Use the outer routes to reinforce.', 'Central poison punishes shortcuts; crystal mines fund your spells.', 'Slow and poison bands reward support castles on both sides.', 'Parallel poison and slow lanes leave a clear middle route.', 'Poison pockets guard opposite approaches. Contest the clear crossings.', 'A diagonal swamp exposes armies. Use nearby castles to shorten the march.', 'Mixed hazards split the centre. Coordinate arrivals along safe flanks.']
-world_data=json.loads((ROOT/'assets/world.json').read_text())
+world_data=json.loads((ROOT/'assets/map/worlds.json').read_text())
 later_worlds=world_data['worlds'][60:]
 world_data['worlds']=world_data['worlds'][:30]
 names=[];tips=[];buildings=[];marshes=[];altars=[];details=[]
@@ -124,7 +125,7 @@ for index,(name,layout,turn,three,altar) in enumerate(specs):
   points=[transform(x,y,turn) for x,y in curve_region(vertices,13000+index*7+zone_index)]
   zones.append(dict(type=zone_type,points=points,control_points=controls))
   zone_records.append(str(zone_type)+','+','.join(f'{x:g},{y:g}' for x,y in points))
- overlay=[f'frontier/terrain{index+31}',480,320,960,640]
+ overlay=[f'terrain/frontier/terrain{index+31}.png',480,320,960,640]
  brief=terrain_briefs[terrain_plans[index]]
  pickups=[]
  if altar:
@@ -142,9 +143,9 @@ for index,(name,layout,turn,three,altar) in enumerate(specs):
  details.append(dict(stage=index+31,name=name,layout=layout,brief=brief,building_count=len(nodes),teams=3 if three else 2,regions=zones,altars=pickups,terrain_layout_version="v0.13-curved"))
 world_data['frontierMarkers']=[list(point) for point in world_data['markers']]
 world_data['worlds']+=later_worlds
-(ROOT/'assets/world.json').write_text(json.dumps(world_data,separators=(',',':')))
+(ROOT/'assets/map/worlds.json').write_text(json.dumps(world_data,indent=2,ensure_ascii=False)+'\n')
 lines=['package castle;','final class Frontier {']
 for key,values in [('NAMES',names),('BRIEFS',tips),('BUILDINGS',buildings),('MARSHES',marshes),('ALTARS',altars)]:lines+=java_array(key,values)
 lines+=['}'];(ROOT/'src/castle/Frontier.java').write_text('\n'.join(lines)+'\n')
-(ROOT/'assets/frontier-design.json').write_text(json.dumps(details,indent=2))
+(ROOT/'tools/data/frontier-design.json').write_text(json.dumps(details,indent=2,ensure_ascii=False)+'\n')
 print('Authored 30 frontier levels; total worlds:',len(world_data['worlds']))

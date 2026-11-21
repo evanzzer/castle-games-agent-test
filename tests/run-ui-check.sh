@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-sdk="${ANDROID_SDK_ROOT:-$HOME/Library/Android/sdk}"
-bt="$sdk/build-tools/33.0.1"
+source scripts/android-env.sh
 runner="${1:-UiCheck}"
+rm -rf build/ui
 mkdir -p build/ui/classes build/ui/dex
 cat > build/ui/AndroidManifest.xml <<XML
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="game.castlewars.rebuilt.tests">
@@ -17,6 +17,6 @@ javac --release 8 -cp "$sdk/platforms/android-33/android.jar:build/classes" -d b
 "$bt/aapt" package -f -M build/ui/AndroidManifest.xml -I "$sdk/platforms/android-33/android.jar" -F build/ui/base.apk
 (cd build/ui/dex && "$bt/aapt" add ../base.apk classes.dex)
 "$bt/zipalign" -f 4 build/ui/base.apk build/ui/aligned.apk
-"$bt/apksigner" sign --ks build/debug.jks --ks-pass pass:android --out build/ui/check.apk build/ui/aligned.apk
+"$bt/apksigner" sign --ks "$signing_key" --ks-pass pass:android --out build/ui/check.apk build/ui/aligned.apk
 "$sdk/platform-tools/adb" -s "${ANDROID_SERIAL:-emulator-5556}" install --no-incremental -r build/ui/check.apk
 "$sdk/platform-tools/adb" -s "${ANDROID_SERIAL:-emulator-5556}" shell am instrument -w "${@:2}" "game.castlewars.rebuilt.tests/castle.$runner"

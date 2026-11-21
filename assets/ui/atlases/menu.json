@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "image": "ui/atlases/menu.png",
+  "frames": {
+    "menu_achieve": {
+      "frame": [
+        0,
+        0,
+        185,
+        53
+      ]
+    },
+    "menu_achieve_d": {
+      "frame": [
+        185,
+        0,
+        185,
+        53
+      ]
+    },
+    "menu_leaderboard": {
+      "frame": [
+        0,
+        53,
+        185,
+        53
+      ]
+    },
+    "menu_leaderboard_d": {
+      "frame": [
+        185,
+        53,
+        185,
+        53
+      ]
+    },
+    "menu_options": {
+      "frame": [
+        0,
+        106,
+        185,
+        53
+      ]
+    },
+    "menu_options_d": {
+      "frame": [
+        185,
+        106,
+        185,
+        53
+      ]
+    },
+    "menu_play": {
+      "frame": [
+        0,
+        159,
+        185,
+        53
+      ]
+    },
+    "menu_play_d": {
+      "frame": [
+        185,
+        159,
+        185,
+        53
+      ]
+    }
+  }
+}
