@@ -2,7 +2,7 @@
 
 A single-player Android strategy game about capturing castles, moving armies and choosing when to spend crystals on spells. Lead the red army against blue and yellow rivals through **150 sequential stages** across five campaigns.
 
-**Current version: 0.16 · Android 6.0+ · Landscape**
+**Current version: 0.17.0 · Android 6.0+ · Landscape**
 
 ![Armies raiding a crystal mine in the Original campaign](docs/media/screenshots/building-raid.png)
 

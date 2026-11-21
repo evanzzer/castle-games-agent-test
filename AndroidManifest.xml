@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="game.castlewars.rebuilt" android:versionCode="16" android:versionName="0.16">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="game.castlewars.rebuilt" android:versionCode="17" android:versionName="0.17.0">
  <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="33"/>
  <application android:label="Castle Wars Rebuilt" android:icon="@drawable/original_icon" android:allowBackup="false" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
   <activity android:name="castle.Main" android:screenOrientation="sensorLandscape" android:exported="true">

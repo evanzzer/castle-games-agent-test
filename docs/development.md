@@ -1,6 +1,6 @@
 # Development guide
 
-Native Android Canvas game, version **0.16**, with 150 sequential stages across Original, Frontier, Wild, Citadel and Zenith. This repository contains the current implementation, runtime assets, terrain authoring tools and tests. The decrypted IPA and reference workspace are kept outside the repository.
+Native Android Canvas game, version **0.17.0**, with 150 sequential stages across Original, Frontier, Wild, Citadel and Zenith. This repository contains the current implementation, runtime assets, terrain authoring tools and tests. The decrypted IPA and reference workspace are kept outside the repository.
 
 ## Build
 
