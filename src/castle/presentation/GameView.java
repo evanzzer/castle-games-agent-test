@@ -139,13 +139,13 @@ final class GameView extends View {
         }
         for(int page=0;page<Campaign.values().length;page++){
             paint.setColor(page==campaignPage?0xee725b32:0xee292924);
-            canvas.drawRoundRect(5+page*160,3,155+page*160,28,5,5,paint);
-            painter.label(canvas,Campaign.forPage(page).label,80+page*160,20,10,
+            canvas.drawRoundRect(4+page*119,3,119+page*119,28,5,5,paint);
+            painter.label(canvas,Campaign.forPage(page).label,61+page*119,20,8,
                 page==campaignPage?0xffffe3a1:0xffbcb9a9,true);
         }
         painter.label(canvas,CampaignInfo.title(mission),240,43,11,0xfff7e6b6,true);
-        painter.label(canvas,unlocked(mission)?CampaignInfo.brief(mission):"Clear stage "+(mission-1)+" to unlock this stage.",
-            240,263,8,0xffffefca,true);
+        String brief = unlocked(mission) ? CampaignInfo.brief(mission) : "Clear stage " + (mission - 1) + " to unlock this stage.";
+        painter.label(canvas,brief,240,263,painter.fittedTextSize(brief,8,460),0xffffefca,true);
         painter.sprite(canvas,"back",0,265,61,55);
         painter.sprite(canvas,"map_level",75,276,140,37);
         painter.sprite(canvas,unlocked(mission)?"map_play":"map_play_d",315,269,158,48);
@@ -429,7 +429,7 @@ final class GameView extends View {
             else if (hit(x, y, 317, 198, 140, 37)) screen = "upgrade";
         } else if (hit(x, y, 0, 265, 61, 55)) back();
         else if (screen.equals("campaign")) {
-            if(y<30){chooseCampaign(Math.min(2,(int)(x/160)));return;}
+            if(y<30){chooseCampaign(Math.min(Campaign.values().length-1,(int)(x/119)));return;}
             if (hit(x, y, 315, 269, 158, 48)) startMission();
             else if (hit(x, y, 75, 276, 140, 37)) screen = "upgrade";
             else for(int i=0;i<campaignMarkers().size();i++){

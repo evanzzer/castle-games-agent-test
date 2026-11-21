@@ -27,6 +27,13 @@ final class CanvasPainter {
         if (sprite != null) sprite(canvas, name, x - sprite.frame.width() * size / 2,
             y - sprite.frame.height() * size / 2, sprite.frame.width() * size, sprite.frame.height() * size);
     }
+    // Measure with the same font used by label so long campaign descriptions stay inside their strip.
+    float fittedTextSize(String text, float size, float maxWidth) {
+        paint.setTypeface(Typeface.create("serif", Typeface.BOLD));
+        paint.setTextSize(size);
+        float measured = paint.measureText(text);
+        return measured > maxWidth ? size * maxWidth / measured : size;
+    }
     void label(Canvas canvas, String text, float x, float y, float size, int color, boolean centered) {
         paint.setColor(color);
         paint.setTypeface(Typeface.create("serif", Typeface.BOLD));

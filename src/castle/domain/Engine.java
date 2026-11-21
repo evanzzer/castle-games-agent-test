@@ -277,7 +277,11 @@ final class Engine {
   spellRandom=new Random(seed^0x5350454c4cL);
   aiClocks[2]=aiDelay();aiClocks[3]=aiDelay();think=Math.min(aiClocks[2],aiClocks[3]);
   if(campaign.strategicAI)for(int side=2;side<=3;side++){
-   attackLevels[side]=Math.min(5,1+(stage-31)/12);defenseLevels[side]=Math.min(5,(stage-31)/12);
+   if(campaign.enemyUpgradeTier>0){
+    // Citadel enemies start with maximum combat tiers and tier-3 economy.
+    attackLevels[side]=defenseLevels[side]=UpgradeRules.MAX_LEVEL;
+    nationEnergy[side]=UpgradeRules.initialCrystals(campaign.enemyUpgradeTier);
+   }else{attackLevels[side]=Math.min(5,1+(stage-31)/12);defenseLevels[side]=Math.min(5,(stage-31)/12);}
   }
   definition.populate(this);
  }
@@ -330,7 +334,7 @@ final class Engine {
   if(side==1){energy-=COST[k];cooldown[k]=spellCooldown(k);}
   else{
    nationEnergy[side]-=spellCost(side,k);
-   nationCooldown[side][k]=new int[]{10,8,15,8}[k];
+   nationCooldown[side][k]=UpgradeRules.spellCooldown(k,campaign.enemyUpgradeTier);
    aiCasts[side]++;castNotices.add(new CastNotice(side,k,x,y));
   }
   if(k>=2)audioCues.add(new AudioCue(k==2?"hypnoses":"support"));
@@ -497,7 +501,7 @@ final class Engine {
     int formations=0;boolean owns=false;
     for(Fort fort:forts)if(fort.side==side){owns=true;if(fort.kind==CRYSTAL)formations++;}
     if(side==1)energy+=UpgradeRules.crystalIncome(crystalLevel,formations);
-    else if(owns)nationEnergy[side]+=25+40*formations;
+    else if(owns)nationEnergy[side]+=UpgradeRules.crystalIncome(campaign.enemyUpgradeTier,formations);
    }
   }
   for(Iterator<Arrow> it=arrows.iterator();it.hasNext();){
@@ -519,7 +523,7 @@ final class Engine {
      f.recruitTime-=RECRUIT_INTERVAL;
      int cap=capacity(f);
      if(f.n>cap)f.n=Math.max(cap,f.n-RECRUIT_AMOUNT);
-     else if(f.kind==GENERATOR)f.n=Math.min(cap,f.n+UpgradeRules.castleGeneration(f.side==1?troopGenerationLevel:0));
+     else if(f.kind==GENERATOR)f.n=Math.min(cap,f.n+UpgradeRules.castleGeneration(f.side==1?troopGenerationLevel:campaign.enemyUpgradeTier));
     }
    }
    if(f.side==0||f.kind!=ARCHERY||f.n<1||f.reload>0)continue;
@@ -559,7 +563,7 @@ final class Engine {
     if(m.confusedTime>0){
      continue;
     }
-    float speed=UpgradeRules.movementSpeed(m.originKind,m.side==1?speedLevel:0);
+    float speed=UpgradeRules.movementSpeed(m.originKind,m.side==1?speedLevel:campaign.enemyUpgradeTier);
     // Distance substeps prevent narrow polygon edges from being skipped.
     float remaining=dt;
     while(remaining>.000001f&&m.t<1){

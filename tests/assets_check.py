@@ -28,9 +28,9 @@ assert font['schema_version'] == 1 and font['line_height'] == 27
 for entry in font['glyphs'].values(): frame(entry, *image_size(font['image']))
 assert all(str(code) in font['glyphs'] for code in range(48,58))
 navigation = load(manifest['campaigns'])['campaigns']
-assert set(navigation) == {'original', 'frontier', 'wild'}
+assert set(navigation) == {'original', 'frontier', 'wild', 'citadel'}
 assert not (assets / 'map/worlds.json').exists()
-for index, group in enumerate(['original', 'frontier', 'wild']):
+for index, group in enumerate(['original', 'frontier', 'wild', 'citadel']):
     assert len(navigation[group]['markers']) == 30
     entry = manifest['terrain'][group]
     terrain = load(entry['worlds'])
@@ -38,7 +38,7 @@ for index, group in enumerate(['original', 'frontier', 'wild']):
     assert set(fingerprints) == {'schema_version', 'overlays'}
     assert terrain['campaign'] == group and terrain['first_stage'] == index * 30 + 1
     assert len(terrain['worlds']) == 30
-    java_name = {'original':'Original', 'frontier':'Frontier', 'wild':'Wilds'}[group]
+    java_name = {'original':'Original', 'frontier':'Frontier', 'wild':'Wilds', 'citadel':'Citadel'}[group]
     source = (root / 'src/castle/domain/stages/data' / (java_name + '.java')).read_text().split('MARSHES = {')[1]
     rows = [json.loads(line.strip().rstrip(',')) for line in source.splitlines() if line.strip().startswith('"')]
     for local, world in enumerate(terrain['worlds']):
@@ -55,4 +55,4 @@ for path in assets.rglob('*'):
         if path.suffix == '.json': json.loads(path.read_text())
 for name in ['move1','move2','attack1','attack2','arrow','fireball','explosion','twister','hypnoses','support','won','lost']:
     assert (assets / 'audio/effects' / (name+'.wav')).is_file()
-print('Asset checks passed: %d JSON atlases, %d frames, font glyphs, 90 worlds and lowercase category folders.' % (len(manifest['atlases']),frames))
+print('Asset checks passed: %d JSON atlases, %d frames, font glyphs, 120 worlds and lowercase category folders.' % (len(manifest['atlases']),frames))

@@ -2,19 +2,20 @@ package castle;
 
 /** Campaign boundaries, presentation and enemy spell policy in one place. */
 enum Campaign {
-    ORIGINAL(0, "I · ORIGINAL 1–30", "original", false, 1.75f, 0),
-    FRONTIER(1, "II · FRONTIER 31–60", "frontier", true, 1.75f, 0),
-    WILD(2, "III · WILDS 61–90", "wild", true, 1.4f, 2);
+    ORIGINAL(0, "I · ORIGINAL 1–30", "original", false, 1.75f, 0, 0),
+    FRONTIER(1, "II · FRONTIER 31–60", "frontier", true, 1.75f, 0, 0),
+    WILD(2, "III · WILDS 61–90", "wild", true, 1.4f, 2, 0),
+    CITADEL(3, "IV · CITADEL 91–120", "citadel", true, 1.25f, 3, 3);
 
     static final int STAGES_PER_CAMPAIGN = 30;
-    static final int TOTAL_STAGES = 90;
-    final int page, firstStage, lastStage, enemySpellLevel;
+    static final int TOTAL_STAGES = 120;
+    final int page, firstStage, lastStage, enemySpellLevel, enemyUpgradeTier;
     final String label, id;
     final boolean strategicAI;
     final float enemySpellCostMultiplier;
 
     Campaign(int page, String label, String id, boolean strategicAI,
-             float enemySpellCostMultiplier, int enemySpellLevel) {
+             float enemySpellCostMultiplier, int enemySpellLevel, int enemyUpgradeTier) {
         this.page = page;
         this.firstStage = page * STAGES_PER_CAMPAIGN + 1;
         this.lastStage = firstStage + STAGES_PER_CAMPAIGN - 1;
@@ -23,6 +24,7 @@ enum Campaign {
         this.strategicAI = strategicAI;
         this.enemySpellCostMultiplier = enemySpellCostMultiplier;
         this.enemySpellLevel = enemySpellLevel;
+        this.enemyUpgradeTier = enemyUpgradeTier;
     }
 
     static Campaign forStage(int stage) {
@@ -47,9 +49,9 @@ enum Campaign {
         return firstStage + index;
     }
 
-    String[] buildings() { return this == ORIGINAL ? Original.BUILDINGS : this == FRONTIER ? Frontier.BUILDINGS : Wilds.BUILDINGS; }
-    String[] regions() { return this == ORIGINAL ? Original.MARSHES : this == FRONTIER ? Frontier.MARSHES : Wilds.MARSHES; }
-    String[] altars() { return this == ORIGINAL ? Original.ALTARS : this == FRONTIER ? Frontier.ALTARS : Wilds.ALTARS; }
-    String[] names() { return this == ORIGINAL ? Original.NAMES : this == FRONTIER ? Frontier.NAMES : Wilds.NAMES; }
-    String[] briefs() { return this == ORIGINAL ? Original.BRIEFS : this == FRONTIER ? Frontier.BRIEFS : Wilds.BRIEFS; }
+    String[] buildings() { return this == ORIGINAL ? Original.BUILDINGS : this == FRONTIER ? Frontier.BUILDINGS : this == WILD ? Wilds.BUILDINGS : Citadel.BUILDINGS; }
+    String[] regions() { return this == ORIGINAL ? Original.MARSHES : this == FRONTIER ? Frontier.MARSHES : this == WILD ? Wilds.MARSHES : Citadel.MARSHES; }
+    String[] altars() { return this == ORIGINAL ? Original.ALTARS : this == FRONTIER ? Frontier.ALTARS : this == WILD ? Wilds.ALTARS : Citadel.ALTARS; }
+    String[] names() { return this == ORIGINAL ? Original.NAMES : this == FRONTIER ? Frontier.NAMES : this == WILD ? Wilds.NAMES : Citadel.NAMES; }
+    String[] briefs() { return this == ORIGINAL ? Original.BRIEFS : this == FRONTIER ? Frontier.BRIEFS : this == WILD ? Wilds.BRIEFS : Citadel.BRIEFS; }
 }

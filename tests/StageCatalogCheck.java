@@ -22,10 +22,10 @@ public final class StageCatalogCheck {
             try { definition.buildings.clear(); throw new AssertionError("mutable definition"); }
             catch (UnsupportedOperationException expected) {}
         }
-        for (int stage : new int[]{0,91}) {
+        for (int stage : new int[]{0,121}) {
             try { StageDefinition.get(stage); throw new AssertionError("invalid stage accepted"); }
             catch (IllegalArgumentException expected) {}
         }
-        System.out.println("Stage catalog passed: all 90 mappings, cached immutable definitions and isolated match state.");
+        System.out.println("Stage catalog passed: all 120 mappings, cached immutable definitions and isolated match state.");
     }
 }

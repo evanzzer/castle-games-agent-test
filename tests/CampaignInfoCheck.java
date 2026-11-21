@@ -3,7 +3,7 @@ public final class CampaignInfoCheck {
  static void check(boolean okay,String message){if(!okay)throw new AssertionError(message);}
  public static void main(String[] args){
   check(Original.NAMES.length==30&&Original.BRIEFS.length==30,"all original stages have authored information");
-  for(int stage=1;stage<=90;stage++){
+  for(int stage=1;stage<=120;stage++){
    check(!CampaignInfo.name(stage).isEmpty()&&!CampaignInfo.brief(stage).isEmpty(),"every stage has a name and description");
    check(CampaignInfo.title(stage).startsWith(String.format(java.util.Locale.US,"%02d · ",stage)),"consistent heading format");
   }
@@ -41,6 +41,6 @@ public final class CampaignInfoCheck {
    check(home.n==before&&e.marches.stream().filter(m->m.side==home.side&&m.b==home).mapToInt(m->m.n).sum()==(level==0?100:280),"campaign reinforcement troop amount");
    check(e.energy==200,"enemy spending never charges player");
   }
-  System.out.println("Campaign information and AI spell rules passed: 90 headings/descriptions; intro disabled; 1.75x Lv0 / 1.4x Lv2.");
+  System.out.println("Campaign information and AI spell rules passed: 120 headings/descriptions; intro disabled; 1.75x Lv0 / 1.4x Lv2.");
  }
 }

@@ -27,6 +27,10 @@
     "wild": {
       "manifest": "terrain/wild/manifest.json",
       "worlds": "terrain/wild/worlds.json"
+    },
+    "citadel": {
+      "manifest": "terrain/citadel/manifest.json",
+      "worlds": "terrain/citadel/worlds.json"
     }
   }
 }

@@ -3,7 +3,7 @@ import java.util.*;
 public final class WildsCheck {
  static void check(boolean okay,String message){if(!okay)throw new AssertionError(message);}
  public static void main(String[] args){
-  check(Engine.TOTAL_STAGES==90&&Wilds.NAMES.length==30,"ninety stages with third campaign");
+  check(Engine.TOTAL_STAGES==120&&Wilds.NAMES.length==30,"one hundred twenty stages with fourth campaign");
   Set<String> names=new HashSet<>(),layouts=new HashSet<>(),shapes=new HashSet<>();int count=0;
   for(int stage=61;stage<=90;stage++){
    Engine engine=new Engine(stage,0);names.add(Wilds.NAMES[stage-61]);layouts.add(Wilds.BUILDINGS[stage-61]);shapes.add(Wilds.MARSHES[stage-61]);
