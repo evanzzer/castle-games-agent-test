@@ -25,7 +25,7 @@ public final class UiCheck extends Instrumentation {
     try{
      Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
      GameView board=(GameView)field.get(main);
-     int savedCompleted=board.profile.completedStages(),savedPoints=board.profile.upgradePoints();
+     int savedCompleted=board.profile.completedStages();float savedPoints=board.profile.upgradePoints();
      ProfileFixtures.completed(board,0);board.engine=null;board.screen="campaign";board.mission=2;
      board.startMission();check(board.engine==null,"locked stage cannot start through play handler");
      board.mission=1;

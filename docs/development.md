@@ -96,6 +96,8 @@ When changing terrain geometry, use `TerrainBakeCheck` on Android to regenerate 
 - Campaign I has no AI spells. Campaign II uses level 0 spells at 1.75 times cost; Campaign III uses level 2 spells at 1.4 times cost.
 - Reinforcements appear 100 units from the chosen castle; their tier totals are 100, 240, 280, 480, 540 and 800.
 - Music and effects play at 100% in-app volume. Movement and battle-start variants use an independent RNG. Combined raid groups announce once per siege; friendly reinforcements are silent on arrival.
-- Stage unlocks are sequential. Upgrade levels stop at tier 5.
+- Stage unlocks are sequential. Each stage clear, including replays, awards a flat 0.5 upgrade points. Each upgrade costs 1 point and stops at tier 5. The former Experience upgrade now increases friendly castle recruitment to 50/55/60/65/70/75 troops per 1.25-second tick; existing tiers carry over. All eleven upgrade descriptions use editable text with current/next numerical values from shared gameplay formulas. Attack and defense use clearly labeled reference examples because actual casualties depend on the armies involved. Integer save balances migrate to fractional balances without losing points.
+
+AI attack/defense tiers are separate from spell tiers. Original uses 0/0. Frontier progresses through 1/0 (31–42), 2/1 (43–54), and 3/2 (55–60). Wild continues with 3/2 (61–66), 4/3 (67–78), and 5/4 (79–90). Enemy movement speed, crystal production and castle generation remain at their base settings.
 
 Build products, emulator state, keys, credentials and previews are ignored. This is a local Git repository; no remote publication is configured.

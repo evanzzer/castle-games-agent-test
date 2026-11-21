@@ -58,7 +58,7 @@ public final class ShowcaseUiCheck extends Instrumentation {
     }
 
     @Override public void onStart() {
-        Bundle result=new Bundle();int resultCode=-1;GameView board=null;int savedCompleted=0,savedPoints=0;
+        Bundle result=new Bundle();int resultCode=-1;GameView board=null;int savedCompleted=0;float savedPoints=0;
         try {
             Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN)
                 .setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -127,7 +127,7 @@ public final class ShowcaseUiCheck extends Instrumentation {
         }catch(Throwable failure){
             result.putString("stream",android.util.Log.getStackTraceString(failure));resultCode=0;
         }finally{
-            if(board!=null){final GameView view=board;final int completed=savedCompleted,points=savedPoints;
+            if(board!=null){final GameView view=board;final int completed=savedCompleted;final float points=savedPoints;
                 runOnMainSync(()->{ProfileFixtures.completed(view,completed);ProfileFixtures.points(view,points);view.engine=null;view.screen="menu";view.save();});}
         }
         finish(resultCode,result);

@@ -8,7 +8,7 @@ final class ProfileFixtures {
             old.musicEnabled(), old.soundEnabled());
     }
 
-    static void points(GameView view, int points) {
+    static void points(GameView view, float points) {
         PlayerProfile old = view.profile;
         view.profile = PlayerProfile.restore(old.completedStages(), points, old.upgradeLevels(),
             old.musicEnabled(), old.soundEnabled());

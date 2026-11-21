@@ -33,6 +33,7 @@
 | `src/castle/presentation/GameResources.java` | Typed resource interface consumed by presentation. |
 | `src/castle/presentation/GameView.java` | Screens, input, selection, camera and presentation coordination. |
 | `src/castle/presentation/CanvasPainter.java` | Canvas image, sprite, font and panel primitives. |
+| `src/castle/presentation/UpgradeDescription.java` | Editable current/next values for all upgrades, using shared gameplay formulas and explicit combat examples. |
 | `src/castle/presentation/ArmyRenderer.java` | Formations, flags, anchors, buffs and siege/encounter visuals. |
 | `src/castle/application/GameAudio.java` | Platform-free audio interface used by presentation. |
 | `src/castle/infrastructure/android/AndroidGameAudio.java` | Android SoundPool/MediaPlayer adapter, sample loading, stream ownership and lifecycle. |

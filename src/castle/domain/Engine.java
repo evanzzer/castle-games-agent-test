@@ -6,7 +6,7 @@ final class Engine {
  static final float MARCH_SPEED=50f, ARCHERY_MARCH_SPEED=60f;
  static final float ANGEL_DURATION=15f, SHIELD_DURATION=30f;
  static final float REINFORCEMENT_RADIUS=100f;
- static final int RECRUIT_AMOUNT=50, TROOP_SCALE=100, TOTAL_STAGES=Campaign.TOTAL_STAGES;
+ static final int RECRUIT_AMOUNT=UpgradeRules.BASE_CASTLE_GENERATION, TROOP_SCALE=100, TOTAL_STAGES=Campaign.TOTAL_STAGES;
  static final int GENERATOR=0, CRYSTAL=1, ARCHERY=2;
  static final String[] BUILDINGS={"Castle","Crystal","Archer tower"};
  static final String[] ITEMS={"Meteor","Tornado","Mutiny","Reinforce"};
@@ -14,9 +14,9 @@ final class Engine {
  String spellDetails(int k){
   int level=skillLevels[k];
   switch(k){
-   case 0:return String.format(Locale.US,"5 fireballs × %.0f damage · enemies in a 100×100 area",40*(1+.15f*level));
-   case 1:return String.format(Locale.US,"%.0f damage / 0.4s · %.1fs · moving 50×50 area",50*(1+.15f*level),10*(1+.15f*level));
-   case 2:return String.format(Locale.US,"Stops enemy troops for %.2fs · 100×100 area",5*(1+.15f*level));
+   case 0:return String.format(Locale.US,"5 fireballs × %.0f damage · enemies in a 100×100 area",UpgradeRules.meteorDamage(level));
+   case 1:return String.format(Locale.US,"%.0f damage / 0.4s · %.1fs · moving 50×50 area",UpgradeRules.stormDamage(level),UpgradeRules.stormDuration(level));
+   case 2:return String.format(Locale.US,"Stops enemy troops for %.2fs · 100×100 area",UpgradeRules.mutinyDuration(level));
    default:return String.format(Locale.US,"%d troops · %d groups × %d · target any castle",reinforcementAmount(),reinforcementGroups(level),reinforcementPerGroup(level));
   }
  }
@@ -25,7 +25,7 @@ final class Engine {
  static int reinforcementPerGroup(int level){return 100+20*level;}
  static int reinforcementAmount(int level){return reinforcementGroups(level)*reinforcementPerGroup(level);}
  static int soldierCount(int troops){return Math.min(25,Math.max(0,(troops+59)/60));}
- float spellCooldown(int k){return new int[]{10,8,15,8}[k]/(1+.1f*cooldownLevel);}
+ float spellCooldown(int k){return UpgradeRules.spellCooldown(k,cooldownLevel);}
  static int capacity(Fort f){
   if(f.kind==CRYSTAL)return 1000;
   if(f.kind==ARCHERY)return f.size=='b'?1500:f.size=='s'?500:1000;
@@ -95,11 +95,11 @@ final class Engine {
     for(int side=1;side<troops.length;side++){
      if(troops[side]<=0)continue;
      float outgoing=siegeAttack(troops[side],originKinds[side],attackLevels[side]);
-     float losses=buffs[side]==1?0:garrison*.1f/(1+.2f*defenseLevels[side]+(buffs[side]==2?.5f:0));
+     float losses=buffs[side]==1?0:garrison*.1f/(UpgradeRules.defenseDivisor(defenseLevels[side])+(buffs[side]==2?.5f:0));
      troops[side]=Math.max(0,troops[side]-losses);
      incoming+=outgoing;
     }
-    fort.n=Math.max(0,garrison-incoming/(1+.2f*defenseLevels[defender]));
+    fort.n=Math.max(0,garrison-incoming/UpgradeRules.defenseDivisor(defenseLevels[defender]));
     selectAttacker();
     if(fort.n==0&&troops[attacker]>0){
      fort.side=attacker;
@@ -114,7 +114,7 @@ final class Engine {
  static float siegeAttack(float troops,int originKind,int attackLevel){
   float base=troops<50?troops:Math.max(50,troops*.1f);
   float originBonus=originKind==GENERATOR?1:1.2f;
-  return base*originBonus*(1+.2f*attackLevel);
+  return base*originBonus*UpgradeRules.attackMultiplier(attackLevel);
  }
 
  /** A shared field battle that holds armies in place and combines survivor identity. */
@@ -156,9 +156,9 @@ final class Engine {
      for(March attacker:units)if(attacker.side!=target.side&&attacker.n>0){
       float base=attacker.n<50?attacker.n:Math.max(10,attacker.n*.1f);
       float type=attacker.originKind==GENERATOR?1:1.2f;
-      damage+=base*type*(1+.2f*attackLevels[attacker.side]);
+      damage+=base*type*UpgradeRules.attackMultiplier(attackLevels[attacker.side]);
      }
-     float defense=1+.2f*defenseLevels[target.side]+(target.originKind==GENERATOR?0:.2f)+(target.buff==2?.5f:0);
+     float defense=UpgradeRules.defenseDivisor(defenseLevels[target.side])+(target.originKind==GENERATOR?0:.2f)+(target.buff==2?.5f:0);
      if(target.buff==1)damage=0;
      losses[i]=Math.min(target.n,Math.round(damage/defense));
     }
@@ -213,7 +213,7 @@ final class Engine {
   final float centerX,centerY,duration,damage;
   float age,clock;
   Storm(int side,float x,float y,int level){
-   this.side=side;centerX=x;centerY=y;duration=10*(1+.15f*level);damage=50*(1+.15f*level);
+   this.side=side;centerX=x;centerY=y;duration=UpgradeRules.stormDuration(level);damage=UpgradeRules.stormDamage(level);
   }
   float x(){return centerX+(float)Math.sin(age*2)*15;}
   float y(){return centerY+(float)Math.cos(age*2)*15;}
@@ -258,7 +258,7 @@ final class Engine {
  float crystalClock;
  final ArrayList<March> marches=new ArrayList<>();
  final int[] skillLevels=new int[4];
- int speedLevel, crystalLevel, cooldownLevel;
+ int speedLevel, crystalLevel, cooldownLevel, troopGenerationLevel;
  final int[] attackLevels=new int[4],defenseLevels=new int[4];
  final float[] cooldown=new float[4],aiClocks=new float[4];
  private final AiCommander commander=new AiCommander(this);
@@ -304,7 +304,7 @@ final class Engine {
   if(k==0&&Float.isFinite(x)&&Float.isFinite(y)){
    for(int i=0;i<5;i++){
     Meteor meteor=new Meteor(side,x,y,x-5+spellRandom.nextFloat()*10,
-     y-5+spellRandom.nextFloat()*10,1+spellRandom.nextFloat()*.28f,40*(1+.15f*level));
+     y-5+spellRandom.nextFloat()*10,1+spellRandom.nextFloat()*.28f,UpgradeRules.meteorDamage(level));
     meteors.add(meteor);audioCues.add(new AudioCue("fireball",meteor,false,false));
    }
   }else if(k==1&&Float.isFinite(x)&&Float.isFinite(y)){
@@ -313,7 +313,7 @@ final class Engine {
   }else if(k==2){
    boolean affected=false;
    for(March march:marches)if(march.side!=side&&march.n>0&&Math.abs(march.x()-x)<50&&Math.abs(march.y()-y)<50){
-    march.confusedTime=5*(1+.15f*level);march.mutinyAge=0;affected=true;
+    march.confusedTime=UpgradeRules.mutinyDuration(level);march.mutinyAge=0;affected=true;
    }
    if(!affected)return false;
   }else if(k==3&&b!=null&&!b.waypoint){
@@ -496,7 +496,7 @@ final class Engine {
    for(int side=1;side<=3;side++){
     int formations=0;boolean owns=false;
     for(Fort fort:forts)if(fort.side==side){owns=true;if(fort.kind==CRYSTAL)formations++;}
-    if(side==1)energy+=(25+40*formations)*(1+.2f*crystalLevel);
+    if(side==1)energy+=UpgradeRules.crystalIncome(crystalLevel,formations);
     else if(owns)nationEnergy[side]+=25+40*formations;
    }
   }
@@ -519,7 +519,7 @@ final class Engine {
      f.recruitTime-=RECRUIT_INTERVAL;
      int cap=capacity(f);
      if(f.n>cap)f.n=Math.max(cap,f.n-RECRUIT_AMOUNT);
-     else if(f.kind==GENERATOR)f.n=Math.min(cap,f.n+RECRUIT_AMOUNT);
+     else if(f.kind==GENERATOR)f.n=Math.min(cap,f.n+UpgradeRules.castleGeneration(f.side==1?troopGenerationLevel:0));
     }
    }
    if(f.side==0||f.kind!=ARCHERY||f.n<1||f.reload>0)continue;
@@ -559,7 +559,7 @@ final class Engine {
     if(m.confusedTime>0){
      continue;
     }
-    float speed=(m.originKind==ARCHERY?ARCHERY_MARCH_SPEED:MARCH_SPEED)*(m.side==1?1+.1f*speedLevel:1);
+    float speed=UpgradeRules.movementSpeed(m.originKind,m.side==1?speedLevel:0);
     // Distance substeps prevent narrow polygon edges from being skipped.
     float remaining=dt;
     while(remaining>.000001f&&m.t<1){

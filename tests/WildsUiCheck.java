@@ -17,7 +17,7 @@ public final class WildsUiCheck extends Instrumentation {
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
   waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-  GameView board=(GameView)field.get(main);int saved=board.profile.completedStages(),savedPoints=board.profile.upgradePoints();
+  GameView board=(GameView)field.get(main);int saved=board.profile.completedStages();float savedPoints=board.profile.upgradePoints();
   runOnMainSync(()->{
    ProfileFixtures.completed(board,59);board.engine=null;board.mission=31;board.campaignPage=1;board.campaignSelection[2]=0;board.screen="campaign";
    board.click(400,15);check(board.campaignPage==2&&board.mission==61&&!board.unlocked(61),"third campaign is sequentially locked");

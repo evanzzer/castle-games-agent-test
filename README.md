@@ -15,7 +15,7 @@ Castles recruit troops, crystal mines fund spells, and archer towers shoot at pa
 - **Three rival armies:** team-colored buildings, flags and combat counts make the front line readable.
 - **Animated battles:** troop formations scale with army strength; sieges resolve gradually with clouds, arrows and casualty effects.
 - **Four spells:** bombard an area, create a tornado, disrupt enemy movement or summon reinforcements.
-- **Persistent progression:** clear stages in order, replay completed missions and buy upgrades through five tiers.
+- **Persistent progression:** clear stages in order, earn 0.5 points per clear and spend 1 point per upgrade through five tiers.
 - **Music and effects:** battle tracks, spell sounds and combat audio follow the action.
 
 ## Gameplay GIFs

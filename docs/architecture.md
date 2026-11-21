@@ -104,7 +104,7 @@ The engine remains a match aggregate rather than one class per timer or effect. 
 4. `ArmyRenderer` and `CanvasPainter` draw current values. Drawing cannot consume the audio queue.
 5. Progression and purchases go through `PlayerProfile`, then the repository saves the updated profile.
 
-The save adapter retains the `original-campaign` preference file, existing key names and the legacy `five-upgrades` migration. Excess tiers are refunded during restoration; saving normalized levels and clearing the migration marker prevents a second refund. `GameView` retains its per-match reward guard so a victory awards points only once.
+The save adapter retains the `original-campaign` preference file, existing key names and the legacy `five-upgrades` migration. It reads old integer point balances and writes fractional balances as floats. Stage rewards are a flat 0.5 points; purchases cost 1 point. The former Experience tiers now apply to castle troop generation without changing the saved balance. Excess tiers are refunded during restoration; saving normalized levels and clearing the migration marker prevents a second refund. `GameView` retains its per-match reward guard so a victory awards points only once.
 
 ## Stage and asset ownership
 

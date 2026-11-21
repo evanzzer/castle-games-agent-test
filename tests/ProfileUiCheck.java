@@ -38,6 +38,20 @@ public final class ProfileUiCheck extends Instrumentation {
             check(current.upgradeLevel(9) == 5 && current.upgradeLevel(0) == 0, "current upgrade normalization");
             repository.save(current);
             check(repository.load().upgradePoints() == 7, "current save does not refund twice");
+            preferences.edit().clear().putInt("points", 2).putInt("up3", 4).commit();
+            PlayerProfile experience = repository.load();
+            check(experience.upgradePoints() == 2 && experience.upgradeLevel(3) == 4, "Experience tiers become generation");
+            repository.save(experience);
+            check(repository.load().upgradePoints() == 2 && repository.load().upgradeLevel(3) == 4, "generation migration round trip");
+            PlayerProfile half = PlayerProfile.restore(0, 0, new int[11], true, true);
+            half.completeStage(1); repository.save(half);
+            PlayerProfile fraction = repository.load();
+            check(fraction.upgradePoints() == .5f && !fraction.purchaseUpgrade(0), "saved half point cannot purchase");
+            fraction.completeStage(2); repository.save(fraction);
+            PlayerProfile whole = repository.load();
+            check(whole.upgradePoints() == 1 && whole.purchaseUpgrade(0), "two saved clears buy one upgrade");
+            repository.save(whole);
+            check(repository.load().upgradePoints() == 0 && repository.load().upgradeLevel(0) == 1, "purchase round trip");
             result.putString("stream", "Profile Android checks passed: legacy/current preference mapping, settings, tier refunds and save round trips.\n");
         } catch (Throwable failure) {
             code = 0; result.putString("stream", android.util.Log.getStackTraceString(failure));

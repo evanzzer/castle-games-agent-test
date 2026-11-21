@@ -13,7 +13,9 @@ final class AndroidProfileRepository implements ProfileRepository {
 
     @Override public PlayerProfile load() {
         int[] levels = new int[PlayerProfile.UPGRADE_COUNT];
-        int points = preferences.getInt("points", 0);
+        // Existing saves store an integer; fractional balances use the same key as a float.
+        Object savedPoints = preferences.getAll().get("points");
+        float points = savedPoints instanceof Number ? ((Number) savedPoints).floatValue() : 0;
         if (preferences.getBoolean("five-upgrades", false)) {
             for (int index = 0; index < 3; index++) levels[index] = preferences.getInt("up" + index, 0);
             levels[5] = preferences.getInt("up3", 0);
@@ -29,7 +31,7 @@ final class AndroidProfileRepository implements ProfileRepository {
 
     @Override public void save(PlayerProfile profile) {
         SharedPreferences.Editor editor = preferences.edit()
-            .putInt("completed", profile.completedStages()).putInt("points", profile.upgradePoints())
+            .putInt("completed", profile.completedStages()).putFloat("points", profile.upgradePoints())
             .putBoolean("five-upgrades", false).putBoolean("music", profile.musicEnabled())
             .putBoolean("sound", profile.soundEnabled());
         for (int index = 0; index < profile.upgradeCount(); index++)

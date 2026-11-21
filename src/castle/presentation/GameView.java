@@ -26,8 +26,6 @@ final class GameView extends View {
     static final int MAX_UPGRADE_LEVEL = UpgradeRules.MAX_LEVEL;
     final String[] upgradeNames = {"atk", "def", "spd", "exp", "crys_init",
         "crys_add", "skill_meteor", "skill_storm", "skill_mutiny", "skill_reinf", "cd"};
-    final String[] upgradeLabels = {"Attack", "Defense", "Speed", "Experience", "Initial crystals",
-        "Crystal production", "Meteor", "Storm", "Mutiny", "Reinforce", "Cooldown"};
     final int[] spellSlots = {0, 2, 1, 3};
     final String[] spellNames = {"Meteor", "Storm", "Mutiny", "Reinforce"};
     final int[] campaignSelection = new int[Campaign.values().length];
@@ -174,14 +172,24 @@ final class GameView extends View {
         for (int i = 0; i < profile.upgradeCount(); i++) {
             int x = upgradeX(i), y = upgradeY(i);
             painter.sprite(canvas, "up_" + upgradeNames[i], x, y, 50, 50);
+            if (i == PlayerProfile.TROOP_GENERATION_UPGRADE) {
+                // Keep the original tile and arrow; replace its baked EXP label with editable text.
+                paint.setColor(0xff686963);
+                canvas.drawRoundRect(x + 4, y + 25, x + 46, y + 46, 2, 2, paint);
+                painter.label(canvas, "GEN", x + 25, y + 42, 14, 0xffffc85a, true);
+            }
             if (i == upgradeSelection) painter.sprite(canvas, "up_skill_sel", x - 1, y - 1, 52, 52);
             painter.sprite(canvas, "up_skill_point", x + 49, y + 36, 20, 20);
             painter.number(canvas, profile.upgradeLevel(i), x + 59, y + 40, 12);
         }
-        painter.sprite(canvas, "up_des" + upgradeSelection, 67, 237, 300, 41);
+        UpgradeDescription description = UpgradeDescription.forLevel(upgradeSelection, profile.upgradeLevel(upgradeSelection));
+        painter.label(canvas, description.title, 217, 243, 11, Color.WHITE, true);
+        painter.label(canvas, "Current: " + description.current, 67, 258, 8, Color.WHITE, false);
+        painter.label(canvas, description.next == null ? "Maximum level" : "Next: " + description.next,
+            67, 272, 8, 0xffffdda0, false);
         boolean canUpgrade = profile.canUpgrade(upgradeSelection);
         painter.sprite(canvas, canUpgrade ? "up_button" : "up_button_d", 315, 282, 146, 32);
-        painter.label(canvas, profile.upgradePoints() + " points", 170, 307, 14, Color.WHITE, true);
+        painter.label(canvas, String.format(Locale.US, profile.upgradePoints() % 1 == 0 ? "%.0f points" : "%.1f points", profile.upgradePoints()), 170, 307, 14, Color.WHITE, true);
         painter.sprite(canvas, "back", 0, 265, 61, 55);
     }
 

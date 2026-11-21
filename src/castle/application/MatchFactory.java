@@ -8,9 +8,10 @@ final class MatchFactory {
         engine.attackLevels[1] = profile.upgradeLevel(0);
         engine.defenseLevels[1] = profile.upgradeLevel(1);
         engine.speedLevel = profile.upgradeLevel(2);
+        engine.troopGenerationLevel = profile.upgradeLevel(PlayerProfile.TROOP_GENERATION_UPGRADE);
         engine.crystalLevel = profile.upgradeLevel(5);
         engine.cooldownLevel = profile.upgradeLevel(10);
-        engine.energy = 200 * (1 + profile.upgradeLevel(4) * .25f);
+        engine.energy = UpgradeRules.initialCrystals(profile.upgradeLevel(4));
         for (int spell = 0; spell < 4; spell++) engine.skillLevels[spell] = profile.upgradeLevel(6 + spell);
         return engine;
     }
