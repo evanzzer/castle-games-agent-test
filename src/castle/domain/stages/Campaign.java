@@ -47,9 +47,9 @@ enum Campaign {
         return firstStage + index;
     }
 
-    String[] buildings() { return this == ORIGINAL ? Missions.BUILDINGS : this == FRONTIER ? Frontier.BUILDINGS : Wilds.BUILDINGS; }
-    String[] regions() { return this == ORIGINAL ? Missions.MARSHES : this == FRONTIER ? Frontier.MARSHES : Wilds.MARSHES; }
-    String[] altars() { return this == ORIGINAL ? Altars.DATA : this == FRONTIER ? Frontier.ALTARS : Wilds.ALTARS; }
-    String[] names() { return this == ORIGINAL ? CampaignInfo.ORIGINAL_NAMES : this == FRONTIER ? Frontier.NAMES : Wilds.NAMES; }
-    String[] briefs() { return this == ORIGINAL ? CampaignInfo.ORIGINAL_BRIEFS : this == FRONTIER ? Frontier.BRIEFS : Wilds.BRIEFS; }
+    String[] buildings() { return this == ORIGINAL ? Original.BUILDINGS : this == FRONTIER ? Frontier.BUILDINGS : Wilds.BUILDINGS; }
+    String[] regions() { return this == ORIGINAL ? Original.MARSHES : this == FRONTIER ? Frontier.MARSHES : Wilds.MARSHES; }
+    String[] altars() { return this == ORIGINAL ? Original.ALTARS : this == FRONTIER ? Frontier.ALTARS : Wilds.ALTARS; }
+    String[] names() { return this == ORIGINAL ? Original.NAMES : this == FRONTIER ? Frontier.NAMES : Wilds.NAMES; }
+    String[] briefs() { return this == ORIGINAL ? Original.BRIEFS : this == FRONTIER ? Frontier.BRIEFS : Wilds.BRIEFS; }
 }

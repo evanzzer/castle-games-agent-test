@@ -8,7 +8,10 @@ The implementation uses object ownership and explicit dependencies to separate g
 src/castle/
   Main.java                    Android executable entry point
   domain/                      Match state, AI, profile and immutable layout values
-    stages/                    Campaign policies and authored stage definitions
+    stages/                    Shared campaign policies and stage parsing
+      original/                Original.java: all Campaign I data
+      frontier/                Frontier.java: all Campaign II data
+      wild/                    Wilds.java: all Campaign III data
   application/                 Match creation, event delivery and platform-free ports
   presentation/                Input, screens, Canvas primitives and army rendering
   infrastructure/android/      Asset decoding, preferences, audio and terrain baking

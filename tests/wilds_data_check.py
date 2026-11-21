@@ -12,7 +12,7 @@ assert [m['stage'] for m in metadata]==list(range(61,91))
 assert len({json.dumps(m['regions'],sort_keys=True) for m in metadata})==30
 hashes=set()
 manifest=json.loads((root/'assets/terrain/wild/manifest.json').read_text())['overlays']
-regions=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/domain/stages/Wilds.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
+regions=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/domain/stages/wild/Wilds.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
 for world,item in zip(data['worlds'],metadata):
  assert world['new_terrain'] and world['name']==item['name']
  assert item['original_shape_source'] is None

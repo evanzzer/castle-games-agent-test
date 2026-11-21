@@ -1,5 +1,47 @@
 package castle;
-final class Missions {
+
+/** Campaign I data: names, descriptions, buildings, terrain regions and altars. */
+final class Original {
+ static final String[] NAMES={
+  "First Foothold","Twin Standards","Crossfire","Crystal Gambit","Divided Marsh",
+  "Reed Crossing","Twin Venom","Venom Watch","Angel's Reach","Shield Crossing",
+  "Bitter Basin","Three Banners","Tower Circuit","Poisoned Crown","Angel's Passage",
+  "Ring of Steel","Broken Causeway","Venom Wings","Slow Divide","Guardian Roads",
+  "Toxic Belt","Four Venoms","Shielded Narrows","Angel's Detour","Three Marshes",
+  "Venom Chain","Mire and Venom","Threefold Poison","Swamp Rivals","Last Banners"
+ };
+ static final String[] BRIEFS={
+  "Capture the neutral castle, then combine your forces against Blue.",
+  "Use both starting castles to secure the centre before challenging Yellow.",
+  "Claim the crystal and use the two towers to control the crossing.",
+  "Control crystal income and stage your attack through the middle castle.",
+  "Two swamps guard the outer approaches. Use the clear central gap.",
+  "The broad swamp slows your advance. Secure nearby castles before pushing.",
+  "Poison threatens both flanks. Reinforce from the nearest safe castle.",
+  "Capture support castles around the poison before contesting the central tower.",
+  "Time an angel pickup to protect your advance toward the central tower.",
+  "Shield altars protect the assault, while swamp delays your reinforcements.",
+  "Central poison makes long sieges costly. Use the shield altars to push through.",
+  "Blue and Yellow both expand. Defend your rear while the rival armies clash.",
+  "A network of towers guards the routes. Capture staging castles between them.",
+  "Poison covers opposite approaches. Build strength along the safer centre.",
+  "Use an angel pickup before committing troops to the long swamp crossing.",
+  "Towers surround the centre. Advance through friendly castles in short steps.",
+  "Slow ground guards opposite corners. Prepare reinforcements on both flanks.",
+  "Poisoned diagonals punish shortcuts. Time the angel pickup for your assault.",
+  "The middle crossing is slow. Secure the crystal supply before pushing through.",
+  "Swamp divides the routes. Use the angel altars and nearby staging castles.",
+  "A poison belt cuts across the centre. Use angel protection to cross safely.",
+  "Four poison regions constrain movement. Contest the angel routes and clear gaps.",
+  "Slow ground surrounds the central gap. Claim a shield before the main assault.",
+  "Poison guards the inner approaches. Time the angel pickup with your attack.",
+  "Three swamp approaches expose armies to tower fire. Coordinate your arrivals.",
+  "Poison breaks up the centre. Keep a reserve outside the main siege.",
+  "Both swamp and poison matter. Redirect armies as the front changes.",
+  "Three nations compete across poison. Reinforce through the nearest safe castle.",
+  "Three nations and slow approaches reward careful timing and short supply routes.",
+  "Three banners and six swamps. Hold staging castles to support every front."
+ };
  static final String[] BUILDINGS = {
   "r_house_b,334,106,334,96;b_house_m,78,156,78,142;g_house_m,249,252,249,231",
   "r_house_m,341,108,341,94;r_house_m,425,203,425,189;y_house_m,158,254,158,240;g_house_m,66,159,66,138;g_tower_m,243,158,243,116",
@@ -63,5 +105,37 @@ final class Missions {
   "50,505,181,565,304,376,307,408,204;50,620,322,680,401,570,472,378,310;50,353,306,437,435,363,480,244,400",
   "51,335,4,706,3,556,243;51,680,382,932,630,538,628;51,3,226,236,371,19,540",
   "51,188,5,447,4,335,185;51,807,4,673,180,532,6;51,746,284,931,226,918,445;51,623,428,748,607,520,629;51,310,424,416,621,153,614;51,24,164,230,316,30,519",
+ };
+ static final String[] ALTARS = {
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "244,313,100;715,314,100",
+  "186,497,101;784,159,101",
+  "91,337,101;850,326,101",
+  "",
+  "",
+  "",
+  "758,434,100;514,103,100",
+  "",
+  "",
+  "521,267,100",
+  "",
+  "819,170,100;96,375,100",
+  "668,143,100;651,507,100",
+  "770,327,100;213,315,100",
+  "141,271,101;808,307,101",
+  "483,287,100",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
  };
 }

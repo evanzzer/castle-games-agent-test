@@ -2,7 +2,7 @@ package castle;
 public final class CampaignInfoCheck {
  static void check(boolean okay,String message){if(!okay)throw new AssertionError(message);}
  public static void main(String[] args){
-  check(CampaignInfo.ORIGINAL_NAMES.length==30&&CampaignInfo.ORIGINAL_BRIEFS.length==30,"all original stages have authored information");
+  check(Original.NAMES.length==30&&Original.BRIEFS.length==30,"all original stages have authored information");
   for(int stage=1;stage<=90;stage++){
    check(!CampaignInfo.name(stage).isEmpty()&&!CampaignInfo.brief(stage).isEmpty(),"every stage has a name and description");
    check(CampaignInfo.title(stage).startsWith(String.format(java.util.Locale.US,"%02d · ",stage)),"consistent heading format");

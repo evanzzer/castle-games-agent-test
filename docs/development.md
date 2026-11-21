@@ -49,7 +49,7 @@ Runtime metadata uses JSON schema version 1. Atlas and font entries share `frame
 
 ## Source and code map
 
-`src/castle/Main.java` is the executable entry point outside the grouped supporting folders. `build.sh` remains at the repository root and recursively discovers Java sources. The supporting folders are `domain/` (with `stages/`), `application/`, `presentation/` and `infrastructure/android/`; all retain the shared `castle` package and package-private APIs.
+`src/castle/Main.java` is the executable entry point outside the grouped supporting folders. `build.sh` remains at the repository root and recursively discovers Java sources. The supporting folders are `domain/` (with `stages/`), `application/`, `presentation/` and `infrastructure/android/`; all retain the shared `castle` package and package-private APIs. Campaign data is grouped under `domain/stages/{original,frontier,wild}/`; `Original.java` consolidates the former mission geometry, altar records and Original names/descriptions. Shared stage parsing, campaign policies and label helpers stay directly under `stages/`.
 
 See [code-map.md](code-map.md) for the current module responsibilities, map loading, simulation, rendering and audio flow. `Campaign` owns campaign boundaries and AI spell policy. `StageDefinition` parses the compact authored map data once into immutable stage definitions; each new game receives independent mutable objects.
 
