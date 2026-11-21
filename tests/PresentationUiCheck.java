@@ -7,7 +7,7 @@ import android.graphics.*;
 import java.lang.reflect.Field;
 public final class PresentationUiCheck extends Instrumentation {
  void check(boolean b,String text){if(!b)throw new AssertionError(text);}
- void tap(Main.Board board){
+ void tap(GameView board){
   long time=SystemClock.uptimeMillis();
   for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
    android.view.MotionEvent event=android.view.MotionEvent.obtain(time,time,action,200*board.scale+board.left,150*board.scale+board.top,0);
@@ -22,9 +22,9 @@ public final class PresentationUiCheck extends Instrumentation {
  @Override public void onCreate(Bundle args){super.onCreate(args);start();}
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-  waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);Main.Board board=(Main.Board)field.get(main);
+  waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);GameView board=(GameView)field.get(main);
   runOnMainSync(()->{
-   int completed=board.completed;board.completed=14;board.mission=15;board.startMission();board.completed=completed;board.rewardGiven=true;board.engine.think=10000;
+   int completed=board.profile.completedStages();ProfileFixtures.completed(board,14);board.mission=15;board.startMission();ProfileFixtures.completed(board,completed);board.rewardGiven=true;board.engine.think=10000;
    Engine e=board.engine;e.forts.clear();e.marches.clear();e.altars.clear();e.marshes.clear();
    for(int i=0;i<7;i++){
     int kind=i<3?0:i<6?2:1;Engine.Fort f=new Engine.Fort(45+i*63,100,500+i*100,1+i%3,kind);
@@ -42,12 +42,12 @@ public final class PresentationUiCheck extends Instrumentation {
    board.cameraX=board.cameraY=0;board.zoom=1;board.lastTime=0;board.paused=false;
    // Freeze simulation while continuing to render the effects.
    e.result=1;board.resultStarted=SystemClock.uptimeMillis()+100000;board.resultDialog=false;
-   for(Engine.Fort f:e.forts){check(board.fortNumberY(f)<f.visualY,"building count above artwork");}
-   for(String name:new String[]{"flag_r_b6","flag_b_m6","flag_y_s5","battle1","battle_troop1","soldier_die1","skill_mutiny8","bg_victory","bg_defeat"})check(board.sprites.containsKey(name),"missing original frame "+name);
+   for(Engine.Fort f:e.forts){check(board.unitRenderer().fortNumberY(f)<f.visualY,"building count above artwork");}
+   for(String name:new String[]{"flag_r_b6","flag_b_m6","flag_y_s5","battle1","battle_troop1","soldier_die1","skill_mutiny8","bg_victory","bg_defeat"})check((board.resources().sprite(name)!=null),"missing original frame "+name);
    Engine.Fort big=e.forts.get(3),small=e.forts.get(5);
-   check(board.shadowOffset(big)[0]==42.5f&&board.shadowOffset(big)[1]==71.78f,"big archer original shadow anchor");
-   check(board.shadowOffset(small)[0]==34&&board.shadowOffset(small)[1]==62,"small archer original shadow anchor");
-   check(board.soldierVariant(0)==1&&board.soldierVariant(1)==2&&board.soldierVariant(2)==3,"original source soldier sets");
+   check(board.unitRenderer().shadowOffset(big)[0]==42.5f&&board.unitRenderer().shadowOffset(big)[1]==71.78f,"big archer original shadow anchor");
+   check(board.unitRenderer().shadowOffset(small)[0]==34&&board.unitRenderer().shadowOffset(small)[1]==62,"small archer original shadow anchor");
+   check(board.unitRenderer().soldierVariant(0)==1&&board.unitRenderer().soldierVariant(1)==2&&board.unitRenderer().soldierVariant(2)==3,"original source soldier sets");
    board.invalidate();
   });
   capture("formations-v015.png");
@@ -70,8 +70,8 @@ public final class PresentationUiCheck extends Instrumentation {
     check(e.send(source,target),"real deployment from source building");
     Engine.March unit=e.marches.get(kind);unit.t=.4f;unit.age=3;
     check(unit.originKind==kind&&unit.n==600,"source kind persists in equal-strength army");
-    String frame="soldier_r_"+board.soldierVariant(unit.originKind)+"_s1";
-    check(board.sprites.containsKey(frame),"original source-specific animation exists");
+    String frame="soldier_r_"+board.unitRenderer().soldierVariant(unit.originKind)+"_s1";
+    check((board.resources().sprite(frame)!=null),"original source-specific animation exists");
    }
    e.result=1;board.resultStarted=SystemClock.uptimeMillis()+100000;board.resultDialog=false;board.invalidate();
   });capture("troop-origins-v015.png");

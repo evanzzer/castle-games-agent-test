@@ -8,7 +8,7 @@ design=json.loads((root/'tools/data/frontier-design.json').read_text())
 archive=json.loads((root/'tools/data/frontier-region-plans.json').read_text())
 turns=[0,0,0,1,0,0,2,2,1,2,1,2,3,2,1,2,1,0,0,3,3,3,1,3,1,0,2,0,3,0]
 manifest=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())['overlays']
-rows=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/Frontier.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
+rows=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/domain/stages/Frontier.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
 count=0
 for i,(entry,world) in enumerate(zip(design,data['worlds'])):
  assert entry['stage']==i+31 and entry['terrain_layout_version']=='v0.13-curved'
@@ -38,10 +38,10 @@ preserved=sorted((root/'assets/terrain').glob('*/*.json'))
 preserved=[p for p in preserved if p!=root/'assets/terrain/frontier/worlds.json']+[root/'assets/map/campaigns.json']
 original=[p.read_bytes() for p in preserved]
 terrain_before=(root/'assets/terrain/frontier/worlds.json').read_bytes()
-source=(root/'src/castle/Frontier.java').read_bytes()
+source=(root/'src/castle/domain/stages/Frontier.java').read_bytes()
 subprocess.run([sys.executable,'tools/generate_frontier.py'],cwd=root,check=True)
 updated=json.loads((root/'assets/terrain/frontier/worlds.json').read_text())
 assert [p.read_bytes() for p in preserved]==original
 assert (root/'assets/terrain/frontier/worlds.json').read_bytes()==terrain_before
-assert (root/'src/castle/Frontier.java').read_bytes()==source
+assert (root/'src/castle/domain/stages/Frontier.java').read_bytes()==source
 print('Restored Frontier checks passed: curved outlines at original footprints, 59 regions, PNG geometry fingerprints; other campaigns preserved.')

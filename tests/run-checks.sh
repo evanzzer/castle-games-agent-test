@@ -3,9 +3,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p build/check
 sources=()
-for source in src/castle/*.java; do
+while IFS= read -r source; do
     if ! rg -q '^import android' "$source"; then sources+=("$source"); fi
-done
+done < <(rg --files src -g "*.java")
 checks=()
 for source in tests/*Check.java; do
     case "$source" in *UiCheck.java|*TerrainBakeCheck.java) continue;; esac

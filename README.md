@@ -66,7 +66,7 @@ The APK is written to `build/Castle-Wars-Rebuilt.apk`. See the [development guid
 
 ## OOP and architecture
 
-The game uses a platform-free domain model, immutable stage definitions and an audio interface backed by an Android adapter. `Main` composes the objects; `Board` handles presentation and input; game rules stay in `Engine` and its match objects. Explanatory source comments are kept to one or two lines.
+The code separates domain rules, application use cases, presentation and Android adapters. `Main.java` stays directly under `src/castle/` as the executable entry point; supporting classes are grouped by responsibility. `PlayerProfile` owns progression and upgrades, `Engine` owns match state, and `AiCommander` owns AI decisions. The view receives resource, save and audio interfaces instead of opening platform services itself. Explanatory source comments are kept to one or two lines.
 
 - [Architecture and object responsibilities](docs/architecture.md)
 - [Current code map](docs/code-map.md)

@@ -6,7 +6,7 @@ Native Android Canvas game, version **0.16**, with 90 sequential stages across O
 
 Run commands from the repository root.
 
-Requires a JDK with `javac --release 8`, Android SDK platform 33 and build-tools 33.0.1. Set `ANDROID_SDK_ROOT` or `ANDROID_HOME`; macOS defaults to `~/Library/Android/sdk`. `ANDROID_PLATFORM_VERSION` and `BUILD_TOOLS_VERSION` override the SDK defaults.
+Requires `rg`, a JDK with `javac --release 8`, Android SDK platform 33 and build-tools 33.0.1. Set `ANDROID_SDK_ROOT` or `ANDROID_HOME`; macOS defaults to `~/Library/Android/sdk`. `ANDROID_PLATFORM_VERSION` and `BUILD_TOOLS_VERSION` override the SDK defaults.
 
 ```sh
 ./build.sh
@@ -49,6 +49,8 @@ Runtime metadata uses JSON schema version 1. Atlas and font entries share `frame
 
 ## Source and code map
 
+`src/castle/Main.java` is the executable entry point outside the grouped supporting folders. `build.sh` remains at the repository root and recursively discovers Java sources. The supporting folders are `domain/` (with `stages/`), `application/`, `presentation/` and `infrastructure/android/`; all retain the shared `castle` package and package-private APIs.
+
 See [code-map.md](code-map.md) for the current module responsibilities, map loading, simulation, rendering and audio flow. `Campaign` owns campaign boundaries and AI spell policy. `StageDefinition` parses the compact authored map data once into immutable stage definitions; each new game receives independent mutable objects.
 
 ## Validate
@@ -59,17 +61,19 @@ Requires Python 3 and `rg` in addition to the JDK:
 ./tests/run-checks.sh
 ```
 
-This enforces the architecture/comment boundaries and runs the simulation, campaign, terrain, audio-event, raid-wave and stage-catalog checks, validates JSON metadata and asset bounds, and verifies deterministic terrain generation. Generation checks regenerate the authored data in place; unchanged inputs must produce unchanged tracked files.
+This recursively enforces the architecture/comment boundaries, checks profile encapsulation and application use cases, runs the simulation, campaign, terrain, audio-event, raid-wave and stage-catalog checks, validates JSON metadata and asset bounds, and verifies deterministic terrain generation. Generation checks regenerate the authored data in place; unchanged inputs must produce unchanged tracked files.
 
 For Android UI checks, start an Android emulator or connect a test device:
 
 ```sh
 ./build.sh
 adb -s emulator-5556 install --no-incremental -r build/Castle-Wars-Rebuilt.apk
+./tests/run-ui-check.sh ProfileUiCheck
 ./tests/run-ui-check.sh UiCheck
 ./tests/run-ui-check.sh CampaignInfoUiCheck
 ./tests/run-ui-check.sh RaidUiCheck
 ./tests/run-ui-check.sh AudioUiCheck
+./tests/run-ui-check.sh PresentationUiCheck
 ```
 
 Set `ANDROID_SERIAL` to use another device. Screenshots and baked terrain are written to the app's external files directory on that test device; keep retrieved previews under ignored `outputs/previews/`.

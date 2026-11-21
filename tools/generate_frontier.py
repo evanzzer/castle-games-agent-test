@@ -143,6 +143,6 @@ for index,(name,layout,turn,three,altar) in enumerate(specs):
 (ROOT/'assets/terrain/frontier/worlds.json').write_text(json.dumps(world_data,indent=2,ensure_ascii=False)+'\n')
 lines=['package castle;','final class Frontier {']
 for key,values in [('NAMES',names),('BRIEFS',tips),('BUILDINGS',buildings),('MARSHES',marshes),('ALTARS',altars)]:lines+=java_array(key,values)
-lines+=['}'];(ROOT/'src/castle/Frontier.java').write_text('\n'.join(lines)+'\n')
+lines+=['}'];(ROOT/'src/castle/domain/stages/Frontier.java').write_text('\n'.join(lines)+'\n')
 (ROOT/'tools/data/frontier-design.json').write_text(json.dumps(details,indent=2,ensure_ascii=False)+'\n')
 print('Authored 30 Frontier levels; other terrain campaigns and map navigation untouched.')

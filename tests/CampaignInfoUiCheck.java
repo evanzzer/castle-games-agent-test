@@ -16,7 +16,7 @@ public final class CampaignInfoUiCheck extends Instrumentation {
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
   waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-  Main.Board board=(Main.Board)field.get(main);int saved=board.completed;
+  GameView board=(GameView)field.get(main);int saved=board.profile.completedStages();
   runOnMainSync(()->{
    Paint paint=new Paint(3);paint.setTypeface(Typeface.create("serif",Typeface.BOLD));
    for(int stage=1;stage<=90;stage++){
@@ -26,10 +26,10 @@ public final class CampaignInfoUiCheck extends Instrumentation {
   });
   for(int stage:new int[]{1,31,61}){
    final int selected=stage;
-   runOnMainSync(()->{board.completed=selected-1;board.engine=null;board.screen="campaign";board.mission=selected;board.campaignPage=(selected-1)/30;board.centreCampaignSelection();board.invalidate();});
+   runOnMainSync(()->{ProfileFixtures.completed(board,selected-1);board.engine=null;board.screen="campaign";board.mission=selected;board.campaignPage=(selected-1)/30;board.centreCampaignSelection();board.invalidate();});
    capture("campaign-info-"+stage+".png");
   }
-  runOnMainSync(()->{board.completed=saved;board.mission=1;board.campaignPage=0;board.screen="menu";board.save();});
+  runOnMainSync(()->{ProfileFixtures.completed(board,saved);board.mission=1;board.campaignPage=0;board.screen="menu";board.save();});
   result.putString("stream","Campaign map UI checks passed: all 90 headings/descriptions fit; three campaign previews captured.\n");finish(-1,result);
  }catch(Throwable failure){result.putString("stream",android.util.Log.getStackTraceString(failure));finish(0,result);}}
 }

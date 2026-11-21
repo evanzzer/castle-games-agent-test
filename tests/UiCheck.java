@@ -7,10 +7,10 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 import java.lang.reflect.Field;
 
-/** Runs real Board touch handlers inside the Android process. */
+/** Runs real GameView touch handlers inside the Android process. */
 public final class UiCheck extends Instrumentation {
  static void check(boolean okay,String message){if(!okay)throw new AssertionError(message);}
- void touch(Main.Board board,int action,float x,float y){
+ void touch(GameView board,int action,float x,float y){
   MotionEvent event=MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),action,
    board.left+x*board.scale,board.top+y*board.scale,0);
   board.onTouchEvent(event);event.recycle();
@@ -24,32 +24,32 @@ public final class UiCheck extends Instrumentation {
    runOnMainSync(()->{
     try{
      Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-     Main.Board board=(Main.Board)field.get(main);
-     int savedCompleted=board.completed,savedPoints=board.points;
-     board.completed=0;board.engine=null;board.screen="campaign";board.mission=2;
+     GameView board=(GameView)field.get(main);
+     int savedCompleted=board.profile.completedStages(),savedPoints=board.profile.upgradePoints();
+     ProfileFixtures.completed(board,0);board.engine=null;board.screen="campaign";board.mission=2;
      board.startMission();check(board.engine==null,"locked stage cannot start through play handler");
      board.mission=1;
-     org.json.JSONArray stageTwo=board.markers.optJSONArray(1);
-     board.click((float)stageTwo.optDouble(0)-board.mapScroll,board.campaignY((float)stageTwo.optDouble(1)));
+     MapMarker stageTwo=board.resources().markers(Campaign.ORIGINAL).get(1);
+     board.click((float)stageTwo.x-board.mapScroll,board.campaignY((float)stageTwo.y));
      check(board.mission==1,"locked marker cannot be selected");
      board.startMission();board.engine.result=2;
      board.battleClick(280,190);
-     check(board.mission==1&&board.engine.result==2&&board.completed==0,"defeat cannot advance or unlock next stage");
+     check(board.mission==1&&board.engine.result==2&&board.profile.completedStages()==0,"defeat cannot advance or unlock next stage");
      board.engine.result=1;board.rewardGiven=false;board.resultStarted=SystemClock.uptimeMillis()-1100;board.resultDialog=false;board.battleClick(200,150);
      board.battleClick(280,190);
-     check(board.mission==2&&board.engine.stage==2&&board.completed==1,"victory unlocks exactly the next stage");
+     check(board.mission==2&&board.engine.stage==2&&board.profile.completedStages()==1,"victory unlocks exactly the next stage");
      check(board.unlocked(1)&&board.unlocked(2)&&!board.unlocked(3),"cleared stages replay while future stages stay locked");
-     board.engine=null;board.completed=29;board.chooseCampaign(1);board.mission=31;
+     board.engine=null;ProfileFixtures.completed(board,29);board.chooseCampaign(1);board.mission=31;
      board.startMission();check(board.engine==null,"second campaign stays locked until stage 30 is cleared");
      board.chooseCampaign(0);board.mission=30;board.startMission();board.engine.result=1;board.rewardGiven=false;board.resultStarted=SystemClock.uptimeMillis()-1100;board.resultDialog=false;board.battleClick(200,150);
      board.battleClick(280,190);
-     check(board.completed==30&&board.mission==31&&board.engine.stage==31&&board.campaignPage==1,
+     check(board.profile.completedStages()==30&&board.mission==31&&board.engine.stage==31&&board.campaignPage==1,
       "stage 30 victory transitions to second map and stage 31");
-     check(board.worlds.length()==90&&board.frontierMarkers.length()==30,"two maps contain sixty levels");
-     board.engine=null;board.completed=89;board.mission=90;board.startMission();
+     check(board.resources().worldCount()==90&&board.resources().markers(Campaign.FRONTIER).size()==30,"two maps contain sixty levels");
+     board.engine=null;ProfileFixtures.completed(board,89);board.mission=90;board.startMission();
      board.engine.result=1;board.rewardGiven=false;board.resultStarted=SystemClock.uptimeMillis()-1100;board.resultDialog=false;board.battleClick(200,150);board.battleClick(280,190);
-     check(board.completed==90&&board.mission==90&&board.engine.result==1,"final stage cannot advance beyond campaign");
-     board.completed=savedCompleted;board.points=savedPoints;board.save();board.mission=1;board.campaignPage=0;
+     check(board.profile.completedStages()==90&&board.mission==90&&board.engine.result==1,"final stage cannot advance beyond campaign");
+     ProfileFixtures.completed(board,savedCompleted);ProfileFixtures.points(board,savedPoints);board.save();board.mission=1;board.campaignPage=0;
      board.engine=new Engine(1,0);board.engine.think=10000;board.paused=false;board.helpPage=-1;
      board.cameraX=board.cameraY=0;board.zoom=1;board.spell=-1;
      Engine engine=board.engine;engine.forts.clear();

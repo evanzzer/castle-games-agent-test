@@ -15,7 +15,7 @@ public final class TerrainUiCheck extends Instrumentation {
    runOnMainSync(()->{
     try{
      Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-     Main.Board board=(Main.Board)field.get(main);
+     GameView board=(GameView)field.get(main);
      board.mission=5;board.engine=new Engine(5,0);board.engine.think=10000;
      board.cameraX=board.cameraY=0;board.zoom=1;board.spell=board.spellInfo=-1;
      board.paused=false;board.helpPage=-1;board.selected.clear();board.selectedTroops.clear();

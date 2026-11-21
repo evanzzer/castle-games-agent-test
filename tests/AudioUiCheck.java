@@ -12,14 +12,14 @@ public final class AudioUiCheck extends Instrumentation {
  @Override public void onCreate(Bundle args){super.onCreate(args);start();}
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-  waitForIdleSync();Main.Board board=(Main.Board)field(main,"board");
+  waitForIdleSync();GameView board=(GameView)field(main,"board");
   Random audioRandom=(Random)field(field(main,"audio"),"audioRandom");
   SystemClock.sleep(1200);
   Map<String,Integer> ids=(Map<String,Integer>)field(field(main,"audio"),"soundIds");Set<Integer> ready=(Set<Integer>)field(field(main,"audio"),"readySounds");
   Map<String,Integer> counts=(Map<String,Integer>)field(field(main,"audio"),"soundStarts");Map<Object,Integer> streams=(Map<Object,Integer>)field(field(main,"audio"),"effectStreams");
   runOnMainSync(()->{
    for(String name:new String[]{"move1","move2","attack1","attack2","arrow","fireball","explosion","twister","hypnoses","support"})check(ids.containsKey("effects/"+name+".wav")&&ready.contains(ids.get("effects/"+name+".wav")),"sample loaded successfully: "+name);
-   board.mission=1;board.startMission();board.zoom=1;board.cameraX=board.cameraY=0;board.soundEnabled=true;board.engine.think=10000;
+   board.mission=1;board.startMission();board.zoom=1;board.cameraX=board.cameraY=0;board.profile.setSoundEnabled(true);board.engine.think=10000;
    Engine e=board.engine;e.forts.clear();e.marshes.clear();e.altars.clear();
    e.forts.add(new Engine.Fort(20,20,1000,1,1));e.forts.add(new Engine.Fort(450,250,1000,2,1));e.energy=10000;
    audioRandom.setSeed(410784366L);counts.clear();e.power(0,null,200,150);e.power(1,null,200,150);board.invalidate();

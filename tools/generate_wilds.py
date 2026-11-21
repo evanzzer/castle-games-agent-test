@@ -106,6 +106,6 @@ for i,name in enumerate(names):
 lines=['package castle;','final class Wilds {']
 for key,values in [('NAMES',titles),('BRIEFS',tips),('BUILDINGS',rows),('MARSHES',terrain),('ALTARS',altars)]:
  lines+=[' static final String[] '+key+' = {']+['  '+json.dumps(v)+',' for v in values]+[' };']
-lines+=['}'];(ROOT/'src/castle/Wilds.java').write_text('\n'.join(lines)+'\n')
+lines+=['}'];(ROOT/'src/castle/domain/stages/Wilds.java').write_text('\n'.join(lines)+'\n')
 (ROOT/'tools/data/wilds-design.json').write_text(json.dumps(catalog,indent=2,ensure_ascii=False)+'\n')
 print('Authored stages 61–90 with',sum(len(x['regions']) for x in catalog),'new region shapes; other terrain campaigns and map navigation untouched.')

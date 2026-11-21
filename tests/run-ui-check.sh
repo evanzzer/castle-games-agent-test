@@ -12,8 +12,8 @@ cat > build/ui/AndroidManifest.xml <<XML
 <instrumentation android:name="castle.$runner" android:targetPackage="game.castlewars.rebuilt"/>
 </manifest>
 XML
-javac --release 8 -cp "$sdk/platforms/android-33/android.jar:build/classes" -d build/ui/classes tests/*UiCheck.java tests/TerrainBakeCheck.java
-"$bt/d8" --min-api 23 --lib "$sdk/platforms/android-33/android.jar" --classpath build/classes --output build/ui/dex build/ui/classes/castle/*UiCheck.class build/ui/classes/castle/TerrainBakeCheck.class
+javac --release 8 -cp "$sdk/platforms/android-33/android.jar:build/classes" -d build/ui/classes tests/*UiCheck.java tests/TerrainBakeCheck.java tests/ProfileFixtures.java
+"$bt/d8" --min-api 23 --lib "$sdk/platforms/android-33/android.jar" --classpath build/classes --output build/ui/dex build/ui/classes/castle/*.class
 "$bt/aapt" package -f -M build/ui/AndroidManifest.xml -I "$sdk/platforms/android-33/android.jar" -F build/ui/base.apk
 (cd build/ui/dex && "$bt/aapt" add ../base.apk classes.dex)
 "$bt/zipalign" -f 4 build/ui/base.apk build/ui/aligned.apk

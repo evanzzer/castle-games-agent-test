@@ -6,7 +6,9 @@ out="$PWD/build"
 rm -rf "$out/classes" "$out/dex"
 mkdir -p "$out/classes" "$out/dex"
 "$bt/aapt" package -f -M AndroidManifest.xml -S res -A assets -I "$jar" -F "$out/base.apk"
-javac --release 8 -classpath "$jar" -d "$out/classes" src/castle/*.java
+sources=()
+while IFS= read -r source; do sources+=("$source"); done < <(rg --files src -g "*.java")
+javac --release 8 -classpath "$jar" -d "$out/classes" "${sources[@]}"
 "$bt/d8" --min-api 23 --lib "$jar" --output "$out/dex" "$out/classes"/castle/*.class
 (cd "$out/dex" && "$bt/aapt" add "$out/base.apk" classes.dex)
 "$bt/zipalign" -f 4 "$out/base.apk" "$out/aligned.apk"

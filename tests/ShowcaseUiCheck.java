@@ -47,28 +47,28 @@ public final class ShowcaseUiCheck extends Instrumentation {
         return closest;
     }
 
-    private void deploy(Main.Board board,Engine.Fort source,Engine.Fort destination) {
+    private void deploy(GameView board,Engine.Fort source,Engine.Fort destination) {
         board.selected.clear();board.selectedTroops.clear();board.selected.add(source);
         board.deploySelection((destination.x-board.cameraX)*board.zoom,(destination.y-board.cameraY)*board.zoom);
     }
 
-    private void cast(Main.Board board,int slot,Engine.Fort destination) {
+    private void cast(GameView board,int slot,Engine.Fort destination) {
         board.battleClick(292+slot*51,295);
         board.battleClick((destination.x-board.cameraX)*board.zoom,(destination.y-board.cameraY)*board.zoom);
     }
 
     @Override public void onStart() {
-        Bundle result=new Bundle();int resultCode=-1;Main.Board board=null;int savedCompleted=0,savedPoints=0;
+        Bundle result=new Bundle();int resultCode=-1;GameView board=null;int savedCompleted=0,savedPoints=0;
         try {
             Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN)
                 .setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-            board=(Main.Board)field.get(main);final Main.Board view=board;
-            savedCompleted=board.completed;savedPoints=board.points;
+            board=(GameView)field.get(main);final GameView view=board;
+            savedCompleted=board.profile.completedStages();savedPoints=board.profile.upgradePoints();
             directory=getTargetContext().getExternalFilesDir(null);
             boolean spells=scenario.equals("spells");
             runOnMainSync(()->{
-                view.completed=89;view.mission=spells?65:5;view.startMission();view.rewardGiven=true;
+                ProfileFixtures.completed(view,89);view.mission=spells?65:5;view.startMission();view.rewardGiven=true;
                 if(spells){view.engine.energy=2000;view.engine.skillLevels[3]=5;}
             });
             SystemClock.sleep(800);
@@ -127,8 +127,8 @@ public final class ShowcaseUiCheck extends Instrumentation {
         }catch(Throwable failure){
             result.putString("stream",android.util.Log.getStackTraceString(failure));resultCode=0;
         }finally{
-            if(board!=null){final Main.Board view=board;final int completed=savedCompleted,points=savedPoints;
-                runOnMainSync(()->{view.completed=completed;view.points=points;view.engine=null;view.screen="menu";view.save();});}
+            if(board!=null){final GameView view=board;final int completed=savedCompleted,points=savedPoints;
+                runOnMainSync(()->{ProfileFixtures.completed(view,completed);ProfileFixtures.points(view,points);view.engine=null;view.screen="menu";view.save();});}
         }
         finish(resultCode,result);
     }

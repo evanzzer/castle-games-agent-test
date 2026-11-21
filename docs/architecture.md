@@ -1,77 +1,92 @@
 # OOP and architecture
 
-Castle Wars Rebuilt uses a lightweight layered design: the match rules and stage definitions form the domain, the Android activity coordinates presentation, and platform adapters own asset access and media playback. The layers share the `castle` package, keeping the public API small through package-private types.
+The implementation uses object ownership and explicit dependencies to separate game rules from Android services. `Main.java` is the composition root: it creates adapters, injects them into `GameView` and forwards Android lifecycle events. It contains no rendering, save migration or gameplay rules.
+
+## Source layout
+
+```text
+src/castle/
+  Main.java                    Android executable entry point
+  domain/                      Match state, AI, profile and immutable layout values
+    stages/                    Campaign policies and authored stage definitions
+  application/                 Match creation, event delivery and platform-free ports
+  presentation/                Input, screens, Canvas primitives and army rendering
+  infrastructure/android/      Asset decoding, preferences, audio and terrain baking
+```
+
+`build.sh` remains at the repository root. Supporting classes share the `castle` Java package to preserve package-private APIs. The folders express responsibilities; they are not separate Java modules. Automated dependency checks enforce the main boundaries without expanding internal types into public APIs.
 
 ## Dependency direction
 
 ```mermaid
 flowchart TD
-    Main[Main composition root] --> Board[Board presentation and input]
-    Board --> Engine[Engine domain aggregate]
+    Main[Main.java composition root] --> View[GameView]
+    Main --> Android[Android adapters]
+    View --> UseCases[MatchFactory and MatchAudioEvents]
+    View --> Rendering[CanvasPainter and ArmyRenderer]
+    View --> Profile[PlayerProfile]
+    View --> Engine[Engine]
+    UseCases --> Engine
+    UseCases --> Ports[GameAudio and ProfileRepository]
+    Android -. implements .-> Ports
+    Android -. implements .-> Resources[GameResources]
+    View --> Resources
+    Rendering --> Resources
+    Engine --> AI[AiCommander]
     Engine --> Stages[StageDefinition and Campaign]
-    Board --> Port[GameAudio interface]
-    Android[AndroidGameAudio adapter] -. implements .-> Port
-    Android --> Cues[Engine AudioCue events]
-    Board --> Assets[AssetMetadata Android adapter]
 ```
 
-`GameAudio` contains no Android types. `Main.onCreate` constructs `AndroidGameAudio` and stores it behind that interface. The adapter receives explicit match and playback state; it has no reference to `Main` or `Board`. Domain code compiles with the JDK without Android libraries.
+Domain and application classes compile with the JDK alone. They depend on neither Android nor JSON libraries. `GameResources` is a presentation interface and deliberately exposes Android bitmap types, since Canvas is the rendering technology. Android adapters implement interfaces without retaining the activity or view.
 
 ## Object responsibilities
 
-| Object | Responsibility and ownership |
+| Object | Owns or decides |
 | --- | --- |
-| `Engine` | Owns one match: forts, marches, encounters, clocks, spell effects, AI and result state. |
-| `Engine.Fort` | Holds a building's garrison, recruitment state and optional siege. |
-| `Engine.March` | Carries an army's strength, origin type, destination, buffs and raid identity. |
-| `Engine.Fight` | Resolves a siege using all active teams and pre-tick troop strengths. |
-| `Engine.Encounter` | Holds opposing armies at a shared field location and resolves their casualties. |
-| `Engine.Marsh` | Represents a slow or poison polygon and its independent effect clock. |
-| `StageDefinition` | Caches immutable stage data and creates independent mutable objects for each match. |
-| `Campaign` | Defines campaign boundaries, navigation IDs and enemy spell policy. |
-| `GameAudio` | Provides the application-facing contract for effects, music and audio lifecycle. |
-| `AndroidGameAudio` | Owns SoundPool samples, MediaPlayer music, pending requests and effect streams. |
-| `AssetMetadata` | Reads versioned JSON metadata and validates sprite and font rectangles. |
-| `Main.Board` | Converts touch input to commands and draws the current state on Android Canvas. |
+| `Engine` | One mutable match: forts, marches, clocks, terrain effects, spells and result state. |
+| `Engine.Fight` / `Encounter` | Siege and field-combat state and casualty advancement. |
+| `AiCommander` | Enemy target selection, departure thresholds, timing and paid spell decisions; commands its match through existing engine operations. |
+| `StageDefinition` | Cached immutable stage data; creates independent mutable entities for each match. |
+| `PlayerProfile` | Encapsulated progression, settings, upgrade tiers, purchases and rewards; returns copies of upgrade arrays. |
+| `MatchFactory` | Validates stage access and initializes a match with the profile's upgrade effects. |
+| `MatchAudioEvents` | Delivers pending cues and raid announcements once, independently of drawing. |
+| `ProfileRepository` / `AndroidProfileRepository` | Save contract and Android preference mapping, including legacy save migration. |
+| `GameAudio` / `AndroidGameAudio` | Playback contract and Android sample loading, music, effect ownership and lifecycle. |
+| `GameResources` / `AndroidGameResources` | Presentation resource contract and JSON/bitmap decoding, caching and validation. |
+| `WorldLayout` / `MapMarker` | Typed immutable layout values; scenery collections are copied and unmodifiable. |
+| `GameView` | Screen state, selection, touch dispatch, camera and rendering coordination. |
+| `CanvasPainter` | Shared image, sprite, font and panel drawing primitives. |
+| `ArmyRenderer` | Building/flag anchors, formations, buffs, combat clouds and counts; issues no game commands. |
 
-State and behavior live together at the match level: `Engine` coordinates its domain objects, while `Fight` and `Encounter` own combat advancement. Presentation and touch coordination currently share the `Board` class. Platform playback has its own adapter, making its lifecycle independently understandable and testable.
+The engine remains a match aggregate rather than one class per timer or effect. `GameView` still coordinates screens and input; it no longer parses assets, opens preferences, normalizes upgrades or constructs upgraded matches. This is a lightweight layered architecture within one Android application.
 
-## A command through the system
+## Commands, events and saves
 
-1. `Board` converts a screen position into a castle or moving army selection.
-2. A domain command validates the action and updates the match. Sending troops, joining a raid and applying arrival caps are decided in `Engine`.
-3. Match clocks advance movement, recruitment, terrain effects, spells and combat.
-4. The engine emits platform-free `AudioCue` events. `Board` forwards them through `GameAudio`.
-5. `AndroidGameAudio` waits for sample loading, starts or stops owned effect streams, and applies pause/resume state.
-6. `Board` renders the updated match, including formations, projectiles, clouds and team-colored counts.
+1. `GameView` translates touch coordinates into a selection or an engine command.
+2. `Engine` validates commands and advances match clocks; `AiCommander` uses the same deployment and spell operations as the simulation.
+3. `MatchAudioEvents` consumes pending audio cues before rendering. A shared raid token prevents staggered groups from repeating the battle-start sound; friendly reinforcement stays silent.
+4. `ArmyRenderer` and `CanvasPainter` draw current values. Drawing cannot consume the audio queue.
+5. Progression and purchases go through `PlayerProfile`, then the repository saves the updated profile.
 
-A shared raid token follows a combined army. A siege announces that token once, so staggered survivors do not duplicate battle-start audio. An independent hostile wave can announce itself; friendly reinforcement arrivals stay silent.
+The save adapter retains the `original-campaign` preference file, existing key names and the legacy `five-upgrades` migration. Excess tiers are refunded during restoration; saving normalized levels and clearing the migration marker prevents a second refund. `GameView` retains its per-match reward guard so a victory awards points only once.
 
 ## Stage and asset ownership
 
-Each campaign has the same terrain file pair:
-
-- `terrain/<campaign>/worlds.json` contains battlefield dimensions, overlay placements and scenery.
-- `terrain/<campaign>/manifest.json` contains the established overlay-fingerprint format.
-
-`map/campaigns.json` contains navigation markers. The root asset manifest links these files and the sprite/font metadata. This keeps battlefield data separate from campaign navigation and lets terrain generators update one campaign without rewriting the others.
+Every campaign uses `terrain/<campaign>/worlds.json` for battlefield dimensions, overlay placement and scenery, alongside `manifest.json` for geometry fingerprints. `map/campaigns.json` contains navigation markers. The root asset manifest links these resources and atlas/font metadata. `AndroidGameResources` parses them into typed layouts; presentation does not interpret JSON.
 
 ## Comment policy
 
-Keep each explanatory source comment to **one or two lines**. Explain an ownership rule, invariant or reason for a decision; let the type and method names describe ordinary steps. Longer explanations belong here or in the code map.
-
-Examples used in the implementation:
+Each explanatory source comment is **one or two lines**. Explain ownership, invariants or a reason that names alone cannot convey. Longer explanations belong in these documents. Avoid comments that merely restate a method name.
 
 ```java
-// Queue unloaded samples so the first spell cannot lose its launch sound.
+// Replays earn points, but only the next uncleared stage advances progression.
 ```
 
 ```java
-// Effect ownership keeps one tornado loop alive and stops it with its spell.
+// Terrain bitmaps are disposable between stages; shared atlases stay cached.
 ```
 
 ## Validation
 
-`tests/architecture_check.py` enforces domain independence, the audio adapter boundary and one/two-line source comments. `tests/run-checks.sh` compiles the platform-free classes with the JDK and checks gameplay, stage isolation, terrain data, raid grouping and audio events. Android instrumentation verifies actual sample loading, stream ownership, pause/resume and campaign navigation.
+`architecture_check.py` checks platform-free domain/application classes, independent adapters, the thin entry point, presentation boundaries and one/two-line comments recursively. `ApplicationCheck` covers profile encapsulation, progression, refunds, match initialization, immutable layouts and event delivery. `ProfileUiCheck` checks real Android preference migration and save round trips.
 
-`ShowcaseUiCheck` is a documentation capture fixture. It lives in the instrumentation APK, records the running game and decodes video frames for inspection. Its temporary progress and spell-demo settings do not change shipped game rules or saved player progression.
+The simulation, terrain, campaign, rendering, raid and audio checks retain their existing gameplay expectations. A before/after snapshot comparison covers initial state and 500 simulation ticks in all 90 stages. Documentation capture fixtures remain in the test APK and do not alter shipped game rules.
