@@ -1,0 +1,15 @@
+arrow
+attack1
+attack2
+dead
+explosion
+fire
+fireball
+hypnoses
+lost
+move1
+move2
+support
+town
+twister
+won

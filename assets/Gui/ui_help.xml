@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<GUI Class="UIImage" x="0" y="0" w="480" h="320" Layer="0">
+   <Image>white</Image>
+   <GUI Class="UIImage" x="41" y="34" w="404" h="241" Layer="0">
+   </GUI>
+   <GUI Class="UIClickButton" x="63" y="220" w="44" h="18" Layer="1">
+      <Image>help_left</Image>
+   </GUI>
+   <GUI Class="UIClickButton" x="351" y="220" w="44" h="18" Layer="1">
+      <Image>help_right</Image>
+   </GUI>
+   <GUI Class="UIClickButton" x="384" y="45" w="26" h="26" Layer="1">
+      <Image>help_exit</Image>
+   </GUI>
+</GUI>

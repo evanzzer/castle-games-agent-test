@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<GUI Class="UIImage" x="0" y="0" w="480" h="320" Layer="0">
+   <Image>white</Image>
+   <GUI Class="UIClickButton" x="142" y="97" w="175" h="55" Layer="0">
+      <Image>pause_continu</Image>
+   </GUI>
+   <GUI Class="UIClickButton" x="142" y="165" w="175" h="55" Layer="0">
+      <Image>pause_level</Image>
+   </GUI>
+</GUI>

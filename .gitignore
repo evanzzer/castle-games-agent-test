@@ -1,0 +1,12 @@
+build/
+outputs/
+*.jks
+*.keystore
+*.apk
+*.idsig
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+.env
+local.properties

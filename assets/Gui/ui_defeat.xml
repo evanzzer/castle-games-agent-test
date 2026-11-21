@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<GUI Class="UIImage" x="0" y="0" w="480" h="320" Layer="0">
+   <Image>white</Image>
+   <GUI Class="UIImage" x="0" y="0" w="451" h="241" Layer="0">
+      <Image>bg_defeat</Image>
+   </GUI>
+</GUI>
