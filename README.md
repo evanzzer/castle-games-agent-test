@@ -18,14 +18,14 @@ Castles recruit troops, crystal mines fund spells, and archer towers shoot at pa
 - **Persistent progression:** clear stages in order, replay completed missions and buy upgrades through five tiers.
 - **Music and effects:** battle tracks, spell sounds and combat audio follow the action.
 
-## Gameplay videos
+## Gameplay GIFs
 
-Click a preview to open its MP4 recording. Both clips are **18-second silent emulator captures**; the spell showcase uses a scripted crystal budget and upgraded reinforcement to demonstrate the effects.
+Both previews loop through the full **18-second** captures at 480×320 and 10 fps. The spell showcase uses a scripted crystal budget and upgraded reinforcement to demonstrate the effects.
 
 | Deployment and building combat | Spell showcase |
 | --- | --- |
-| [![Watch deployment and combat](docs/media/posters/deployment-and-combat.png)](docs/media/videos/deployment-and-combat.mp4) | [![Watch the spell showcase](docs/media/posters/spell-showcase.png)](docs/media/videos/spell-showcase.mp4) |
-| [Watch MP4](docs/media/videos/deployment-and-combat.mp4) · Send waves into a contested building. | [Watch MP4](docs/media/videos/spell-showcase.mp4) · Reinforcement, meteor impacts and tornado damage. |
+| ![Deployment and combat](docs/media/gifs/deployment-and-combat.gif) | ![Spell showcase](docs/media/gifs/spell-showcase.gif) |
+| Send waves into a contested building. | Reinforcement, meteor impacts and tornado damage. |
 
 ## Three campaigns
 
@@ -66,9 +66,9 @@ The APK is written to `build/Castle-Wars-Rebuilt.apk`. See the [development guid
 
 ## OOP and architecture
 
-The code separates domain rules, application use cases, presentation and Android adapters. `Main.java` stays directly under `src/castle/` as the executable entry point; supporting classes are grouped by responsibility. `PlayerProfile` owns progression and upgrades, `Engine` owns match state, and `AiCommander` owns AI decisions. The view receives resource, save and audio interfaces instead of opening platform services itself. Explanatory source comments are kept to one or two lines.
+The code uses a layered OOP design with partial Clean Architecture boundaries: domain rules, application use cases, presentation and Android adapters. `Main.java` stays directly under `src/castle/` as the executable entry point; supporting classes are grouped by responsibility. `PlayerProfile` owns progression and upgrades, `Engine` owns match state, and `AiCommander` owns AI decisions. The view receives resource, save and audio interfaces instead of opening platform services itself. Explanatory source comments are kept to one or two lines.
 
-- [Architecture and object responsibilities](docs/architecture.md)
+- [Architecture, folder rationale and current limitations](docs/architecture.md)
 - [Current code map](docs/code-map.md)
 - [Media capture notes](docs/media/README.md)
 

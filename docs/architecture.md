@@ -2,6 +2,42 @@
 
 The implementation uses object ownership and explicit dependencies to separate game rules from Android services. `Main.java` is the composition root: it creates adapters, injects them into `GameView` and forwards Android lifecycle events. It contains no rendering, save migration or gameplay rules.
 
+## What Clean Architecture means
+
+Clean Architecture protects application policies from UI, storage and framework details. Its central rule is that source dependencies point inward: domain rules do not name Android services, and outer adapters implement interfaces owned by the code that needs them. The circles are schematic; neither a fixed number of layers nor particular directory names is required. See [Robert C. Martin's original explanation](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
+
+OOP is a separate concern: objects combine state and behavior, with encapsulation controlling changes. `PlayerProfile` demonstrates that through purchase and progression methods. A folder or a Java class alone establishes neither encapsulation nor architectural independence.
+
+## Why these folders exist
+
+| Location | Reason for grouping | Boundary or limitation |
+| --- | --- | --- |
+| `Main.java` | One place to construct and connect the Android application. Its visible location also follows the requested entry-point layout. | A composition root must know concrete adapters; being outside the folders is a navigation choice. |
+| `domain/` | Rules that define a match and progression should be testable without Android. | This is the core policy boundary; it should not import the application, view or infrastructure. |
+| `application/` | Match creation and event delivery coordinate domain objects. Ports describe required save/audio capabilities; this is why the interfaces live beside their consumers rather than beside Android implementations. | These operations know domain types, while Android implementations depend on their interfaces. |
+| `presentation/` | Touch, screens, fonts, formations and Canvas drawing change together with the interface. | Android graphics types are acceptable here, but do not belong in domain contracts. |
+| `infrastructure/android/` | Preferences, asset decoding and media playback require Android APIs. | The extra `android/` segment groups platform implementations; no additional platform folder is needed until one exists. |
+| `domain/stages/` | Campaign policy and stage parsing share one feature area. | This is feature organization inside the domain, not another architectural layer. |
+| `domain/stages/data/` | `Original`, `Frontier` and `Wilds` are authored tables with the same role, consumed by the stage catalog. | These are compiled content records, not repositories or gameplay services. Individual campaign folders added unnecessary depth. If stages become external files, their loader belongs in infrastructure while validated definitions stay in the core. |
+
+`data/` here specifically means stage tables. JSON, images and sounds remain under `assets/`, because Android packages and loads those files as resources. Folder depth follows a distinct responsibility; it does not imply a stronger architecture.
+
+## Review of the current code
+
+The current implementation is a **layered OOP design with partial Clean Architecture boundaries**. Calling it a fully isolated Clean Architecture implementation would overstate what the code enforces.
+
+| Finding | Evidence | Assessment |
+| --- | --- | --- |
+| Rules run without Android. | `Engine`, `AiCommander`, `PlayerProfile` and the application classes compile in the JDK-only check suite. | A useful, verified independence boundary. |
+| Platform details are replaceable behind interfaces. | `AndroidProfileRepository`, `AndroidGameAudio` and `AndroidGameResources` implement injected contracts. | Dependency inversion exists at save, audio and resource access boundaries. |
+| The view still owns application orchestration. | `GameView.recordVictory()` guards rewards and saves; upgrade handlers purchase and persist directly; `onDraw()` advances simulation. | Progression/save transactions and match scheduling are not fully separated into use cases/controllers. |
+| The domain still includes presentation details. | `Engine.spellDetails()` formats tooltip text; `soldierCount()` defines visual density; audio cues name effects such as `fireball` and `twister`. | Platform-free code can still mix responsibilities. A stricter design would expose spell values and semantic events for outer presenters/adapters to format or map. |
+| Audio and rendering use the mutable match aggregate. | `GameAudio.update()` takes `Engine` plus UI playback flags; renderers read `Engine.Fort` and other match objects. | These contracts work here but couple adapters to internal match structure; output snapshots/events would narrow them. |
+| Some domain-folder types serve presentation. | `WorldLayout` and `MapMarker` describe visual placement; `CampaignInfo.title()` formats headings. | Their folder location is pragmatic grouping, not evidence that they are gameplay policy. A stricter separation would place these presentation values/helpers outside the domain. |
+| Folder separation is not compiler isolation. | All Java files declare `package castle`; the checks inspect selected names and imports with regular expressions, plus expected file locations. | Package-private access remains shared. Checks catch known leaks, not every possible dependency. Separate packages/modules or a dependency analyzer would enforce stronger boundaries. |
+
+The next meaningful architecture improvements would be application use cases for rewards/purchases and persistence, tooltip formatting outside `Engine`, semantic sound events, and compiler-enforced dependency boundaries. They require code changes and behavior checks; moving files alone does not accomplish them. This review documents those gaps without changing gameplay.
+
 ## Source layout
 
 ```text

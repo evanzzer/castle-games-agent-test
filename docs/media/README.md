@@ -1,15 +1,26 @@
 # Gameplay media
 
-The screenshots and MP4 files show Castle Wars Rebuilt v0.16 running on a 960×640 Android emulator. The clips are silent Android screen recordings, encoded as H.264 inside MP4 containers.
+The screenshots, GIF previews and MP4 source files show Castle Wars Rebuilt v0.16 running on a 960×640 Android emulator. The clips are silent Android screen recordings, encoded as H.264 inside MP4 containers.
 
 | Clip | Scenario |
 | --- | --- |
 | `videos/deployment-and-combat.mp4` | Original stage 5. Scripted troop orders use the normal recruitment and combat rules. |
 | `videos/spell-showcase.mp4` | Wild stage 65. A temporary 2,000-crystal budget and level-5 reinforcement show grouped arrivals, meteor impacts and tornado damage. |
 
-Both captures are 18 seconds long. Posters are decoded from the recorded video. Screenshots are taken from the running app. The capture fixture checks video duration, file size and three decoded frames before accepting a recording.
+Both captures are 18 seconds long. The README embeds looping GIF derivatives at 480×320 and 10 fps; the MP4 sources retain their original resolution. Posters are decoded from the recorded video. Screenshots are taken from the running app. The capture fixture checks video duration, file size and three decoded frames before accepting a recording.
 
-## Reproduce
+## Convert to GIF
+
+On macOS, use Swift with the system AVFoundation and ImageIO frameworks; no FFmpeg installation is required:
+
+```sh
+swift tools/video-to-gif.swift docs/media/videos/deployment-and-combat.mp4 docs/media/gifs/deployment-and-combat.gif
+swift tools/video-to-gif.swift docs/media/videos/spell-showcase.mp4 docs/media/gifs/spell-showcase.gif
+```
+
+The converter samples the whole clip, preserves normal playback speed and sets endless looping. `manifest.json` records frame counts, dimensions, durations and checksums for the converted files.
+
+## Reproduce source recordings
 
 Build and install the app on an attached emulator, then run:
 
