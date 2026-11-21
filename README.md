@@ -1,95 +1,79 @@
 # Castle Wars Rebuilt
 
-Native Android Canvas game, version **0.16**, with 90 sequential stages across Original, Frontier and Wild. This repository contains the current implementation, runtime assets, terrain authoring tools and tests. The decrypted IPA and reference workspace are kept outside the repository.
+A single-player Android strategy game about capturing castles, moving armies and choosing when to spend crystals on spells. Lead the red army against blue and yellow rivals through **90 sequential stages** across three campaigns.
 
-## Build
+**Current version: 0.16 · Android 6.0+ · Landscape**
 
-Requires a JDK with `javac --release 8`, Android SDK platform 33 and build-tools 33.0.1. Set `ANDROID_SDK_ROOT` or `ANDROID_HOME`; macOS defaults to `~/Library/Android/sdk`. `ANDROID_PLATFORM_VERSION` and `BUILD_TOOLS_VERSION` override the SDK defaults.
+![Armies raiding a crystal mine in the Original campaign](docs/media/screenshots/building-raid.png)
+
+## The game
+
+Every castle is a foothold. Send half its garrison to capture a neutral building, reinforce an ally or raid an enemy. Combine several armies for a stronger assault, or redirect a moving group when the battlefield changes.
+
+Castles recruit troops, crystal mines fund spells, and archer towers shoot at passing enemies. Swamps slow armies; poison drains their strength. Angel and shield altars give temporary protection, making the route to a target as important as the size of the army.
+
+- **Three rival armies:** team-colored buildings, flags and combat counts make the front line readable.
+- **Animated battles:** troop formations scale with army strength; sieges resolve gradually with clouds, arrows and casualty effects.
+- **Four spells:** bombard an area, create a tornado, disrupt enemy movement or summon reinforcements.
+- **Persistent progression:** clear stages in order, replay completed missions and buy upgrades through five tiers.
+- **Music and effects:** battle tracks, spell sounds and combat audio follow the action.
+
+## Gameplay videos
+
+Click a preview to open its MP4 recording. Both clips are **18-second silent emulator captures**; the spell showcase uses a scripted crystal budget and upgraded reinforcement to demonstrate the effects.
+
+| Deployment and building combat | Spell showcase |
+| --- | --- |
+| [![Watch deployment and combat](docs/media/posters/deployment-and-combat.png)](docs/media/videos/deployment-and-combat.mp4) | [![Watch the spell showcase](docs/media/posters/spell-showcase.png)](docs/media/videos/spell-showcase.mp4) |
+| [Watch MP4](docs/media/videos/deployment-and-combat.mp4) · Send waves into a contested building. | [Watch MP4](docs/media/videos/spell-showcase.mp4) · Reinforcement, meteor impacts and tornado damage. |
+
+## Three campaigns
+
+| Campaign | Stages | What changes |
+| --- | --- | --- |
+| **Original** | 1–30 | Learn deployment, buildings and terrain. Enemy nations use troop tactics without casting spells. |
+| **Frontier** | 31–60 | New layouts and curved hazard regions introduce enemy spell casting. |
+| **Wild** | 61–90 | New terrain shapes, more demanding routes and stronger enemy spell effects. |
+
+![Campaign selection with sequential stage progression](docs/media/screenshots/campaign-map.png)
+
+![A tornado and active sieges in the Wild campaign](docs/media/screenshots/spell-showcase.png)
+
+## How to play
+
+1. Select a friendly castle and drag to another castle to send **50%** of its troops. Select several castles to deploy them together.
+2. Capture neutral buildings and secure crystal income before committing to a long siege.
+3. Redirect moving armies to another castle when you need to defend or change the attack.
+4. Watch the terrain: swamp slows movement, while poison punishes time spent inside it.
+5. Choose a spell, read its tooltip and select a target. Friendly reinforcements can enter an allied castle under attack; besieged castles cannot deploy troops.
+
+| Spell | Use |
+| --- | --- |
+| **Meteor** | Fireballs damage enemies in an area, including nearby moving troops. |
+| **Tornado** | A moving damage effect remains active for a limited duration. |
+| **Mutiny** | Temporarily disrupts enemy troop movement. |
+| **Reinforce** | Groups appear around the chosen castle, then march inward to reinforce or invade it. |
+
+## Build and development
+
+The project uses Java and Android Canvas. With a JDK, Android platform 33 and build-tools 33.0.1 installed:
 
 ```sh
 ./build.sh
 ```
 
-Output: `build/Castle-Wars-Rebuilt.apk`. No Gradle or network access is required.
+The APK is written to `build/Castle-Wars-Rebuilt.apk`. See the [development guide](docs/development.md) for SDK configuration, signing, tests and terrain authoring.
 
-The existing signing key is retained locally at `.local/signing/debug.jks` and ignored by Git. `CASTLE_SIGNING_KEY` can select another key. Keep this key to install future builds over the existing app. A fresh clone without a key generates its own debug key; it cannot replace an installed app signed with the retained key.
+## OOP and architecture
 
-## Asset layout
+The game uses a platform-free domain model, immutable stage definitions and an audio interface backed by an Android adapter. `Main` composes the objects; `Board` handles presentation and input; game rules stay in `Engine` and its match objects. Explanatory source comments are kept to one or two lines.
 
-```text
-assets/
-  audio/
-    music/                  Menu and battle tracks
-    effects/                Movement, combat, spells and result sounds
-  fonts/                    Number bitmap and JSON glyph metadata
-  map/
-    backgrounds/            Map background artwork
-    campaigns.json          Campaign navigation markers
-  sprites/
-    units/                  Army atlas and JSON frame metadata
-    effects/                Combat and spell atlas and JSON metadata
-    scenery/                Scenery atlas and JSON metadata
-  terrain/
-    original/               Original overlays, worlds.json and manifest.json
-    frontier/               Frontier overlays, worlds.json and manifest.json
-    wild/                   Wild overlays, worlds.json and manifest.json
-  ui/
-    atlases/                Interface atlases and JSON frame metadata
-    help/                   Help screens and control atlas
-    loading/                Loading artwork
-    screens/                Standalone interface backgrounds
-  manifest.json             Runtime atlas, font and world entry points
-```
+- [Architecture and object responsibilities](docs/architecture.md)
+- [Current code map](docs/code-map.md)
+- [Media capture notes](docs/media/README.md)
 
-Each terrain campaign uses the same two-file format. `manifest.json` retains the established Frontier/Wild format: `schema_version` and `overlays` (geometry fingerprints). `worlds.json` stores `schema_version`, `campaign`, `first_stage` and 30 battlefield layouts. The root manifest links both files for each campaign; `map/campaigns.json` holds navigation markers only.
-
-Runtime metadata uses JSON schema version 1. Atlas and font entries share `frame: [x, y, width, height]`; fonts additionally define advances and line height. Image paths are complete, asset-relative paths. There are no runtime `.conf`, `.font` or legacy GUI XML files. Artwork and WAV bytes are preserved during relocation.
-
-## Source and code map
-
-See [docs/code-map.md](docs/code-map.md) for the current module responsibilities, map loading, simulation, rendering and audio flow. `Campaign` owns campaign boundaries and AI spell policy. `StageDefinition` parses the compact authored map data once into immutable stage definitions; each new game receives independent mutable objects.
-
-## Validate
-
-Requires Python 3 and `rg` in addition to the JDK:
+To run the domain and asset checks:
 
 ```sh
 ./tests/run-checks.sh
 ```
-
-This runs the simulation, campaign, terrain, audio-event, raid-wave and stage-catalog checks, validates JSON metadata and asset bounds, and verifies deterministic terrain generation. Generation checks regenerate the authored data in place; unchanged inputs must produce unchanged tracked files.
-
-For Android UI checks, start an Android emulator or connect a test device:
-
-```sh
-./build.sh
-adb -s emulator-5556 install --no-incremental -r build/Castle-Wars-Rebuilt.apk
-./tests/run-ui-check.sh UiCheck
-./tests/run-ui-check.sh CampaignInfoUiCheck
-./tests/run-ui-check.sh RaidUiCheck
-./tests/run-ui-check.sh AudioUiCheck
-```
-
-Set `ANDROID_SERIAL` to use another device. Screenshots and baked terrain are written to the app's external files directory on that test device; keep retrieved previews under ignored `outputs/previews/`.
-
-## Terrain authoring
-
-```sh
-python3 tools/generate_frontier.py
-python3 tools/generate_wilds.py
-```
-
-These update the corresponding authored Java tables, the campaign’s `terrain/<campaign>/worlds.json` and `tools/data/*-design.json`, while preserving other terrain campaigns and navigation markers. Frontier control plans are in `tools/data/frontier-region-plans.json`. The committed PNG overlays are tied to their geometry through `assets/terrain/{frontier,wild}/manifest.json`.
-
-When changing terrain geometry, use `TerrainBakeCheck` on Android to regenerate and validate the PNGs, then retrieve the emitted images and manifest into the matching terrain folder. Terrain baking uses the current `StageDefinition` through `Engine`, so collision geometry and visual silhouettes share the same regions.
-
-## Current gameplay policy
-
-- All castles start at 500 troops. Recruitment is 50 per 1.25 seconds and stops during combat; siege casualties tick every second.
-- Troop movement is 50 units per second, with the existing archer-origin bonus and terrain/upgrade modifiers. Deployment sends half the garrison.
-- Campaign I has no AI spells. Campaign II uses level 0 spells at 1.75 times cost; Campaign III uses level 2 spells at 1.4 times cost.
-- Reinforcements appear 100 units from the chosen castle; their tier totals are 100, 240, 280, 480, 540 and 800.
-- Music and effects play at 100% in-app volume. Movement and battle-start variants use an independent RNG. Combined raid groups announce once per siege; friendly reinforcements are silent on arrival.
-- Stage unlocks are sequential. Upgrade levels stop at tier 5.
-
-Build products, emulator state, keys, credentials and previews are ignored. This is a local Git repository; no remote publication is configured.

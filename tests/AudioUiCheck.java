@@ -13,10 +13,10 @@ public final class AudioUiCheck extends Instrumentation {
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
   waitForIdleSync();Main.Board board=(Main.Board)field(main,"board");
-  Random audioRandom=(Random)field(main,"audioRandom");
+  Random audioRandom=(Random)field(field(main,"audio"),"audioRandom");
   SystemClock.sleep(1200);
-  Map<String,Integer> ids=(Map<String,Integer>)field(main,"soundIds");Set<Integer> ready=(Set<Integer>)field(main,"readySounds");
-  Map<String,Integer> counts=(Map<String,Integer>)field(main,"soundStarts");Map<Object,Integer> streams=(Map<Object,Integer>)field(main,"effectStreams");
+  Map<String,Integer> ids=(Map<String,Integer>)field(field(main,"audio"),"soundIds");Set<Integer> ready=(Set<Integer>)field(field(main,"audio"),"readySounds");
+  Map<String,Integer> counts=(Map<String,Integer>)field(field(main,"audio"),"soundStarts");Map<Object,Integer> streams=(Map<Object,Integer>)field(field(main,"audio"),"effectStreams");
   runOnMainSync(()->{
    for(String name:new String[]{"move1","move2","attack1","attack2","arrow","fireball","explosion","twister","hypnoses","support"})check(ids.containsKey("effects/"+name+".wav")&&ready.contains(ids.get("effects/"+name+".wav")),"sample loaded successfully: "+name);
    board.mission=1;board.startMission();board.zoom=1;board.cameraX=board.cameraY=0;board.soundEnabled=true;board.engine.think=10000;
@@ -29,7 +29,7 @@ public final class AudioUiCheck extends Instrumentation {
   SystemClock.sleep(1400);
   runOnMainSync(()->{check(starts(counts,"explosion")==5&&streams.size()==1,"launch streams stopped at five impacts; tornado remains");board.paused=true;board.invalidate();});
   SystemClock.sleep(250);
-  runOnMainSync(()->{try{check((Boolean)field(main,"effectsPaused"),"SFX paused with game");}catch(Exception ex){throw new RuntimeException(ex);}board.paused=false;board.lastTime=0;board.invalidate();});
+  runOnMainSync(()->{try{check((Boolean)field(field(main,"audio"),"effectsPaused"),"SFX paused with game");}catch(Exception ex){throw new RuntimeException(ex);}board.paused=false;board.lastTime=0;board.invalidate();});
   SystemClock.sleep(9000);
   runOnMainSync(()->{
    check(board.engine.storms.isEmpty()&&streams.isEmpty()&&starts(counts,"twister")==1,"tornado ends without repeated starts or leaked loop");

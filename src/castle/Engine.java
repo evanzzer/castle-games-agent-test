@@ -1,5 +1,6 @@
 package castle;
 import java.util.*;
+/** A platform-free match aggregate that owns simulation state and gameplay rules. */
 final class Engine {
  static final float RECRUIT_INTERVAL=1.25f, COMBAT_INTERVAL=1f;
  static final float MARCH_SPEED=50f, ARCHERY_MARCH_SPEED=60f;
@@ -33,6 +34,7 @@ final class Engine {
  static int arrowDamage(Fort f){
   return Math.max(1,Math.round(Math.min(f.n,capacity(f))*.175f));
  }
+ /** A building garrison with its own recruitment clock and optional siege. */
  static class Fort {
   boolean waypoint;
   Fight fight;
@@ -40,6 +42,7 @@ final class Engine {
   float recruitTime, reload, flash, shotX, shotY;
   Fort(float x,float y,float n,int side,int kind){this.x=x;this.y=y;visualX=x;visualY=y;this.n=n;this.side=side;this.kind=kind;}
  }
+ /** A moving army retaining its origin type, destination, buffs and raid identity. */
  static class March {
   Encounter encounter;
   Object raidWave=new Object();
@@ -52,6 +55,7 @@ final class Engine {
   float y(){return encounter!=null?encounter.y:a.y+(b.y-a.y)*t;}
   March(Fort a,Fort b,int n){this.a=a;this.b=b;this.n=n;side=a.side;originKind=a.kind;d=Math.max(.01f,(float)Math.hypot(b.x-a.x,b.y-a.y));}
  }
+ /** A multi-team siege that computes each tick from the pre-tick strengths. */
  static final class Fight {
   final Set<Object> raidWaves=Collections.newSetFromMap(new IdentityHashMap<Object,Boolean>());
   final float[] troops=new float[4];
@@ -113,6 +117,7 @@ final class Engine {
   return base*originBonus*(1+.2f*attackLevel);
  }
 
+ /** A shared field battle that holds armies in place and combines survivor identity. */
  static final class Encounter {
   final Object combinedWave=new Object();
   final Set<Object> raidWaves=Collections.newSetFromMap(new IdentityHashMap<Object,Boolean>());
@@ -168,6 +173,7 @@ final class Engine {
   Altar(float x,float y,int buff){this.x=x;this.y=y;this.buff=buff;}
  }
  final ArrayList<Altar> altars=new ArrayList<>();
+ /** A polygonal slow or poison region with an independent damage clock. */
  static final class Marsh {
   final float[] points;
   final boolean dark;
@@ -228,6 +234,7 @@ final class Engine {
   CastNotice(int side,int spell,float x,float y){this.side=side;this.spell=spell;this.x=x;this.y=y;}
  }
  final ArrayList<CastNotice> castNotices=new ArrayList<>();
+ /** A platform-free playback event; the Android audio adapter owns the actual stream. */
  static final class AudioCue {
   final String name;final Object owner;final boolean loop,stop;
   AudioCue(String name){this(name,null,false,false);}

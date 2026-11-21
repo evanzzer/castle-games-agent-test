@@ -16,6 +16,7 @@ for source in "${checks[@]}"; do
     name="${source##*/}"
     java -cp build/check "castle.${name%.java}"
 done
+python3 tests/architecture_check.py
 python3 tests/assets_check.py
 python3 tests/frontier_data_check.py
 python3 tests/wilds_data_check.py

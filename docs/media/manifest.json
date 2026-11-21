@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "game_version": "0.16",
+  "videos": [
+    {
+      "file": "videos/deployment-and-combat.mp4",
+      "poster": "posters/deployment-and-combat.png",
+      "scenario": "battle",
+      "duration_ms": 17999,
+      "bytes": 5315248,
+      "width": 960,
+      "height": 640,
+      "codec": "video/avc",
+      "audio": false,
+      "sha256": "e060b92516f761a6ffaa3f59c9251f131adcf3f2863b3a656b2ba00d22bb0e5e"
+    },
+    {
+      "file": "videos/spell-showcase.mp4",
+      "poster": "posters/spell-showcase.png",
+      "scenario": "spells",
+      "duration_ms": 17997,
+      "bytes": 3626550,
+      "width": 960,
+      "height": 640,
+      "codec": "video/avc",
+      "audio": false,
+      "sha256": "a9f09beabdfa23f56a1701e36ca1e8b2c38e3f04b8fbf2bfd2697ed5aa1d2dd6"
+    }
+  ],
+  "screenshots": [
+    "screenshots/building-raid.png",
+    "screenshots/campaign-map.png",
+    "screenshots/spell-showcase.png"
+  ]
+}

@@ -19,7 +19,7 @@ public final class RaidUiCheck extends Instrumentation {
  @Override public void onStart(){Bundle result=new Bundle();try{
   Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN).setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
   waitForIdleSync();Main.Board board=(Main.Board)field(main,"board");
-  Map<String,Integer> counts=(Map<String,Integer>)field(main,"soundStarts");
+  Map<String,Integer> counts=(Map<String,Integer>)field(field(main,"audio"),"soundStarts");
   Engine.March[] incoming=new Engine.March[2];SystemClock.sleep(1000);
   runOnMainSync(()->{
    board.mission=1;board.startMission();board.rewardGiven=true;board.zoom=1;board.cameraX=board.cameraY=0;

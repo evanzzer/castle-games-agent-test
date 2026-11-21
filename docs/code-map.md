@@ -21,7 +21,9 @@
 | File | Responsibility |
 | --- | --- |
 | `src/castle/Engine.java` | Pure Java simulation: deployment, recruitment, multi-team sieges, field encounters, spell effects, terrain sampling, altar buffs, AI and victory/defeat state. |
-| `src/castle/Main.java` | Android lifecycle, Canvas rendering, selection/drag commands, campaign navigation, upgrades, result screens and audio playback. |
+| `src/castle/Main.java` | Android lifecycle, Canvas rendering, selection/drag commands, campaign navigation, upgrades, result screens and composition of the audio port. |
+| `src/castle/GameAudio.java` | Platform-free audio interface used by presentation. |
+| `src/castle/AndroidGameAudio.java` | Android SoundPool/MediaPlayer adapter, sample loading, stream ownership and lifecycle. |
 | `src/castle/AssetMetadata.java` | Versioned JSON loading and validated sprite/font frame rectangles. |
 | `src/castle/TerrainArt.java` | Terrain PNG baking from the simulation's actual region polygons. |
 | `src/castle/UpgradeRules.java` | Shared upgrade limits, purchase eligibility and saved-state normalization. |
@@ -32,7 +34,7 @@
 
 An `Engine.March` retains its origin building kind, strength, destination, buffs and shared raid token. Field encounters combine survivors under a lightweight token. A siege tracks which tokens have already been announced, preventing duplicate battle-start sound when the same combined army arrives in several groups. Friendly reinforcement arrivals add strength without announcing an attack.
 
-Engine spell and volley events enqueue `AudioCue` entries. The Android layer waits for SoundPool samples to load, owns and stops meteor/tornado streams, and pauses effects with the game. Background music is managed separately. Audio RNG is independent from simulation RNG.
+Engine spell and volley events enqueue `AudioCue` entries. `Board` forwards the events through `GameAudio`; `AndroidGameAudio` waits for samples, owns and stops meteor/tornado streams, and pauses effects with the game. Background music is managed separately. Audio RNG is independent from simulation RNG.
 
 Building combat uses the four combat-atlas cloud frames, with horizontal scale 0.70, vertical scale 0.90 and a center 16 units above the building ground anchor. Field encounters use their separate cloud frames. Counts are drawn above buildings and stack vertically during sieges.
 

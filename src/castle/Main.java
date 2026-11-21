@@ -3,47 +3,24 @@ package castle;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.*;
-import android.media.*;
+import android.media.AudioManager;
 import android.view.*;
 import org.json.*;
 import java.io.*;
 import java.util.*;
 
+/** Android composition root: wires presentation, the match engine and platform adapters. */
 public final class Main extends Activity {
     private Board board;
-    private MediaPlayer music;
-    private String musicName;
-    private SoundPool sounds;
-    private final Map<String, Integer> soundIds = new HashMap<>();
-    private final Map<String,Integer> soundStarts = new HashMap<>();
-    private final Set<Integer> readySounds = new HashSet<>();
-    private final IdentityHashMap<Object,Integer> effectStreams = new IdentityHashMap<>();
-    private final ArrayList<SoundRequest> pendingSounds = new ArrayList<>();
-    private boolean effectsPaused;
-    static final class SoundRequest {
-        final String file;final Object owner;final boolean loop;
-        SoundRequest(String file,Object owner,boolean loop){this.file=file;this.owner=owner;this.loop=loop;}
-    }
+    private GameAudio audio;
     private boolean foreground;
-    private final Random audioRandom = new Random();
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         immersive();
-        sounds = new SoundPool.Builder().setMaxStreams(24).setAudioAttributes(
-            new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).build()).build();
-        sounds.setOnLoadCompleteListener((pool,id,status)->{
-            if(status==0){readySounds.add(id);flushSounds();}
-            else android.util.Log.w("CastleWars","Sound load failed: "+id+" status "+status);
-        });
-        for (String file : new String[]{"effects/click.wav", "effects/move1.wav", "effects/move2.wav", "effects/attack1.wav", "effects/attack2.wav", "effects/arrow.wav", "effects/fireball.wav", "effects/twister.wav", "effects/hypnoses.wav", "effects/support.wav", "effects/explosion.wav"}) {
-            try (AssetFileDescriptor descriptor = getAssets().openFd("audio/" + file)) {
-                soundIds.put(file, sounds.load(descriptor, 1));
-            } catch (IOException failure) { android.util.Log.w("CastleWars", "Sound unavailable", failure); }
-        }
+        audio=new AndroidGameAudio(this);
         board = new Board();
         setContentView(board);
     }
@@ -60,97 +37,14 @@ public final class Main extends Activity {
     }
     @Override protected void onPause() {
         foreground = false;
-        if(sounds!=null){sounds.autoPause();effectsPaused=true;}
-        if (music != null && music.isPlaying()) music.pause();
+        if(audio!=null)audio.pause();
         if (board != null) { board.paused = board.engine != null; board.lastTime = 0; }
         super.onPause();
     }
-    @Override protected void onDestroy() { releaseMusic(); if (sounds != null) sounds.release(); super.onDestroy(); }
+    @Override protected void onDestroy() { if(audio!=null)audio.close(); super.onDestroy(); }
     @Override public void onBackPressed() { board.back(); }
 
-    private void sound(String file) { requestSound(new SoundRequest(file,null,false)); }
-    private boolean liveEffect(Object owner){
-        return board!=null && board.engine!=null && board.engine.result==0 &&
-            (owner instanceof Engine.Storm?board.engine.storms.contains(owner):
-             owner instanceof Engine.Meteor?board.engine.meteors.contains(owner)&&!((Engine.Meteor)owner).exploded:false);
-    }
-    private void requestSound(SoundRequest request){
-        if(board==null||!board.soundEnabled||!foreground)return;
-        if(request.owner!=null&&!liveEffect(request.owner))return;
-        if(request.owner!=null&&(board.paused||board.helpPage>=0)){
-            if(pendingSounds.size()<64)pendingSounds.add(request);return;
-        }
-        Integer id=soundIds.get(request.file);if(id==null)return;
-        if(!readySounds.contains(id)){
-            if(pendingSounds.size()<64)pendingSounds.add(request);
-            return;
-        }
-        float volume=1f;
-        int stream=sounds.play(id,volume,volume,request.file.endsWith("arrow.wav")?1:2,request.loop?-1:0,1);
-        if(stream!=0)soundStarts.put(request.file,soundStarts.getOrDefault(request.file,0)+1);
-        if(request.owner!=null&&stream!=0)effectStreams.put(request.owner,stream);
-    }
-    private void flushSounds(){
-        ArrayList<SoundRequest> ready=new ArrayList<>();
-        for(Iterator<SoundRequest> it=pendingSounds.iterator();it.hasNext();){
-            SoundRequest request=it.next();
-            if(readySounds.contains(soundIds.get(request.file))){it.remove();ready.add(request);}
-        }
-        for(SoundRequest request:ready)requestSound(request);
-    }
-    private void stopEffect(Object owner){
-        Integer stream=effectStreams.remove(owner);if(stream!=null)sounds.stop(stream);
-        pendingSounds.removeIf(request->request.owner==owner);
-    }
-    private void handleSound(Engine.AudioCue cue){
-        if(cue.stop)stopEffect(cue.owner);
-        else requestSound(new SoundRequest("effects/"+cue.name+".wav",cue.owner,cue.loop));
-    }
-    private void syncSoundState(){
-        for(Object owner:new ArrayList<>(effectStreams.keySet()))if(!liveEffect(owner)||!board.soundEnabled)stopEffect(owner);
-        pendingSounds.removeIf(request->request.owner!=null&&!liveEffect(request.owner));
-        boolean pause=!foreground||!board.soundEnabled||board.engine!=null&&(board.paused||board.helpPage>=0);
-        if(pause!=effectsPaused){if(pause)sounds.autoPause();else sounds.autoResume();effectsPaused=pause;}
-        if(!pause&&!pendingSounds.isEmpty())flushSounds();
-    }
-    private void releaseMusic() {
-        if (music != null) music.release();
-        music = null;
-        musicName = null;
-    }
-    private void updateMusic() {
-        String requested = board.engine == null ? "music/menu.wav" :
-            board.engine.result == 1 && board.resultElapsed() >= 1000 ? "effects/won.wav" :
-            board.engine.result == 2 && board.resultElapsed() >= 1000 ? "effects/lost.wav" : board.battleMusic;
-        if (!board.musicEnabled) requested = null;
-        if (!Objects.equals(requested, musicName)) {
-            releaseMusic();
-            musicName = requested;
-            if (requested != null) {
-                try (AssetFileDescriptor file = getAssets().openFd("audio/" + requested)) {
-                    music = new MediaPlayer();
-                    music.setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_GAME)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
-                    music.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-                    music.setLooping(!requested.startsWith("effects/"));
-                    music.setVolume(1f,1f);
-                    music.setOnCompletionListener(player -> {
-                        if (music == player) { music.release(); music = null; }
-                    });
-                    music.prepare();
-                } catch (IOException | RuntimeException failure) {
-                    android.util.Log.w("CastleWars", "Audio unavailable", failure);
-                    if (music != null) music.release();
-                    music = null;
-                }
-            }
-        }
-        if (music == null) return;
-        boolean playing = foreground && !(board.engine != null && (board.paused || board.helpPage >= 0));
-        if (playing && !music.isPlaying()) music.start();
-        if (!playing && music.isPlaying()) music.pause();
-    }
+    private void sound(String file) { if(board.soundEnabled && foreground)audio.play(file); }
 
     final class Sprite {
         final Bitmap image;
@@ -158,6 +52,7 @@ public final class Main extends Activity {
         Sprite(Bitmap image, Rect frame) { this.image = image; this.frame = frame; }
     }
 
+    /** Converts input into game commands and renders the current match without owning platform media APIs. */
     final class Board extends View {
         final Paint paint = new Paint(3);
         final Map<String, Bitmap> images = new HashMap<>();
@@ -343,6 +238,7 @@ public final class Main extends Activity {
             }
             if(engine!=null && engine.result!=0 && resultStarted==0)resultStarted=now;
             recordVictory();
+            audio.update(engine,foreground,paused||helpPage>=0,soundEnabled,musicEnabled,battleMusic,resultElapsed()>=1000);
             if (engine != null) drawBattle(canvas);
             else if (screen.equals("campaign")) drawCampaign(canvas);
             else if (screen.equals("upgrade")) drawUpgrades(canvas);
@@ -350,7 +246,6 @@ public final class Main extends Activity {
             else drawMenu(canvas);
             if (helpPage >= 0) drawHelp(canvas);
             canvas.restore();
-            syncSoundState();updateMusic();
             if (foreground && (engine != null || screen.equals("campaign"))) postInvalidateOnAnimation();
         }
         void drawMenu(Canvas canvas) {
@@ -457,12 +352,12 @@ public final class Main extends Activity {
             engine.energy = 200 * (1 + upgrades[4] * .25f);
             for (int i = 0; i < 4; i++) engine.skillLevels[i] = upgrades[6 + i];
             heardRaidSerial = 0;resultStarted=0;resultDialog=false;
-            battleMusic = "music/battle" + (1 + audioRandom.nextInt(3)) + ".wav";
+            battleMusic=audio.chooseBattleTrack();
             rewardGiven = false; paused = false; spell = spellInfo = -1; lastTime = 0;
             selected.clear(); selectedTroops.clear();
             zoom = Math.min(480 / width(), 275 / height());
             cameraX = cameraY = 0;
-            releaseMusic();
+            audio.restartMusic();
             invalidate();
         }
         float worldX(float x) { return x / zoom + cameraX; }
@@ -550,7 +445,7 @@ public final class Main extends Activity {
             for (Engine.Encounter encounter : engine.encounters) drawEncounter(canvas, encounter);
             while (heardRaidSerial < engine.raidSerial) {
                 heardRaidSerial++;
-                sound("effects/attack"+(1+audioRandom.nextInt(2))+".wav");
+                audio.playBattleStart();
             }
             for (Engine.Arrow arrow : engine.arrows) {
                 float progress = Math.min(1, arrow.elapsed / .2f);
@@ -580,7 +475,7 @@ public final class Main extends Activity {
                 natural(canvas,"soldier_die"+death.variant,death.x+death.drift*death.age,death.y-12-death.age*32,.5f);
                 canvas.restoreToCount(layer);
             }
-            for(Engine.AudioCue cue:engine.audioCues)handleSound(cue);
+            for(Engine.AudioCue cue:engine.audioCues)audio.play(cue);
             engine.audioCues.clear();
             if (dragTroop != null && moved) {
                 paint.setColor(0xbbffda58);paint.setStrokeWidth(2 / zoom);
@@ -689,7 +584,7 @@ public final class Main extends Activity {
         }
         void deploySelection(float x,float y) {
             if(engine.command(selected,selectedTroops,fortAt(x,y),worldX(x),worldY(y))>0) {
-                sound("effects/move"+(1+audioRandom.nextInt(2))+".wav");
+                audio.playMovement();
                 selected.clear();selectedTroops.clear();spellInfo=-1;
             }
         }
