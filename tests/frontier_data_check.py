@@ -2,7 +2,7 @@
 from pathlib import Path
 import json,subprocess,sys,hashlib,struct
 root=Path(__file__).resolve().parents[1]
-data=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())
+data=json.loads((root/'assets/terrain/frontier/worlds.json').read_text())
 assert data['campaign']=='frontier' and data['first_stage']==31 and len(data['worlds'])==30
 design=json.loads((root/'tools/data/frontier-design.json').read_text())
 archive=json.loads((root/'tools/data/frontier-region-plans.json').read_text())
@@ -34,13 +34,14 @@ for i,(entry,world) in enumerate(zip(design,data['worlds'])):
  assert manifest[path.name]==hashlib.sha256(rows[i].encode()).hexdigest()
  count+=len(expected)
 assert count==59
-preserved=[root/'assets/terrain/original/manifest.json',root/'assets/terrain/wild/manifest.json',root/'assets/map/campaigns.json']
+preserved=sorted((root/'assets/terrain').glob('*/*.json'))
+preserved=[p for p in preserved if p!=root/'assets/terrain/frontier/worlds.json']+[root/'assets/map/campaigns.json']
 original=[p.read_bytes() for p in preserved]
-terrain_before=(root/'assets/terrain/frontier/manifest.json').read_bytes()
+terrain_before=(root/'assets/terrain/frontier/worlds.json').read_bytes()
 source=(root/'src/castle/Frontier.java').read_bytes()
 subprocess.run([sys.executable,'tools/generate_frontier.py'],cwd=root,check=True)
-updated=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())
+updated=json.loads((root/'assets/terrain/frontier/worlds.json').read_text())
 assert [p.read_bytes() for p in preserved]==original
-assert (root/'assets/terrain/frontier/manifest.json').read_bytes()==terrain_before
+assert (root/'assets/terrain/frontier/worlds.json').read_bytes()==terrain_before
 assert (root/'src/castle/Frontier.java').read_bytes()==source
 print('Restored Frontier checks passed: curved outlines at original footprints, 59 regions, PNG geometry fingerprints; other campaigns preserved.')

@@ -67,7 +67,7 @@ def regions(kind,rng):
  if kind==7:return [(51,crescent(480,320,235,180,60,180)),(50,o(365,170,85,65)),(50,o(595,470,85,65))]
  if kind==8:return [(50,channel([(350,85),(490,200),(400,320),(540,440),(450,555)],32)),(51,o(250,480,95,65)),(51,o(710,160,95,65))]
  return [(51,crescent(480,320,250,200,62,75)),(50,o(390,330,60,72)),(50,o(620,450,75,60))]
-data=json.loads((ROOT/'assets/terrain/wild/manifest.json').read_text())
+data=json.loads((ROOT/'assets/terrain/wild/worlds.json').read_text())
 data['worlds']=[]
 rows=[];terrain=[];altars=[];titles=[];tips=[];catalog=[]
 keys=list(layouts)
@@ -102,7 +102,7 @@ for i,name in enumerate(names):
  data['worlds'].append(dict(width=960,height=640,overlay=[f'terrain/wild/terrain{stage}.png',480,320,960,640],objects=objects,custom=True,name=name,brief=brief,new_terrain=True))
  rows.append(';'.join(records));terrain.append(';'.join(zone_rows));altars.append(';'.join(pickups));titles.append(name);tips.append(brief)
  catalog.append(dict(stage=stage,name=name,brief=brief,layout=family,regions=zones,altars=pickups,buildings=nodes,art_sources=['terrain5.png material','terrain7.png material'],original_shape_source=None))
-(ROOT/'assets/terrain/wild/manifest.json').write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')
+(ROOT/'assets/terrain/wild/worlds.json').write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')
 lines=['package castle;','final class Wilds {']
 for key,values in [('NAMES',titles),('BRIEFS',tips),('BUILDINGS',rows),('MARSHES',terrain),('ALTARS',altars)]:
  lines+=[' static final String[] '+key+' = {']+['  '+json.dumps(v)+',' for v in values]+[' };']

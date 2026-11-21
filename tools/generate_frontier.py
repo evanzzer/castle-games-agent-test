@@ -92,7 +92,7 @@ region_plans=json.loads((ROOT/'tools/data/frontier-region-plans.json').read_text
 plans=region_plans['plans']
 terrain_plans=region_plans['stage_plans']
 terrain_briefs=['Swamp divides the approaches. Use the outer routes to reinforce.', 'Central poison punishes shortcuts; crystal mines fund your spells.', 'Slow and poison bands reward support castles on both sides.', 'Parallel poison and slow lanes leave a clear middle route.', 'Poison pockets guard opposite approaches. Contest the clear crossings.', 'A diagonal swamp exposes armies. Use nearby castles to shorten the march.', 'Mixed hazards split the centre. Coordinate arrivals along safe flanks.']
-world_data=json.loads((ROOT/'assets/terrain/frontier/manifest.json').read_text())
+world_data=json.loads((ROOT/'assets/terrain/frontier/worlds.json').read_text())
 world_data['worlds']=[]
 names=[];tips=[];buildings=[];marshes=[];altars=[];details=[]
 for index,(name,layout,turn,three,altar) in enumerate(specs):
@@ -140,7 +140,7 @@ for index,(name,layout,turn,three,altar) in enumerate(specs):
  world_data['worlds'].append(dict(width=960,height=640,overlay=overlay,objects=objects,custom=True,name=name,brief=brief,terrain_layout_version="v0.13-curved"))
  names.append(name);tips.append(brief);buildings.append(';'.join(records));marshes.append(';'.join(zone_records));altars.append(';'.join(pickups))
  details.append(dict(stage=index+31,name=name,layout=layout,brief=brief,building_count=len(nodes),teams=3 if three else 2,regions=zones,altars=pickups,terrain_layout_version="v0.13-curved"))
-(ROOT/'assets/terrain/frontier/manifest.json').write_text(json.dumps(world_data,indent=2,ensure_ascii=False)+'\n')
+(ROOT/'assets/terrain/frontier/worlds.json').write_text(json.dumps(world_data,indent=2,ensure_ascii=False)+'\n')
 lines=['package castle;','final class Frontier {']
 for key,values in [('NAMES',names),('BRIEFS',tips),('BUILDINGS',buildings),('MARSHES',marshes),('ALTARS',altars)]:lines+=java_array(key,values)
 lines+=['}'];(ROOT/'src/castle/Frontier.java').write_text('\n'.join(lines)+'\n')

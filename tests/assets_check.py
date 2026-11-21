@@ -32,7 +32,10 @@ assert set(navigation) == {'original', 'frontier', 'wild'}
 assert not (assets / 'map/worlds.json').exists()
 for index, group in enumerate(['original', 'frontier', 'wild']):
     assert len(navigation[group]['markers']) == 30
-    terrain = load(manifest['terrain'][group])
+    entry = manifest['terrain'][group]
+    terrain = load(entry['worlds'])
+    fingerprints = load(entry['manifest'])
+    assert set(fingerprints) == {'schema_version', 'overlays'}
     assert terrain['campaign'] == group and terrain['first_stage'] == index * 30 + 1
     assert len(terrain['worlds']) == 30
     java_name = {'original':'Missions', 'frontier':'Frontier', 'wild':'Wilds'}[group]
@@ -43,7 +46,7 @@ for index, group in enumerate(['original', 'frontier', 'wild']):
         if world.get('overlay'):
             path = world['overlay'][0]
             image_size(path)
-            assert terrain['overlays'][Path(path).name] == hashlib.sha256(rows[local].encode()).hexdigest()
+            assert fingerprints['overlays'][Path(path).name] == hashlib.sha256(rows[local].encode()).hexdigest()
             assert path.startswith('terrain/' + group + '/')
 for path in assets.rglob('*'):
     if path.is_file() and not path.name.startswith('.'):

@@ -219,7 +219,7 @@ public final class Main extends Activity {
                 JSONObject terrainPaths=manifest.getJSONObject("terrain");
                 worlds=new JSONArray();
                 for(Campaign campaign:Campaign.values()){
-                    JSONObject terrain=AssetMetadata.read(getAssets(),terrainPaths.getString(campaign.id));
+                    JSONObject terrain=AssetMetadata.read(getAssets(),terrainPaths.getJSONObject(campaign.id).getString("worlds"));
                     JSONArray levels=terrain.getJSONArray("worlds");
                     if(!terrain.getString("campaign").equals(campaign.id)||terrain.getInt("first_stage")!=campaign.firstStage||levels.length()!=Campaign.STAGES_PER_CAMPAIGN)
                         throw new JSONException("Invalid terrain world group: "+campaign.id);

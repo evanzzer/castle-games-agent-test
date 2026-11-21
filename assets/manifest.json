@@ -16,8 +16,17 @@
   "number_font": "fonts/numbers.json",
   "campaigns": "map/campaigns.json",
   "terrain": {
-    "original": "terrain/original/manifest.json",
-    "frontier": "terrain/frontier/manifest.json",
-    "wild": "terrain/wild/manifest.json"
+    "original": {
+      "manifest": "terrain/original/manifest.json",
+      "worlds": "terrain/original/worlds.json"
+    },
+    "frontier": {
+      "manifest": "terrain/frontier/manifest.json",
+      "worlds": "terrain/frontier/worlds.json"
+    },
+    "wild": {
+      "manifest": "terrain/wild/manifest.json",
+      "worlds": "terrain/wild/worlds.json"
+    }
   }
 }

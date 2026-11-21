@@ -1,11 +1,12 @@
 from pathlib import Path
 import json,hashlib,struct,subprocess,sys
 root=Path(__file__).resolve().parents[1]
-data=json.loads((root/'assets/terrain/wild/manifest.json').read_text())
+data=json.loads((root/'assets/terrain/wild/worlds.json').read_text())
 assert data['campaign']=='wild' and data['first_stage']==61 and len(data['worlds'])==30
-preserved=[root/'assets/terrain/original/manifest.json',root/'assets/terrain/frontier/manifest.json',root/'assets/map/campaigns.json']
+preserved=sorted((root/'assets/terrain').glob('*/*.json'))
+preserved=[p for p in preserved if p!=root/'assets/terrain/wild/worlds.json']+[root/'assets/map/campaigns.json']
 original=[p.read_bytes() for p in preserved]
-terrain_before=(root/'assets/terrain/wild/manifest.json').read_bytes()
+terrain_before=(root/'assets/terrain/wild/worlds.json').read_bytes()
 metadata=json.loads((root/'tools/data/wilds-design.json').read_text())
 assert [m['stage'] for m in metadata]==list(range(61,91))
 assert len({json.dumps(m['regions'],sort_keys=True) for m in metadata})==30
@@ -25,5 +26,5 @@ for world,item in zip(data['worlds'],metadata):
 assert len(hashes)==30
 subprocess.run([sys.executable,'tools/generate_wilds.py'],cwd=root,check=True)
 assert [p.read_bytes() for p in preserved]==original
-assert (root/'assets/terrain/wild/manifest.json').read_bytes()==terrain_before
+assert (root/'assets/terrain/wild/worlds.json').read_bytes()==terrain_before
 print('Wilds data checks passed: 30 unique RGBA terrain overlays; original artwork materials; first sixty worlds preserved.')

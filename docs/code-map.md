@@ -10,7 +10,8 @@
 | `src/castle/Missions.java`, `Altars.java` | Checked-in original building, terrain and altar data. No reference-file import is required to build or run. |
 | `src/castle/Frontier.java`, `Wilds.java` | Generated data for stages 31–60 and 61–90, including names, descriptions, buildings, regions and altars. |
 | `assets/map/campaigns.json` | Campaign navigation markers only. |
-| `assets/terrain/{original,frontier,wild}/manifest.json` | Each campaign’s 30 battlefield dimensions, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
+| `assets/terrain/{original,frontier,wild}/worlds.json` | Each campaign’s 30 battlefield dimensions, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
+| `assets/terrain/{original,frontier,wild}/manifest.json` | Geometry-fingerprint indexes with the established `schema_version` and `overlays` format, identical in structure across the three campaigns. |
 | `tools/generate_frontier.py`, `generate_wilds.py` | Deterministic terrain/campaign authoring. Metadata for authoring and regression checks lives under `tools/data/`. |
 
 `Engine(stage, rank)` selects a `StageDefinition`, obtains its campaign policy and populates fresh forts, region point arrays and altars. Battlefield visual layouts live beside their terrain assets, while campaign navigation stays under `assets/map/`. Stage data is parsed once. Game state never mutates the shared stage definitions. The original, Frontier and Wild tables use this same path instead of separate loading branches.
@@ -25,7 +26,7 @@
 | `src/castle/TerrainArt.java` | Terrain PNG baking from the simulation's actual region polygons. |
 | `src/castle/UpgradeRules.java` | Shared upgrade limits, purchase eligibility and saved-state normalization. |
 
-`assets/manifest.json` identifies every runtime atlas, the number font, campaign navigation and three terrain manifests. Atlases and fonts use the same JSON frame rectangle format. The renderer follows complete asset-relative image paths, so folder names do not encode engine behavior. No legacy configuration parser remains in the runtime.
+`assets/manifest.json` identifies every runtime atlas, the number font, campaign navigation and terrain layout files and fingerprint manifests. Atlases and fonts use the same JSON frame rectangle format. The renderer follows complete asset-relative image paths, so folder names do not encode engine behavior. No legacy configuration parser remains in the runtime.
 
 ## Combat and audio flow
 
