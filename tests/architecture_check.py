@@ -7,7 +7,7 @@ source = root / 'src/castle'
 files = {path.stem: path for path in source.rglob('*.java')}
 def java(name):
     return files[name].read_text()
-core = ['Engine', 'Campaign', 'StageDefinition', 'CampaignInfo', 'Original', 'Frontier', 'Wilds', 'Citadel', 'UpgradeRules', 'GameAudio', 'AiCommander',
+core = ['Engine', 'Campaign', 'StageDefinition', 'CampaignInfo', 'Original', 'Frontier', 'Wilds', 'Citadel', 'Zenith', 'UpgradeRules', 'GameAudio', 'AiCommander',
         'PlayerProfile', 'ProfileRepository', 'MatchFactory', 'MatchAudioEvents',
         'WorldLayout', 'MapMarker']
 assert {p.name for p in source.glob('*.java')} == {'Main.java'}, 'Only the entry point belongs outside responsibility folders'
@@ -17,6 +17,7 @@ expected = {
     'Frontier': 'domain/stages/data/Frontier.java',
     'Wilds': 'domain/stages/data/Wilds.java',
     'Citadel': 'domain/stages/data/Citadel.java',
+    'Zenith': 'domain/stages/data/Zenith.java',
     'Engine': 'domain/Engine.java', 'AiCommander': 'domain/AiCommander.java',
     'PlayerProfile': 'domain/PlayerProfile.java', 'Campaign': 'domain/stages/Campaign.java',
     'MatchFactory': 'application/MatchFactory.java', 'MatchAudioEvents': 'application/MatchAudioEvents.java',

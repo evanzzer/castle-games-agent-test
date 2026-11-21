@@ -1,6 +1,6 @@
 # Development guide
 
-Native Android Canvas game, version **0.16**, with 90 sequential stages across Original, Frontier and Wild. This repository contains the current implementation, runtime assets, terrain authoring tools and tests. The decrypted IPA and reference workspace are kept outside the repository.
+Native Android Canvas game, version **0.16**, with 150 sequential stages across Original, Frontier, Wild, Citadel and Zenith. This repository contains the current implementation, runtime assets, terrain authoring tools and tests. The decrypted IPA and reference workspace are kept outside the repository.
 
 ## Build
 
@@ -35,6 +35,8 @@ assets/
     original/               Original overlays, worlds.json and manifest.json
     frontier/               Frontier overlays, worlds.json and manifest.json
     wild/                   Wild overlays, worlds.json and manifest.json
+    citadel/                Thirty unique overlays (terrain91-120.png), worlds.json and manifest.json
+    zenith/                 Thirty unique overlays (terrain121-150.png), worlds.json and manifest.json
   ui/
     atlases/                Interface atlases and JSON frame metadata
     help/                   Help screens and control atlas
@@ -98,6 +100,8 @@ When changing terrain geometry, use `TerrainBakeCheck` on Android to regenerate 
 - Music and effects play at 100% in-app volume. Movement and battle-start variants use an independent RNG. Combined raid groups announce once per siege; friendly reinforcements are silent on arrival.
 - Stage unlocks are sequential. Each stage clear, including replays, awards a flat 0.5 upgrade points. Each upgrade costs 1 point and stops at tier 5. The former Experience upgrade now increases friendly castle recruitment to 50/55/60/65/70/75 troops per 1.25-second tick; existing tiers carry over. All eleven upgrade descriptions use editable text with current/next numerical values from shared gameplay formulas. Attack and defense use clearly labeled reference examples because actual casualties depend on the armies involved. Integer save balances migrate to fractional balances without losing points.
 
-AI attack/defense tiers are separate from spell tiers. Original uses 0/0. Frontier uses 1/0 for stages 31–45 and 2/1 for 46–60. Wild uses 3/2 for 61–75 and 4/3 for 76–90. Citadel uses 5/4 throughout stages 91–120. Original, Frontier and Wild retain base enemy economy/movement upgrades; Citadel retains tier-3 starting crystals, crystal production, castle generation, movement and cooldown upgrades, with level-3 spells at 1.25 times cost.
+AI attack/defense tiers are separate from spell tiers. Original uses 0/0. Frontier uses 1/0 for stages 31–45 and 2/1 for 46–60. Wild uses 3/2 for 61–75 and 4/3 for 76–90. Citadel uses 5/4 throughout stages 91–120. Original, Frontier and Wild retain base enemy economy/movement upgrades; Citadel retains tier-3 starting crystals, crystal production, castle generation, movement and cooldown upgrades, with level-3 spells at 1.25 times cost. Zenith uses 5/5, tier-4 economy and movement upgrades, and level-4 spells at 1.1 times cost.
+
+Citadel and Zenith are authored by `tools/generate_citadel.py` and `tools/generate_zenith.py`. Every stage is exactly symmetric (mirror on both axes, 180-degree turn, or x-mirror), has its own terrain PNG and building count, and starts red and blue with the same 3–5 houses (Zenith yellow has its own 3–5). Difficulty is a per-stage ownership ledger (mines, towers, yellow keeps, centre castle) chosen from measured bot win rates and stored in `tools/data/{citadel,zenith}-ladder.json`; `tools/data/*-design.json` records every stage. Backgrounds follow a 3-2-2-3 mix of the four map biomes in each ten-stage block.
 
 Build products, emulator state, keys, credentials and previews are ignored. This is a local Git repository; no remote publication is configured.

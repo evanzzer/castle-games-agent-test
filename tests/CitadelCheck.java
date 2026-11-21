@@ -10,9 +10,11 @@ public final class CitadelCheck {
    check(e.campaign==Campaign.CITADEL&&e.marshes.size()>=2&&e.altars.size()>=4,"authored terrain and altars");
    boolean red=false,enemy=false;
    for(Engine.Fort f:e.forts){check(f.x>20&&f.x<940&&f.y>20&&f.y<620&&f.n==500,"site inside map");red|=f.side==1;enemy|=f.side==2;}
-   check(red&&enemy&&e.forts.size()>=17&&e.forts.size()<=40,"playable building count with both factions");counts.add(e.forts.size());
+   check(red&&enemy&&e.forts.size()>=14&&e.forts.size()<=40,"playable building count with both factions");counts.add(e.forts.size());
    for(int side=2;side<=3;side++)check(e.attackLevels[side]==5&&e.defenseLevels[side]==4&&e.nationEnergy[side]==350,"enemy tier");
    for(int s=0;s<4;s++)check(Math.abs(e.spellCost(2,s)-Engine.COST[s]*1.25f)<.001&&e.spellCost(1,s)==Engine.COST[s],"1.25x enemy spell cost");
+   int[] h=new int[4];for(Engine.Fort f:e.forts)if(f.kind==Engine.GENERATOR)h[f.side]++;
+   check(h[1]==h[2]&&h[1]>=3&&h[1]<=5,"red and blue start with the same 3-5 houses");
    // Every stage is exactly symmetric under an x-mirror or a 180-degree turn (D2 stages satisfy both).
    boolean mirror=true,turn=true;
    for(Engine.Fort f:e.forts){boolean m=false,t=false;

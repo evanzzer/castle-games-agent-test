@@ -381,8 +381,9 @@
       ],
       "custom": true,
       "name": "First Reflection",
-      "brief": "You 4, foe 3 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 0, foe 1.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -580,8 +581,9 @@
       ],
       "custom": true,
       "name": "Twin Keeps",
-      "brief": "You 4, foe 5 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 0, foe 3. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -779,8 +781,9 @@
       ],
       "custom": true,
       "name": "Quiet Meridian",
-      "brief": "Mirror: 5 keeps each. Foe holds centre.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 0, foe 2. Yellow holds 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -978,8 +981,9 @@
       ],
       "custom": true,
       "name": "Glass Border",
-      "brief": "Mirror: 5 keeps each. Yellow holds 2. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 3, foe 4. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -1177,8 +1181,9 @@
       ],
       "custom": true,
       "name": "Turning Tide",
-      "brief": "You 5, foe 8 keeps. Foe holds centre.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 0, foe 5. Yellow holds 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -1558,8 +1563,9 @@
       ],
       "custom": true,
       "name": "Level Ground",
-      "brief": "Mirror: 5 keeps each. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 0, foe 3. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -1757,8 +1763,9 @@
       ],
       "custom": true,
       "name": "Mirrored Mines",
-      "brief": "You 4, foe 8 keeps.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 0, foe 3. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -2138,8 +2145,9 @@
       ],
       "custom": true,
       "name": "Pivot of Dusk",
-      "brief": "You 5, foe 6 keeps. Yellow holds 2. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 1, foe 4. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -2337,8 +2345,9 @@
       ],
       "custom": true,
       "name": "Narrow Margin",
-      "brief": "Mirror: 5 keeps each. Yellow holds 2. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 1, foe 3. Yellow holds 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -2718,8 +2727,9 @@
       ],
       "custom": true,
       "name": "Yellow Wedge",
-      "brief": "You 4, foe 6 keeps. Yellow holds 2. Foe holds centre.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 0, foe 5. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -2917,8 +2927,9 @@
       ],
       "custom": true,
       "name": "Cold Symmetry",
-      "brief": "You 4, foe 6 keeps. Yellow holds 2. Foe holds centre.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 0, foe 3. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -3116,8 +3127,9 @@
       ],
       "custom": true,
       "name": "Borrowed Time",
-      "brief": "You 4, foe 6 keeps. Yellow holds 2. Foe holds centre.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 0, foe 2. Yellow holds 3.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -3315,8 +3327,9 @@
       ],
       "custom": true,
       "name": "Towers of Dusk",
-      "brief": "You 5, foe 7 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 1, foe 3. Yellow holds 3.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -3514,8 +3527,9 @@
       ],
       "custom": true,
       "name": "Shared Crown",
-      "brief": "You 4, foe 8 keeps.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 1, foe 6.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -3895,8 +3909,9 @@
       ],
       "custom": true,
       "name": "Hairline Fracture",
-      "brief": "Mirror: 5 keeps each. Yellow holds 2. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 1, foe 6. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -4094,8 +4109,9 @@
       ],
       "custom": true,
       "name": "Counterweight",
-      "brief": "You 4, foe 7 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 1, foe 5. Yellow holds 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -4475,8 +4491,9 @@
       ],
       "custom": true,
       "name": "Split Allegiance",
-      "brief": "You 4, foe 8 keeps.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 4, foe 7. Yellow holds 3.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -4674,8 +4691,9 @@
       ],
       "custom": true,
       "name": "Last Neutral",
-      "brief": "You 4, foe 7 keeps. Foe holds centre.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 0, foe 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -5055,8 +5073,9 @@
       ],
       "custom": true,
       "name": "The Lone Rival",
-      "brief": "You 6, foe 10 keeps.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 4, foe 7. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -5254,8 +5273,9 @@
       ],
       "custom": true,
       "name": "Vacant Seats",
-      "brief": "You 4, foe 7 keeps. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 1, foe 4. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -5453,8 +5473,9 @@
       ],
       "custom": true,
       "name": "Stolen North",
-      "brief": "You 4, foe 7 keeps. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 1, foe 7.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -5652,8 +5673,9 @@
       ],
       "custom": true,
       "name": "Stolen South",
-      "brief": "You 4, foe 9 keeps. Yellow holds 2. Foe holds centre.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 1, foe 9. Yellow holds 3.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -5851,8 +5873,9 @@
       ],
       "custom": true,
       "name": "Closing Pincer",
-      "brief": "You 4, foe 6 keeps. Yellow holds 2. Foe holds centre.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 1, foe 4. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map1.png"
     },
     {
       "width": 960,
@@ -6232,8 +6255,9 @@
       ],
       "custom": true,
       "name": "Heavy Hand",
-      "brief": "You 6, foe 9 keeps. Foe holds centre.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 1, foe 6.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -6431,8 +6455,9 @@
       ],
       "custom": true,
       "name": "Annexed Gate",
-      "brief": "You 5, foe 8 keeps.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 0, foe 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map2.png"
     },
     {
       "width": 960,
@@ -6812,8 +6837,9 @@
       ],
       "custom": true,
       "name": "Broken Mirror",
-      "brief": "You 4, foe 7 keeps. Foe holds centre. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 0, foe 8. Yellow holds 5.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -7011,8 +7037,9 @@
       ],
       "custom": true,
       "name": "Unequal Crown",
-      "brief": "You 4, foe 6 keeps. Foe holds centre.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 2, foe 7. Yellow holds 1.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map3.png"
     },
     {
       "width": 960,
@@ -7392,8 +7419,9 @@
       ],
       "custom": true,
       "name": "Citadel Siege",
-      "brief": "You 4, foe 8 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "3 houses each. Posts: you 2, foe 9. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -7591,8 +7619,9 @@
       ],
       "custom": true,
       "name": "Mirror Eclipse",
-      "brief": "You 4, foe 8 keeps.",
-      "new_terrain": true
+      "brief": "5 houses each. Posts: you 1, foe 9. Yellow holds 1.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     },
     {
       "width": 960,
@@ -7790,8 +7819,9 @@
       ],
       "custom": true,
       "name": "Citadel Sovereign",
-      "brief": "You 4, foe 7 keeps. Foe fortified.",
-      "new_terrain": true
+      "brief": "4 houses each. Posts: you 2, foe 9. Yellow holds 2.",
+      "new_terrain": true,
+      "background": "map/backgrounds/map4.png"
     }
   ]
 }

@@ -8,7 +8,7 @@
 | `src/castle/domain/stages/StageDefinition.java` | Validated, cached definitions for all 90 stages; immutable building, region and altar records; creation of independent match objects. |
 | `src/castle/domain/stages/CampaignInfo.java` | Shared name/description lookup and uniform stage title formatting; no campaign data. |
 | `src/castle/domain/stages/data/Original.java` | All Original campaign names, descriptions, buildings, terrain regions and altars. No reference-file import is required to build or run. |
-| `src/castle/domain/stages/data/Frontier.java`, `src/castle/domain/stages/data/Wilds.java` | Generated data for stages 31–60 and 61–90, including names, descriptions, buildings, regions and altars. |
+| `src/castle/domain/stages/data/Frontier.java`, `src/castle/domain/stages/data/Wilds.java` | Generated data for stages 31–60 and 61–90 (and `Citadel.java`/`Zenith.java` for 91–120 and 121–150), including names, descriptions, buildings, regions and altars. |
 | `assets/map/campaigns.json` | Campaign navigation markers only. |
 | `assets/terrain/{original,frontier,wild}/worlds.json` | Each campaign’s 30 battlefield dimensions, base background paths, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
 | `assets/terrain/{original,frontier,wild}/manifest.json` | Geometry-fingerprint indexes with the established `schema_version` and `overlays` format, identical in structure across the three campaigns. |

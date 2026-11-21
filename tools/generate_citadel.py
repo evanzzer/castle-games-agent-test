@@ -138,21 +138,38 @@ def scenery(rng, group, pts):
     return [[f'g_{t}', round(tr((x, y))[0]), round(tr((x, y))[1]), 32, 42] for x, y, t in quad for tr in transforms(group)]
 
 def _candidates():
-    """48 sampled ownership ledgers concentrated around parity; each stage picks the one that measures right."""
+    """48 sampled ledgers. Red and blue always start with the same houses; the ledger varies posts
+    (mines and towers), who holds the yellow keeps, and the centre castle."""
     rng = random.Random(7); rows = set()
     while len(rows) < 48:
-        y1 = rng.choice(['y', 'y', 'g', 'b']); t1 = rng.choice(['g', 'y', 'b']) if y1 == 'y' else rng.choice(['g', 'g', 'b'])
-        rows.add((rng.choice([4, 5, 5, 6, 6]), rng.randint(3, 10), y1, t1, rng.choice(['g', 'g', 'b']), rng.choice([0, 0, 1, 2])))
-    return [dict(nR=r[0], nB=r[1], y1=r[2], t1=r[3], c0=r[4], promote=r[5]) for r in sorted(rows)]
+        rows.add((rng.randint(0, 6), rng.randint(0, 9), rng.choice(['y', 'y', 'g']), rng.choice(['g', 'y', 'b']), rng.choice(['g', 'g', 'y'])))
+    return [dict(kR=r[0], kB=r[1], y1=r[2], t1=r[3], c0=r[4]) for r in sorted(rows)]
 CANDIDATES = _candidates()
 def ladder(index): return CANDIDATES[index]
 
-def owners(lay, row):
-    own = {}
-    for k, sid in enumerate(lay['claim']):
-        own[sid] = 'r' if k < row['nR'] else 'g'; own[sid[:-1] + 'R'] = 'b' if k < row['nB'] else 'g'
+def house_cap(index):
+    """Red and blue each start with the same 3-5 houses; the amount varies by stage."""
+    return 3 + (index * 7 // 3) % 3
+
+def assign(ids, houses, posts, side, own, kinds):
+    h = p = 0
+    for sid in ids:
+        if kinds[sid] == 'house':
+            if h < houses: own[sid] = side; h += 1
+        elif p < posts: own[sid] = side; p += 1
+    return h
+
+def owners(lay, row, cap=None, first=91):
+    own = {sid: 'g' for sid in lay['sites']}; kinds = {sid: v[0] for sid, v in lay['sites'].items()}
+    left = lay['claim']; right = [sid[:-1] + 'R' for sid in left]
+    cap = min(house_cap(lay['stage'] - first), sum(kinds[sid] == 'house' for sid in left))
+    assign(left, cap, row['kR'], 'r', own, kinds); assign(right, cap, row['kB'], 'b', own, kinds)
+    return own, kinds, cap
+
+def citadel_owners(lay, row):
+    own, kinds, cap = owners(lay, row)
     for sid in ('Y1n', 'Y1s'):
-        if sid in lay['sites']: own[sid] = row['y1'] if row['y1'] != 'b' or sid == 'Y1n' or row['promote'] >= 1 else 'g'
+        if sid in lay['sites']: own[sid] = row['y1'] if row['y1'] == 'y' else 'g'
     for sid in ('T1n', 'T1s'):
         if sid in lay['sites']: own[sid] = row['t1']
     if 'C0' in lay['sites']: own['C0'] = row['c0']
@@ -166,25 +183,25 @@ def record(sid, lay, side, size):
     return f'{name},{x:g},{y:g},{x:g},{y - pivot:g}'
 
 def buildings(lay, row):
-    own = owners(lay, row); out = []; bump = {'s': 'm', 'm': 'b', 'b': 'b'}
-    promoted = [s[:-1] + 'R' for s in lay['claim'] if lay['sites'][s][0] == 'house'][:row['promote'] * 2]
+    own = citadel_owners(lay, row); out = []
     for sid, (kind, size, x, y) in lay['sites'].items():
         side = own[sid]
-        if side == 'b' and kind == 'house' and sid in promoted: size = bump[size]
         out.append((side, record(sid, lay, side, size)))
     out.sort(key=lambda t: 'rbyg'.index(t[0]))
     return ';'.join(r for _, r in out), own
 
-def brief(row, own):
-    r = sum(v == 'r' for v in own.values()); b = sum(v == 'b' for v in own.values()); y = sum(v == 'y' for v in own.values())
-    parts = ['Mirror: %d keeps each.' % r if r == b else 'You %d, foe %d keeps.' % (r, b)]
+def brief(lay, row, own):
+    kinds = {sid: v[0] for sid, v in lay['sites'].items()}
+    houses = sum(1 for sid, v in own.items() if v == 'r' and kinds[sid] == 'house')
+    posts = lambda c: sum(1 for sid, v in own.items() if v == c and kinds[sid] != 'house')
+    parts = ['%d houses each. Posts: you %d, foe %d.' % (houses, posts('r'), posts('b'))]
+    y = sum(v == 'y' for v in own.values())
     if y: parts.append('Yellow holds %d.' % y)
-    if row['c0'] == 'b': parts.append('Foe holds centre.')
-    if row['promote']: parts.append('Foe fortified.')
     text = ' '.join(parts); assert len(text) <= 73, text; return text
 
 def markers():
-    return [[round(55 + t * 730, 1), round(150 + 95 * math.sin(t * math.pi * 3.2 + .6) * (1 - .25 * t), 1)] for t in (i / 29 for i in range(30))]
+    """Every campaign shares the Original map's stage positions, so the preview path looks the same."""
+    return json.loads((ROOT / 'assets/map/campaigns.json').read_text())['campaigns']['original']['markers']
 
 def region_string(lay):
     return ';'.join(str(e) + ',' + ','.join(f'{x:g},{y:g}' for x, y in [(round(x, 2), round(y, 2)) for x, y in p]) for e, p in lay['regions'])
@@ -227,10 +244,11 @@ def main():
     lays, lv = layouts(), levels(); d = ROOT / 'assets/terrain/citadel'; d.mkdir(parents=True, exist_ok=True)
     worlds, names, briefs, blds, marsh, alt, catalog, manifest = [], [], [], [], [], [], [], {}
     for i, lay in enumerate(lays):
-        row = ladder(lv[i]); recs, own = buildings(lay, row); b = brief(row, own); stage = 91 + i
+        row = ladder(lv[i]); recs, own = buildings(lay, row); b = brief(lay, row, own); stage = 91 + i
         rs = region_string(lay); png = f'terrain{stage}.png'
         bake_png(d / png, lay['regions']); manifest[png] = hashlib.sha256(rs.encode()).hexdigest()
-        worlds.append(dict(width=W, height=H, overlay=[f'terrain/citadel/{png}', 480, 320, W, H], objects=lay['scenery'], custom=True, name=NAMES[i], brief=b, new_terrain=True))
+        worlds.append(dict(width=W, height=H, overlay=[f'terrain/citadel/{png}', 480, 320, W, H], objects=lay['scenery'], custom=True, name=NAMES[i], brief=b, new_terrain=True,
+                           background='map/backgrounds/map%d.png' % ([1, 1, 1, 2, 2, 3, 3, 4, 4, 4][i % 10])))
         names.append(NAMES[i]); briefs.append(b); blds.append(recs); marsh.append(rs)
         alt.append(';'.join(f'{a[0]:.2f},{a[1]:.2f},{a[2]}'.replace('.00,', ',') for a in lay['altars']))
         catalog.append(dict(stage=stage, name=NAMES[i], brief=b, symmetry=lay['group'], level=lv[i], program=row, owners=own,

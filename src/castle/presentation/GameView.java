@@ -139,8 +139,8 @@ final class GameView extends View {
         }
         for(int page=0;page<Campaign.values().length;page++){
             paint.setColor(page==campaignPage?0xee725b32:0xee292924);
-            canvas.drawRoundRect(4+page*119,3,119+page*119,28,5,5,paint);
-            painter.label(canvas,Campaign.forPage(page).label,61+page*119,20,8,
+            canvas.drawRoundRect(3+page*95,3,94+page*95,28,5,5,paint);
+            painter.label(canvas,Campaign.forPage(page).label,48.5f+page*95,20,6.5f,
                 page==campaignPage?0xffffe3a1:0xffbcb9a9,true);
         }
         painter.label(canvas,CampaignInfo.title(mission),240,43,11,0xfff7e6b6,true);
@@ -429,7 +429,7 @@ final class GameView extends View {
             else if (hit(x, y, 317, 198, 140, 37)) screen = "upgrade";
         } else if (hit(x, y, 0, 265, 61, 55)) back();
         else if (screen.equals("campaign")) {
-            if(y<30){chooseCampaign(Math.min(Campaign.values().length-1,(int)(x/119)));return;}
+            if(y<30){chooseCampaign(Math.min(Campaign.values().length-1,(int)(x/95)));return;}
             if (hit(x, y, 315, 269, 158, 48)) startMission();
             else if (hit(x, y, 75, 276, 140, 37)) screen = "upgrade";
             else for(int i=0;i<campaignMarkers().size();i++){

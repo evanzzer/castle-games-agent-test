@@ -31,6 +31,10 @@
     "citadel": {
       "manifest": "terrain/citadel/manifest.json",
       "worlds": "terrain/citadel/worlds.json"
+    },
+    "zenith": {
+      "manifest": "terrain/zenith/manifest.json",
+      "worlds": "terrain/zenith/worlds.json"
     }
   }
 }

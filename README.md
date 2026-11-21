@@ -1,6 +1,6 @@
 # Castle Wars Rebuilt
 
-A single-player Android strategy game about capturing castles, moving armies and choosing when to spend crystals on spells. Lead the red army against blue and yellow rivals through **90 sequential stages** across three campaigns.
+A single-player Android strategy game about capturing castles, moving armies and choosing when to spend crystals on spells. Lead the red army against blue and yellow rivals through **150 sequential stages** across five campaigns.
 
 **Current version: 0.16 · Android 6.0+ · Landscape**
 
@@ -27,13 +27,15 @@ Both previews use the updated map artwork on the same stages: **Original 5** and
 | ![Deployment and combat](docs/media/gifs/deployment-and-combat.gif) | ![Spell showcase](docs/media/gifs/spell-showcase.gif) |
 | Send waves into a contested building. | Reinforcement, meteor impacts and tornado damage. |
 
-## Three campaigns
+## Five campaigns
 
 | Campaign | Stages | What changes |
 | --- | --- | --- |
 | **Original** | 1–30 | Learn deployment, buildings and terrain. Enemy nations use troop tactics without casting spells. |
 | **Frontier** | 31–60 | New layouts and curved hazard regions introduce enemy spell casting. |
 | **Wild** | 61–90 | New terrain shapes, more demanding routes and stronger enemy spell effects. |
+| **Citadel** | 91–120 | Thirty unique symmetric battlefields against much stronger enemies. Both armies start with matching castles, so the challenge comes from mines, towers and the central keeps. |
+| **Zenith** | 121–150 | Three active factions on symmetric river and diamond terrain, with the strongest enemies yet. |
 
 ![Campaign selection with sequential stage progression](docs/media/screenshots/campaign-map.png)
 

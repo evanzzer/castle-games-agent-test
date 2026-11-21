@@ -31,10 +31,10 @@ public final class ProfileUiCheck extends Instrumentation {
             PlayerProfile again = repository.load();
             check(again.upgradePoints() == 5 && !preferences.getBoolean("five-upgrades", true), "migration marker consumed and refund not repeated");
             check(Arrays.equals(again.upgradeLevels(), legacy.upgradeLevels()), "legacy profile round trip");
-            preferences.edit().clear().putInt("completed", 130).putInt("points", 4)
+            preferences.edit().clear().putInt("completed", 160).putInt("points", 4)
                 .putInt("up9", 8).putInt("up0", -2).commit();
             PlayerProfile current = repository.load();
-            check(current.completedStages() == 120 && current.upgradePoints() == 7, "current stage clamp and refund");
+            check(current.completedStages() == 150 && current.upgradePoints() == 7, "current stage clamp and refund");
             check(current.upgradeLevel(9) == 5 && current.upgradeLevel(0) == 0, "current upgrade normalization");
             repository.save(current);
             check(repository.load().upgradePoints() == 7, "current save does not refund twice");

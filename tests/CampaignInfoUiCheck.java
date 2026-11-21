@@ -20,7 +20,7 @@ public final class CampaignInfoUiCheck extends Instrumentation {
   runOnMainSync(()->{
    CanvasPainter labels=new CanvasPainter(board.resources());
    Paint paint=new Paint(3);paint.setTypeface(Typeface.create("serif",Typeface.BOLD));
-   for(int stage=1;stage<=120;stage++){
+   for(int stage=1;stage<=150;stage++){
     paint.setTextSize(11);if(paint.measureText(CampaignInfo.title(stage))>460)throw new AssertionError("heading overflows at stage "+stage);
     float size=labels.fittedTextSize(CampaignInfo.brief(stage),8,460);
     if(size<7)throw new AssertionError("description too small at stage "+stage);
@@ -33,6 +33,6 @@ public final class CampaignInfoUiCheck extends Instrumentation {
    capture("campaign-info-"+stage+".png");
   }
   runOnMainSync(()->{ProfileFixtures.completed(board,saved);board.mission=1;board.campaignPage=0;board.screen="menu";board.save();});
-  result.putString("stream","Campaign map UI checks passed: all 120 headings/descriptions fit; four campaign previews and stage-102 regression captured.\n");finish(-1,result);
+  result.putString("stream","Campaign map UI checks passed: all 150 headings/descriptions fit; four campaign previews and stage-102 regression captured.\n");finish(-1,result);
  }catch(Throwable failure){result.putString("stream",android.util.Log.getStackTraceString(failure));finish(0,result);}}
 }
