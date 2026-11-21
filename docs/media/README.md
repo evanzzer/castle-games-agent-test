@@ -4,10 +4,10 @@ The screenshots, GIF previews and MP4 source files show Castle Wars Rebuilt v0.1
 
 | Clip | Scenario |
 | --- | --- |
-| `videos/deployment-and-combat.mp4` | Original stage 5. Scripted troop orders use the normal recruitment and combat rules. |
-| `videos/spell-showcase.mp4` | Wild stage 65. A temporary 2,000-crystal budget and level-5 reinforcement show grouped arrivals, meteor impacts and tornado damage. |
+| `videos/deployment-and-combat.mp4` | Original stage 5, with its recovered `map2.png` background. Scripted troop orders use the normal recruitment and combat rules. |
+| `videos/spell-showcase.mp4` | Wild stage 65, with the authored `map3.png` background. A temporary 2,000-crystal budget and level-5 reinforcement show grouped arrivals, meteor impacts and tornado damage. |
 
-Both captures are 18 seconds long. The README embeds looping GIF derivatives at 480×320 and 10 fps; the MP4 sources retain their original resolution. Posters are decoded from the recorded video. Screenshots are taken from the running app. The capture fixture checks video duration, file size and three decoded frames before accepting a recording.
+Both captures run for approximately 18 seconds; the exact durations are recorded in `manifest.json`. The README embeds looping GIF derivatives at 480×320 and 10 fps; the MP4 sources retain their original resolution. Posters are decoded from the recorded video. Screenshots are taken from the running app. The capture fixture checks video duration, file size and three decoded frames before accepting a recording.
 
 ## Convert to GIF
 
@@ -25,10 +25,10 @@ The converter samples the whole clip, preserves normal playback speed and sets e
 Build and install the app on an attached emulator, then run:
 
 ```sh
-./tests/run-ui-check.sh ShowcaseUiCheck -e scenario battle
-./tests/run-ui-check.sh ShowcaseUiCheck -e scenario spells
+./tests/run-ui-check.sh ShowcaseUiCheck -e scenario battle -e stage 5
+./tests/run-ui-check.sh ShowcaseUiCheck -e scenario spells -e stage 65
 ```
 
-The fixture writes `showcase-<scenario>.mp4`, `showcase-<scenario>.png` and three frame PNGs to the app's external files directory. Retrieve the files with ADB into this folder. Player progress is restored after capture; the fixture is excluded from the game APK.
+The fixture writes `showcase-<scenario>.mp4`, `showcase-<scenario>.png`, a `showcase-<scenario>-map.png` campaign preview and three frame PNGs to the app's external files directory. Retrieve the files with ADB into this folder. Player progress is restored after capture; the fixture is excluded from the game APK.
 
 [Architecture](../architecture.md) explains the domain and platform boundaries. Build and signing instructions are in the [development guide](../development.md).

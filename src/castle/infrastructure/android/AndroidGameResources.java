@@ -63,7 +63,8 @@ final class AndroidGameResources implements GameResources {
             if (objects != null) for (int item = 0; item < objects.length(); item++)
                 scenery.add(decoration(objects.getJSONArray(item)));
             worlds.add(new WorldLayout((float) level.optDouble("width", 480),
-                (float) level.optDouble("height", 320), overlay == null ? null : decoration(overlay), scenery));
+                (float) level.optDouble("height", 320), overlay == null ? null : decoration(overlay), scenery,
+                level.optString("background", "map/backgrounds/map1.png")));
         }
     }
 

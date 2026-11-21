@@ -6,25 +6,29 @@
       "file": "videos/deployment-and-combat.mp4",
       "poster": "posters/deployment-and-combat.png",
       "scenario": "battle",
-      "duration_ms": 17999,
-      "bytes": 5315248,
+      "stage": 5,
+      "campaign": "original",
+      "duration_ms": 17371,
+      "bytes": 4607153,
       "width": 960,
       "height": 640,
       "codec": "video/avc",
       "audio": false,
-      "sha256": "e060b92516f761a6ffaa3f59c9251f131adcf3f2863b3a656b2ba00d22bb0e5e"
+      "sha256": "009489655b1efbfb5c1e380bf887b495a4005311b273657cdbc7669260b7a961"
     },
     {
       "file": "videos/spell-showcase.mp4",
       "poster": "posters/spell-showcase.png",
       "scenario": "spells",
+      "stage": 65,
+      "campaign": "wild",
       "duration_ms": 17997,
-      "bytes": 3626550,
+      "bytes": 4046931,
       "width": 960,
       "height": 640,
       "codec": "video/avc",
       "audio": false,
-      "sha256": "a9f09beabdfa23f56a1701e36ca1e8b2c38e3f04b8fbf2bfd2697ed5aa1d2dd6"
+      "sha256": "cb7de18e03bcbbebfdf5885f5838d24e271788dc9939bc6538499d978bef39a5"
     }
   ],
   "screenshots": [
@@ -36,14 +40,14 @@
     {
       "file": "gifs/deployment-and-combat.gif",
       "source": "videos/deployment-and-combat.mp4",
-      "duration_ms": 18000,
-      "frames": 180,
+      "duration_ms": 17400,
+      "frames": 174,
       "fps": 10,
       "width": 480,
       "height": 320,
       "loop": 0,
-      "bytes": 1604067,
-      "sha256": "0863336260d395940b601f607e65cad403a472ba864960eeb15a325940865c97"
+      "bytes": 1434191,
+      "sha256": "fd5332b85edd30a99fa41494f2d02c314aa8f36461d57ce25512a858fae7a416"
     },
     {
       "file": "gifs/spell-showcase.gif",
@@ -54,8 +58,29 @@
       "width": 480,
       "height": 320,
       "loop": 0,
-      "bytes": 1437723,
-      "sha256": "c37f01dd90658fc0ae357ce44c41ac71aec6ef0274343abf217a3d040c5e06c5"
+      "bytes": 1479376,
+      "sha256": "24f612571936b825b0476bcc115f3fa276384def6e5b03c889e2495ff4e646f6"
+    }
+  ],
+  "capture_date": "2026-11-22",
+  "screenshot_details": [
+    {
+      "file": "screenshots/building-raid.png",
+      "stage": 5,
+      "campaign": "original",
+      "background": "map/backgrounds/map2.png"
+    },
+    {
+      "file": "screenshots/spell-showcase.png",
+      "stage": 65,
+      "campaign": "wild",
+      "background": "map/backgrounds/map3.png"
+    },
+    {
+      "file": "screenshots/campaign-map.png",
+      "stage": 65,
+      "campaign": "wild",
+      "screen": "campaign"
     }
   ]
 }

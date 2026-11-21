@@ -238,9 +238,9 @@ final class GameView extends View {
         canvas.scale(zoom, zoom);
         canvas.translate(-cameraX, -cameraY);
         // Background images are tiled at their original texture size.
-        if(!Campaign.forStage(mission).usesTiledBackground())painter.image(canvas,"map/backgrounds/map1.png",0,0,Math.max(width(),480/zoom),Math.max(height(),275/zoom));
+        if(!Campaign.forStage(mission).usesTiledBackground())painter.image(canvas,world().background,0,0,Math.max(width(),480/zoom),Math.max(height(),275/zoom));
         else for(int y=0;y<Math.max(height(),275/zoom);y+=640)
-            for(int x=0;x<Math.max(width(),480/zoom);x+=960)painter.image(canvas,"map/backgrounds/map1.png",x,y,960,640);
+            for(int x=0;x<Math.max(width(),480/zoom);x+=960)painter.image(canvas,world().background,x,y,960,640);
         WorldLayout.Decoration overlay = world().overlay;
         if (overlay != null) painter.image(canvas, overlay.image, overlay.x - overlay.width / 2,
             overlay.y - overlay.height / 2, overlay.width, overlay.height);

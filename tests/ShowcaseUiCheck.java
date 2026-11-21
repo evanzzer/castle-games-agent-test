@@ -3,6 +3,7 @@ package castle;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -16,18 +17,25 @@ import java.util.*;
 /** Captures reproducible documentation media without changing shipped gameplay. */
 public final class ShowcaseUiCheck extends Instrumentation {
     private String scenario;
+    private int requestedStage;
     private long started;
     private File directory;
+    private GameView captureView;
 
     @Override public void onCreate(Bundle args) {
         super.onCreate(args);
         scenario=args.getString("scenario","battle");
+        requestedStage=Integer.parseInt(args.getString("stage","0"));
         start();
     }
 
     private void at(float seconds,Runnable action) {
-        long wait=started+(long)(seconds*1000)-SystemClock.uptimeMillis();
-        if(wait>0)SystemClock.sleep(wait);
+        long target=started+(long)(seconds*1000);
+        // Keep the capture surface producing frames even when the emulator suppresses idle redraws.
+        for(long wait=target-SystemClock.uptimeMillis();wait>0;wait=target-SystemClock.uptimeMillis()) {
+            SystemClock.sleep(Math.min(100,wait));
+            runOnMainSync(()->captureView.invalidate());
+        }
         runOnMainSync(action);
     }
 
@@ -63,12 +71,21 @@ public final class ShowcaseUiCheck extends Instrumentation {
             Main main=(Main)startActivitySync(new Intent(Intent.ACTION_MAIN)
                 .setClassName("game.castlewars.rebuilt","castle.Main").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             waitForIdleSync();Field field=Main.class.getDeclaredField("board");field.setAccessible(true);
-            board=(GameView)field.get(main);final GameView view=board;
+            board=(GameView)field.get(main);final GameView view=board;captureView=view;
             savedCompleted=board.profile.completedStages();savedPoints=board.profile.upgradePoints();
             directory=getTargetContext().getExternalFilesDir(null);
             boolean spells=scenario.equals("spells");
+            int stage=requestedStage==0?(spells?65:5):requestedStage;
+            Campaign.forStage(stage);
             runOnMainSync(()->{
-                ProfileFixtures.completed(view,89);view.mission=spells?65:5;view.startMission();view.rewardGiven=true;
+                ProfileFixtures.completed(view,stage-1);view.engine=null;view.screen="campaign";
+                view.mission=stage;view.campaignPage=Campaign.forStage(stage).page;view.centreCampaignSelection();
+            });
+            Bitmap map=Bitmap.createBitmap(view.getWidth(),view.getHeight(),Bitmap.Config.ARGB_8888);
+            runOnMainSync(()->view.draw(new Canvas(map)));
+            save(map,"showcase-"+scenario+"-map.png");
+            runOnMainSync(()->{
+                view.startMission();view.rewardGiven=true;
                 if(spells){view.engine.energy=2000;view.engine.skillLevels[3]=5;}
             });
             SystemClock.sleep(800);
@@ -107,7 +124,7 @@ public final class ShowcaseUiCheck extends Instrumentation {
             if(!video.isFile())throw new IOException("Recorder failed: "+diagnostics.toString("UTF-8"));
             MediaMetadataRetriever media=new MediaMetadataRetriever();media.setDataSource(video.getAbsolutePath());
             long duration=Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-            if(duration<16000||video.length()<100000)throw new AssertionError("Recording is incomplete");
+            if(duration<16000||video.length()<100000)throw new AssertionError("Recording is incomplete: "+duration+"ms, "+video.length()+" bytes");
             for(int second:new int[]{3,8,13}) {
                 Bitmap frame=media.getFrameAtTime(second*1000000L,MediaMetadataRetriever.OPTION_CLOSEST);
                 if(frame==null)throw new AssertionError("Cannot decode video frame");
@@ -116,7 +133,7 @@ public final class ShowcaseUiCheck extends Instrumentation {
             media.release();
             MediaExtractor extractor=new MediaExtractor();extractor.setDataSource(video.getAbsolutePath());
             MediaFormat format=extractor.getTrackFormat(0);
-            org.json.JSONObject metadata=new org.json.JSONObject().put("scenario",scenario).put("duration_ms",duration)
+            org.json.JSONObject metadata=new org.json.JSONObject().put("scenario",scenario).put("stage",stage).put("campaign",Campaign.forStage(stage).id).put("duration_ms",duration)
                 .put("bytes",video.length()).put("width",format.getInteger(MediaFormat.KEY_WIDTH))
                 .put("height",format.getInteger(MediaFormat.KEY_HEIGHT)).put("codec",format.getString(MediaFormat.KEY_MIME)).put("audio",false);
             extractor.release();

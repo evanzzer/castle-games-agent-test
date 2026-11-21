@@ -21,3 +21,4 @@ python3 tests/assets_check.py
 python3 tests/frontier_data_check.py
 python3 tests/wilds_data_check.py
 python3 tests/citadel_data_check.py
+python3 tests/backgrounds_check.py

@@ -6,6 +6,7 @@ routes, scenery placement and campaign markers. Fixed seeds make builds repeatab
 from pathlib import Path
 import json,math,random
 ROOT=Path(__file__).resolve().parents[1]
+backgrounds=json.loads((ROOT/'tools/data/background-orders.json').read_text())['campaigns']['frontier']
 # Ground positions on a 960 x 640 battlefield. R/B are starting castle pairs.
 layouts={
 'fork':[(90,220,'R'),(90,420,'R'),(870,220,'B'),(870,420,'B'),(270,140,'h'),(270,500,'h'),(430,180,'c'),(430,460,'c'),(590,140,'h'),(590,500,'h'),(480,320,'t'),(250,320,'h'),(710,320,'h')],
@@ -137,7 +138,7 @@ for index,(name,layout,turn,three,altar) in enumerate(specs):
   if min(math.hypot(x-a,y-b) for a,b,_ in nodes)<58:continue
   if any(350<x<610 and 245<y<395 for _ in [0]):continue
   objects.append(['g_'+str(rng.choice([1,2,3,4,5])),x,y,32,42])
- world_data['worlds'].append(dict(width=960,height=640,overlay=overlay,objects=objects,custom=True,name=name,brief=brief,terrain_layout_version="v0.13-curved"))
+ world_data['worlds'].append(dict(width=960,height=640,background=f'map/backgrounds/map{backgrounds[index]}.png',overlay=overlay,objects=objects,custom=True,name=name,brief=brief,terrain_layout_version="v0.13-curved"))
  names.append(name);tips.append(brief);buildings.append(';'.join(records));marshes.append(';'.join(zone_records));altars.append(';'.join(pickups))
  details.append(dict(stage=index+31,name=name,layout=layout,brief=brief,building_count=len(nodes),teams=3 if three else 2,regions=zones,altars=pickups,terrain_layout_version="v0.13-curved"))
 (ROOT/'assets/terrain/frontier/worlds.json').write_text(json.dumps(world_data,indent=2,ensure_ascii=False)+'\n')

@@ -10,7 +10,7 @@
 | `src/castle/domain/stages/data/Original.java` | All Original campaign names, descriptions, buildings, terrain regions and altars. No reference-file import is required to build or run. |
 | `src/castle/domain/stages/data/Frontier.java`, `src/castle/domain/stages/data/Wilds.java` | Generated data for stages 31–60 and 61–90, including names, descriptions, buildings, regions and altars. |
 | `assets/map/campaigns.json` | Campaign navigation markers only. |
-| `assets/terrain/{original,frontier,wild}/worlds.json` | Each campaign’s 30 battlefield dimensions, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
+| `assets/terrain/{original,frontier,wild}/worlds.json` | Each campaign’s 30 battlefield dimensions, base background paths, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
 | `assets/terrain/{original,frontier,wild}/manifest.json` | Geometry-fingerprint indexes with the established `schema_version` and `overlays` format, identical in structure across the three campaigns. |
 | `tools/generate_frontier.py`, `generate_wilds.py` | Deterministic terrain/campaign authoring. Metadata for authoring and regression checks lives under `tools/data/`. |
 
@@ -56,3 +56,9 @@ Building combat uses the four combat-atlas cloud frames, with horizontal scale 0
 `tests/run-checks.sh` recursively compiles the domain and application classes without Android dependencies and runs all `*Check.java` checks except Android instrumentation. `ApplicationCheck` covers progression, match creation and event delivery; `ProfileUiCheck` verifies Android save migration. `StageCatalogCheck` verifies all campaign boundaries and checks that shared definitions cannot leak mutable state between games. Python checks validate every JSON atlas/font frame and world overlay, then verify deterministic terrain regeneration and overlay fingerprints.
 
 `tests/run-ui-check.sh` builds instrumentation using the same SDK and signing key as `build.sh`. Gameplay, campaign information, terrain, spell audio and raid grouping each have focused UI checks. `scripts/android-env.sh` is the shared SDK/signing configuration. Generated build files remain under ignored `build/`; the retained key stays outside that disposable directory at `.local/signing/debug.jks`.
+
+## Battlefield backgrounds
+
+Original stages use the four map textures selected by the decrypted `GlobalVar::StageBegin` switch, preserved in `tools/data/background-orders.json`. Frontier and Wild use separate authored thirty-stage sequences from the same file. Their generators write the selected `background` path into each `worlds.json` entry.
+
+`AndroidGameResources` loads that path into `WorldLayout.background`. `GameView` draws it underneath the terrain overlay and scenery in both the tiled Original path and the later campaign path. `tests/backgrounds_check.py` checks the recovered Original sequence, independent Frontier/Wild orders and the existence of every texture.

@@ -7,6 +7,7 @@ is copied into this campaign. Existing stages 1–60 are preserved.
 from pathlib import Path
 import json,math,random
 ROOT=Path(__file__).resolve().parents[1]
+backgrounds=json.loads((ROOT/'tools/data/background-orders.json').read_text())['campaigns']['wild']
 layouts={
 'delta':[(90,100,'R'),(90,300,'R'),(90,500,'R'),(870,140,'B'),(870,340,'B'),(870,540,'B'),(260,150,'c'),(260,490,'c'),(700,150,'c'),(700,490,'c'),(440,100,'h'),(520,540,'h'),(340,300,'h'),(620,340,'h'),(480,210,'t'),(480,430,'t'),(480,320,'H')],
 'crescent':[(120,100,'R'),(110,240,'R'),(140,400,'R'),(840,540,'B'),(850,400,'B'),(820,240,'B'),(320,100,'c'),(640,540,'c'),(160,540,'c'),(800,100,'c'),(360,400,'t'),(600,240,'t'),(360,220,'h'),(600,420,'h'),(480,90,'h'),(480,550,'h'),(480,320,'H')],
@@ -99,7 +100,7 @@ for i,name in enumerate(names):
   if min(math.hypot(x-a,y-b) for a,b,_ in nodes)<65:continue
   objects.append(['g_'+str(rng.randint(1,5)),x,y,32,42])
  brief=briefs[i%10];stage=61+i
- data['worlds'].append(dict(width=960,height=640,overlay=[f'terrain/wild/terrain{stage}.png',480,320,960,640],objects=objects,custom=True,name=name,brief=brief,new_terrain=True))
+ data['worlds'].append(dict(width=960,height=640,background=f'map/backgrounds/map{backgrounds[i]}.png',overlay=[f'terrain/wild/terrain{stage}.png',480,320,960,640],objects=objects,custom=True,name=name,brief=brief,new_terrain=True))
  rows.append(';'.join(records));terrain.append(';'.join(zone_rows));altars.append(';'.join(pickups));titles.append(name);tips.append(brief)
  catalog.append(dict(stage=stage,name=name,brief=brief,layout=family,regions=zones,altars=pickups,buildings=nodes,art_sources=['terrain5.png material','terrain7.png material'],original_shape_source=None))
 (ROOT/'assets/terrain/wild/worlds.json').write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')

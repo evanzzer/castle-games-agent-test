@@ -6,6 +6,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain61.png",
         480,
@@ -233,6 +234,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain62.png",
         480,
@@ -467,6 +469,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain63.png",
         480,
@@ -757,6 +760,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain64.png",
         480,
@@ -991,6 +995,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain65.png",
         480,
@@ -1246,6 +1251,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain66.png",
         480,
@@ -1515,6 +1521,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain67.png",
         480,
@@ -1756,6 +1763,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain68.png",
         480,
@@ -1997,6 +2005,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain69.png",
         480,
@@ -2203,6 +2212,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain70.png",
         480,
@@ -2458,6 +2468,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain71.png",
         480,
@@ -2692,6 +2703,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain72.png",
         480,
@@ -2905,6 +2917,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain73.png",
         480,
@@ -3125,6 +3138,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain74.png",
         480,
@@ -3345,6 +3359,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain75.png",
         480,
@@ -3558,6 +3573,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain76.png",
         480,
@@ -3841,6 +3857,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain77.png",
         480,
@@ -4068,6 +4085,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain78.png",
         480,
@@ -4344,6 +4362,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain79.png",
         480,
@@ -4620,6 +4639,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain80.png",
         480,
@@ -4854,6 +4874,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain81.png",
         480,
@@ -5081,6 +5102,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain82.png",
         480,
@@ -5357,6 +5379,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain83.png",
         480,
@@ -5591,6 +5614,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain84.png",
         480,
@@ -5860,6 +5884,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain85.png",
         480,
@@ -6136,6 +6161,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain86.png",
         480,
@@ -6412,6 +6438,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map2.png",
       "overlay": [
         "terrain/wild/terrain87.png",
         480,
@@ -6695,6 +6722,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map4.png",
       "overlay": [
         "terrain/wild/terrain88.png",
         480,
@@ -6971,6 +6999,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map1.png",
       "overlay": [
         "terrain/wild/terrain89.png",
         480,
@@ -7247,6 +7276,7 @@
     {
       "width": 960,
       "height": 640,
+      "background": "map/backgrounds/map3.png",
       "overlay": [
         "terrain/wild/terrain90.png",
         480,

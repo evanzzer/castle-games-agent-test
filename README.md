@@ -20,7 +20,7 @@ Castles recruit troops, crystal mines fund spells, and archer towers shoot at pa
 
 ## Gameplay GIFs
 
-Both previews loop through the full **18-second** captures at 480×320 and 10 fps. The spell showcase uses a scripted crystal budget and upgraded reinforcement to demonstrate the effects.
+Both previews use the updated map artwork on the same stages: **Original 5** and **Wild 65**. They loop through the full, roughly **18-second** captures at 480×320 and 10 fps. The spell showcase uses a scripted crystal budget and upgraded reinforcement to demonstrate the effects.
 
 | Deployment and building combat | Spell showcase |
 | --- | --- |
