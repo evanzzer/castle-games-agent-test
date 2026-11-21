@@ -39,7 +39,7 @@ for index, group in enumerate(['original', 'frontier', 'wild']):
     assert terrain['campaign'] == group and terrain['first_stage'] == index * 30 + 1
     assert len(terrain['worlds']) == 30
     java_name = {'original':'Original', 'frontier':'Frontier', 'wild':'Wilds'}[group]
-    source = (root / 'src/castle/domain/stages' / group / (java_name + '.java')).read_text().split('MARSHES = {')[1]
+    source = (root / 'src/castle/domain/stages/data' / (java_name + '.java')).read_text().split('MARSHES = {')[1]
     rows = [json.loads(line.strip().rstrip(',')) for line in source.splitlines() if line.strip().startswith('"')]
     for local, world in enumerate(terrain['worlds']):
         assert world['width'] > 0 and world['height'] > 0

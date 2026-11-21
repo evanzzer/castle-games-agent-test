@@ -13,9 +13,9 @@ core = ['Engine', 'Campaign', 'StageDefinition', 'CampaignInfo', 'Original', 'Fr
 assert {p.name for p in source.glob('*.java')} == {'Main.java'}, 'Only the entry point belongs outside responsibility folders'
 expected = {
     'Main': 'Main.java',
-    'Original': 'domain/stages/original/Original.java',
-    'Frontier': 'domain/stages/frontier/Frontier.java',
-    'Wilds': 'domain/stages/wild/Wilds.java',
+    'Original': 'domain/stages/data/Original.java',
+    'Frontier': 'domain/stages/data/Frontier.java',
+    'Wilds': 'domain/stages/data/Wilds.java',
     'Engine': 'domain/Engine.java', 'AiCommander': 'domain/AiCommander.java',
     'PlayerProfile': 'domain/PlayerProfile.java', 'Campaign': 'domain/stages/Campaign.java',
     'MatchFactory': 'application/MatchFactory.java', 'MatchAudioEvents': 'application/MatchAudioEvents.java',

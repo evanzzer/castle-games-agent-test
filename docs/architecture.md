@@ -9,9 +9,7 @@ src/castle/
   Main.java                    Android executable entry point
   domain/                      Match state, AI, profile and immutable layout values
     stages/                    Shared campaign policies and stage parsing
-      original/                Original.java: all Campaign I data
-      frontier/                Frontier.java: all Campaign II data
-      wild/                    Wilds.java: all Campaign III data
+      data/                    Original.java, Frontier.java and Wilds.java
   application/                 Match creation, event delivery and platform-free ports
   presentation/                Input, screens, Canvas primitives and army rendering
   infrastructure/android/      Asset decoding, preferences, audio and terrain baking
