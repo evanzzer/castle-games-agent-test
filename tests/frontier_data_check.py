@@ -2,16 +2,15 @@
 from pathlib import Path
 import json,subprocess,sys,hashlib,struct
 root=Path(__file__).resolve().parents[1]
-data=json.loads((root/'assets/map/worlds.json').read_text())
-assert len(data['worlds'])==90 and len(data['frontierMarkers'])==30
-assert data['frontierMarkers']==data['markers']
+data=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())
+assert data['campaign']=='frontier' and data['first_stage']==31 and len(data['worlds'])==30
 design=json.loads((root/'tools/data/frontier-design.json').read_text())
 archive=json.loads((root/'tools/data/frontier-region-plans.json').read_text())
 turns=[0,0,0,1,0,0,2,2,1,2,1,2,3,2,1,2,1,0,0,3,3,3,1,3,1,0,2,0,3,0]
 manifest=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())['overlays']
 rows=[json.loads(line.strip().rstrip(',')) for line in (root/'src/castle/Frontier.java').read_text().split('MARSHES = {')[1].splitlines() if line.strip().startswith('"')]
 count=0
-for i,(entry,world) in enumerate(zip(design,data['worlds'][30:60])):
+for i,(entry,world) in enumerate(zip(design,data['worlds'])):
  assert entry['stage']==i+31 and entry['terrain_layout_version']=='v0.13-curved'
  expected=[]
  for kind,vertices in archive['plans'][archive['stage_plans'][i]]:
@@ -35,10 +34,13 @@ for i,(entry,world) in enumerate(zip(design,data['worlds'][30:60])):
  assert manifest[path.name]==hashlib.sha256(rows[i].encode()).hexdigest()
  count+=len(expected)
 assert count==59
-original=data['worlds'][:30];wilds=data['worlds'][60:]
+preserved=[root/'assets/terrain/original/manifest.json',root/'assets/terrain/wild/manifest.json',root/'assets/map/campaigns.json']
+original=[p.read_bytes() for p in preserved]
+terrain_before=(root/'assets/terrain/frontier/manifest.json').read_bytes()
 source=(root/'src/castle/Frontier.java').read_bytes()
 subprocess.run([sys.executable,'tools/generate_frontier.py'],cwd=root,check=True)
-updated=json.loads((root/'assets/map/worlds.json').read_text())
-assert updated['worlds'][:30]==original and updated['worlds'][60:]==wilds
+updated=json.loads((root/'assets/terrain/frontier/manifest.json').read_text())
+assert [p.read_bytes() for p in preserved]==original
+assert (root/'assets/terrain/frontier/manifest.json').read_bytes()==terrain_before
 assert (root/'src/castle/Frontier.java').read_bytes()==source
 print('Restored Frontier checks passed: curved outlines at original footprints, 59 regions, PNG geometry fingerprints; other campaigns preserved.')

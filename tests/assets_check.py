@@ -27,15 +27,24 @@ font = load(manifest['number_font'])
 assert font['schema_version'] == 1 and font['line_height'] == 27
 for entry in font['glyphs'].values(): frame(entry, *image_size(font['image']))
 assert all(str(code) in font['glyphs'] for code in range(48,58))
-worlds = load(manifest['worlds'])
-assert len(worlds['worlds']) == 90
-for key in ['markers', 'frontierMarkers', 'wildsMarkers']: assert len(worlds[key]) == 30
-for index, world in enumerate(worlds['worlds']):
-    if world.get('overlay'):
-        path = world['overlay'][0]
-        image_size(path)
-        group = 'original' if index < 30 else 'frontier' if index < 60 else 'wild'
-        assert path.startswith('terrain/' + group + '/')
+navigation = load(manifest['campaigns'])['campaigns']
+assert set(navigation) == {'original', 'frontier', 'wild'}
+assert not (assets / 'map/worlds.json').exists()
+for index, group in enumerate(['original', 'frontier', 'wild']):
+    assert len(navigation[group]['markers']) == 30
+    terrain = load(manifest['terrain'][group])
+    assert terrain['campaign'] == group and terrain['first_stage'] == index * 30 + 1
+    assert len(terrain['worlds']) == 30
+    java_name = {'original':'Missions', 'frontier':'Frontier', 'wild':'Wilds'}[group]
+    source = (root / 'src/castle' / (java_name + '.java')).read_text().split('MARSHES = {')[1]
+    rows = [json.loads(line.strip().rstrip(',')) for line in source.splitlines() if line.strip().startswith('"')]
+    for local, world in enumerate(terrain['worlds']):
+        assert world['width'] > 0 and world['height'] > 0
+        if world.get('overlay'):
+            path = world['overlay'][0]
+            image_size(path)
+            assert terrain['overlays'][Path(path).name] == hashlib.sha256(rows[local].encode()).hexdigest()
+            assert path.startswith('terrain/' + group + '/')
 for path in assets.rglob('*'):
     if path.is_file() and not path.name.startswith('.'):
         assert path.suffix in ['.json','.png','.wav'], path

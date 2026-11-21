@@ -31,7 +31,7 @@ public final class TerrainBakeCheck extends Instrumentation {
    manifest.put("terrain"+stage+".png",hex.toString());
    overlay.recycle();
   }
-  try(FileOutputStream out=new FileOutputStream(new File(directory,"terrain-manifest.json"))){out.write(new org.json.JSONObject().put("schema_version",1).put("overlays",manifest).toString(2).getBytes("UTF-8"));}
+  try(FileOutputStream out=new FileOutputStream(new File(directory,"terrain-manifest.json"))){out.write(AssetMetadata.read(getTargetContext().getAssets(),"terrain/"+(frontier?"frontier":"wild")+"/manifest.json").put("overlays",manifest).toString(2).getBytes("UTF-8"));}
   result.putString("stream","Baked and checked 30 textured transparent terrain PNGs using original marsh/poison artwork.\n");finish(-1,result);
  }catch(Throwable failure){result.putString("stream",android.util.Log.getStackTraceString(failure));finish(0,result);}}
 }

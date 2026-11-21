@@ -14,5 +14,10 @@
     "ui/help/controls.json"
   ],
   "number_font": "fonts/numbers.json",
-  "worlds": "map/worlds.json"
+  "campaigns": "map/campaigns.json",
+  "terrain": {
+    "original": "terrain/original/manifest.json",
+    "frontier": "terrain/frontier/manifest.json",
+    "wild": "terrain/wild/manifest.json"
+  }
 }

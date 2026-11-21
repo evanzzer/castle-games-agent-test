@@ -4,15 +4,16 @@
 
 | File | Responsibility |
 | --- | --- |
-| `src/castle/Campaign.java` | Campaign boundaries, labels, marker keys, strategic AI selection and enemy spell prices/levels. |
+| `src/castle/Campaign.java` | Campaign boundaries, labels, campaign IDs, strategic AI selection and enemy spell prices/levels. |
 | `src/castle/StageDefinition.java` | Validated, cached definitions for all 90 stages; immutable building, region and altar records; creation of independent match objects. |
 | `src/castle/CampaignInfo.java` | Original campaign names/descriptions and uniform stage title formatting. |
 | `src/castle/Missions.java`, `Altars.java` | Checked-in original building, terrain and altar data. No reference-file import is required to build or run. |
 | `src/castle/Frontier.java`, `Wilds.java` | Generated data for stages 31–60 and 61–90, including names, descriptions, buildings, regions and altars. |
-| `assets/map/worlds.json` | World dimensions, background overlays, scenery and three campaign marker lists. Overlay entries point directly to files below `assets/terrain/`. |
+| `assets/map/campaigns.json` | Campaign navigation markers only. |
+| `assets/terrain/{original,frontier,wild}/manifest.json` | Each campaign’s 30 battlefield dimensions, overlays and scenery placements. Overlay entries point to PNGs in the same terrain category. |
 | `tools/generate_frontier.py`, `generate_wilds.py` | Deterministic terrain/campaign authoring. Metadata for authoring and regression checks lives under `tools/data/`. |
 
-`Engine(stage, rank)` selects a `StageDefinition`, obtains its campaign policy and populates fresh forts, region point arrays and altars. Stage data is parsed once. Game state never mutates the shared stage definitions. The original, Frontier and Wild tables use this same path instead of separate loading branches.
+`Engine(stage, rank)` selects a `StageDefinition`, obtains its campaign policy and populates fresh forts, region point arrays and altars. Battlefield visual layouts live beside their terrain assets, while campaign navigation stays under `assets/map/`. Stage data is parsed once. Game state never mutates the shared stage definitions. The original, Frontier and Wild tables use this same path instead of separate loading branches.
 
 ## Runtime and presentation
 
@@ -24,7 +25,7 @@
 | `src/castle/TerrainArt.java` | Terrain PNG baking from the simulation's actual region polygons. |
 | `src/castle/UpgradeRules.java` | Shared upgrade limits, purchase eligibility and saved-state normalization. |
 
-`assets/manifest.json` identifies every runtime atlas, the number font and the world metadata. Atlases and fonts use the same JSON frame rectangle format. The renderer follows complete asset-relative image paths, so folder names do not encode engine behavior. No legacy configuration parser remains in the runtime.
+`assets/manifest.json` identifies every runtime atlas, the number font, campaign navigation and three terrain manifests. Atlases and fonts use the same JSON frame rectangle format. The renderer follows complete asset-relative image paths, so folder names do not encode engine behavior. No legacy configuration parser remains in the runtime.
 
 ## Combat and audio flow
 

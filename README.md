@@ -24,15 +24,15 @@ assets/
   fonts/                    Number bitmap and JSON glyph metadata
   map/
     backgrounds/            Map background artwork
-    worlds.json             90 world layouts and campaign markers
+    campaigns.json          Campaign navigation markers
   sprites/
     units/                  Army atlas and JSON frame metadata
     effects/                Combat and spell atlas and JSON metadata
     scenery/                Scenery atlas and JSON metadata
   terrain/
-    original/               Original stage overlays
-    frontier/               Frontier overlays and geometry manifest
-    wild/                   Wild overlays and geometry manifest
+    original/               Original overlays and battlefield manifest.json
+    frontier/               Frontier overlays and a combined battlefield manifest.json
+    wild/                   Wild overlays and a combined battlefield manifest.json
   ui/
     atlases/                Interface atlases and JSON frame metadata
     help/                   Help screens and control atlas
@@ -40,6 +40,8 @@ assets/
     screens/                Standalone interface backgrounds
   manifest.json             Runtime atlas, font and world entry points
 ```
+
+Each terrain campaign has one `manifest.json` with the same fields: `schema_version`, `campaign`, `first_stage`, `worlds` (30 battlefield layouts), and `overlays` (geometry fingerprints). The root manifest locates these files; `map/campaigns.json` holds navigation markers only.
 
 Runtime metadata uses JSON schema version 1. Atlas and font entries share `frame: [x, y, width, height]`; fonts additionally define advances and line height. Image paths are complete, asset-relative paths. There are no runtime `.conf`, `.font` or legacy GUI XML files. Artwork and WAV bytes are preserved during relocation.
 
@@ -77,7 +79,7 @@ python3 tools/generate_frontier.py
 python3 tools/generate_wilds.py
 ```
 
-These update the corresponding authored Java tables, world layouts and `tools/data/*-design.json`, while preserving the other campaigns. Frontier control plans are in `tools/data/frontier-region-plans.json`. The committed PNG overlays are tied to their geometry through `assets/terrain/{frontier,wild}/manifest.json`.
+These update the corresponding authored Java tables, the campaign’s `terrain/<campaign>/manifest.json` and `tools/data/*-design.json`, while preserving other terrain campaigns and navigation markers. Frontier control plans are in `tools/data/frontier-region-plans.json`. The committed PNG overlays are tied to their geometry through `assets/terrain/{frontier,wild}/manifest.json`.
 
 When changing terrain geometry, use `TerrainBakeCheck` on Android to regenerate and validate the PNGs, then retrieve the emitted images and manifest into the matching terrain folder. Terrain baking uses the current `StageDefinition` through `Engine`, so collision geometry and visual silhouettes share the same regions.
 

@@ -215,11 +215,19 @@ public final class Main extends Activity {
                 JSONObject manifest=AssetMetadata.read(getAssets(),"manifest.json");
                 JSONArray atlases=manifest.getJSONArray("atlases");
                 for(int i=0;i<atlases.length();i++)loadAtlas(atlases.getString(i));
-                JSONObject data=AssetMetadata.read(getAssets(),manifest.getString("worlds"));
-                worlds = data.getJSONArray("worlds");
-                markers = data.getJSONArray(Campaign.ORIGINAL.markersKey);
-                frontierMarkers = data.getJSONArray(Campaign.FRONTIER.markersKey);
-                wildsMarkers = data.getJSONArray(Campaign.WILD.markersKey);
+                JSONObject navigation=AssetMetadata.read(getAssets(),manifest.getString("campaigns")).getJSONObject("campaigns");
+                JSONObject terrainPaths=manifest.getJSONObject("terrain");
+                worlds=new JSONArray();
+                for(Campaign campaign:Campaign.values()){
+                    JSONObject terrain=AssetMetadata.read(getAssets(),terrainPaths.getString(campaign.id));
+                    JSONArray levels=terrain.getJSONArray("worlds");
+                    if(!terrain.getString("campaign").equals(campaign.id)||terrain.getInt("first_stage")!=campaign.firstStage||levels.length()!=Campaign.STAGES_PER_CAMPAIGN)
+                        throw new JSONException("Invalid terrain world group: "+campaign.id);
+                    for(int i=0;i<levels.length();i++)worlds.put(levels.getJSONObject(i));
+                }
+                markers=navigation.getJSONObject(Campaign.ORIGINAL.id).getJSONArray("markers");
+                frontierMarkers=navigation.getJSONObject(Campaign.FRONTIER.id).getJSONArray("markers");
+                wildsMarkers=navigation.getJSONObject(Campaign.WILD.id).getJSONArray("markers");
                 mission=Math.min(Engine.TOTAL_STAGES,completed+1);
                 campaignPage=Campaign.forStage(mission).page;campaignSelection[campaignPage]=mission;
                 centreCampaignSelection();
@@ -229,7 +237,7 @@ public final class Main extends Activity {
                 for(Iterator<String> it=glyphs.keys();it.hasNext();){String code=it.next();
                     digits.put((char)Integer.parseInt(code),AssetMetadata.frame(glyphs.getJSONObject(code)));
                 }
-            } catch (Exception failure) { throw new IllegalStateException("Original assets could not load", failure); }
+            } catch (Exception failure) { throw new IllegalStateException("Game assets could not load", failure); }
         }
 
         Bitmap bitmap(String name) {

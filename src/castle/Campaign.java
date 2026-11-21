@@ -2,24 +2,24 @@ package castle;
 
 /** Campaign boundaries, presentation and enemy spell policy in one place. */
 enum Campaign {
-    ORIGINAL(0, "I · ORIGINAL 1–30", "markers", false, 1.75f, 0),
-    FRONTIER(1, "II · FRONTIER 31–60", "frontierMarkers", true, 1.75f, 0),
-    WILD(2, "III · WILDS 61–90", "wildsMarkers", true, 1.4f, 2);
+    ORIGINAL(0, "I · ORIGINAL 1–30", "original", false, 1.75f, 0),
+    FRONTIER(1, "II · FRONTIER 31–60", "frontier", true, 1.75f, 0),
+    WILD(2, "III · WILDS 61–90", "wild", true, 1.4f, 2);
 
     static final int STAGES_PER_CAMPAIGN = 30;
     static final int TOTAL_STAGES = 90;
     final int page, firstStage, lastStage, enemySpellLevel;
-    final String label, markersKey;
+    final String label, id;
     final boolean strategicAI;
     final float enemySpellCostMultiplier;
 
-    Campaign(int page, String label, String markersKey, boolean strategicAI,
+    Campaign(int page, String label, String id, boolean strategicAI,
              float enemySpellCostMultiplier, int enemySpellLevel) {
         this.page = page;
         this.firstStage = page * STAGES_PER_CAMPAIGN + 1;
         this.lastStage = firstStage + STAGES_PER_CAMPAIGN - 1;
         this.label = label;
-        this.markersKey = markersKey;
+        this.id = id;
         this.strategicAI = strategicAI;
         this.enemySpellCostMultiplier = enemySpellCostMultiplier;
         this.enemySpellLevel = enemySpellLevel;
