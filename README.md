@@ -1,5 +1,7 @@
 # Castle Wars Rebuilt
 
+Castle Wars Rebuilt is a modernized Android recreation of the original [Castle Wars](https://apps.apple.com/us/app/castle-wars/id410784366), originally released for iOS.
+
 A single-player Android strategy game about capturing castles, moving armies and choosing when to spend crystals on spells. Lead the red army against blue and yellow rivals through **150 sequential stages** across five campaigns.
 
 **Current version: 0.17.0 · Android 6.0+ · Landscape**
