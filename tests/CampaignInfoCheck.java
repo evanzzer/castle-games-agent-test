@@ -7,6 +7,13 @@ public final class CampaignInfoCheck {
    check(!CampaignInfo.name(stage).isEmpty()&&!CampaignInfo.brief(stage).isEmpty(),"every stage has a name and description");
    check(CampaignInfo.title(stage).startsWith(String.format(java.util.Locale.US,"%02d · ",stage)),"consistent heading format");
   }
+  for(int stage=1;stage<=120;stage++){
+   Engine engine=new Engine(stage,0);
+   int attack=stage<=30?0:stage<=45?1:stage<=60?2:stage<=75?3:stage<=90?4:5;
+   int defense=Math.max(0,attack-1);
+   for(int side=2;side<=3;side++)check(engine.attackLevels[side]==attack&&engine.defenseLevels[side]==defense,
+    "exact AI combat tiers at stage "+stage+" for team "+side);
+  }
   check(CampaignInfo.title(1).equals("01 · First Foothold"),"modern original stage heading");
   check(CampaignInfo.brief(1).contains("neutral castle"),"intro strategy matches first map");
   check(CampaignInfo.name(31).equals(Frontier.NAMES[0])&&CampaignInfo.name(61).equals(Wilds.NAMES[0]),"later campaign metadata preserved");
@@ -41,6 +48,6 @@ public final class CampaignInfoCheck {
    check(home.n==before&&e.marches.stream().filter(m->m.side==home.side&&m.b==home).mapToInt(m->m.n).sum()==(level==0?100:280),"campaign reinforcement troop amount");
    check(e.energy==200,"enemy spending never charges player");
   }
-  System.out.println("Campaign information and AI spell rules passed: 120 headings/descriptions; intro disabled; 1.75x Lv0 / 1.4x Lv2.");
+  System.out.println("Campaign information and AI spell rules passed: 120 headings/descriptions and exact combat tiers; intro disabled; 1.75x Lv0 / 1.4x Lv2.");
  }
 }

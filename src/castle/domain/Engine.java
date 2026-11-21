@@ -277,11 +277,9 @@ final class Engine {
   spellRandom=new Random(seed^0x5350454c4cL);
   aiClocks[2]=aiDelay();aiClocks[3]=aiDelay();think=Math.min(aiClocks[2],aiClocks[3]);
   if(campaign.strategicAI)for(int side=2;side<=3;side++){
-   if(campaign.enemyUpgradeTier>0){
-    // Citadel enemies start with maximum combat tiers and tier-3 economy.
-    attackLevels[side]=defenseLevels[side]=UpgradeRules.MAX_LEVEL;
-    nationEnergy[side]=UpgradeRules.initialCrystals(campaign.enemyUpgradeTier);
-   }else{attackLevels[side]=Math.min(5,1+(stage-31)/12);defenseLevels[side]=Math.min(5,(stage-31)/12);}
+   attackLevels[side]=campaign.enemyAttackLevel(stage);
+   defenseLevels[side]=campaign.enemyDefenseLevel(stage);
+   if(campaign.enemyUpgradeTier>0)nationEnergy[side]=UpgradeRules.initialCrystals(campaign.enemyUpgradeTier);
   }
   definition.populate(this);
  }

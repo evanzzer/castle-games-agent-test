@@ -37,6 +37,19 @@ enum Campaign {
         return values()[page];
     }
 
+    // Frontier and Wild advance combat tiers halfway through their thirty-stage campaigns.
+    int enemyAttackLevel(int stage) {
+        int half = localIndex(stage) / 15;
+        switch (this) {
+            case FRONTIER: return 1 + half;
+            case WILD: return 3 + half;
+            case CITADEL: return 5;
+            default: return 0;
+        }
+    }
+
+    int enemyDefenseLevel(int stage) { return Math.max(0, enemyAttackLevel(stage) - 1); }
+
     boolean usesTiledBackground() { return this == ORIGINAL; }
 
     int localIndex(int stage) {
